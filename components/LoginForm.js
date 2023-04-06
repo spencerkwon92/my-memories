@@ -1,10 +1,12 @@
 import React, {useState, useCallback} from 'react'
 import {Button, Form, Input} from 'antd'
-import useInput from '../hooks/useInput'
 import Link from 'next/link'
 import { useDispatch } from 'react-redux'
 
-import {loginAction} from '../reducers'
+import {loginAction} from '../reducers/user'
+import useInput from "../hooks/useInput";
+
+
 
 export default function LoginForm (){
   const [id, onChangeId] = useInput("")

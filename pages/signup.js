@@ -1,17 +1,11 @@
 import React, { useState, useCallback } from "react";
 import { Form, Input, Checkbox, Button } from "antd";
 import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
 
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
-
-const TextInput = ({ value }) => {
-  return <div>{value}</div>;
-};
-
-TextInput.propTypes = {
-  value: PropTypes.string,
-};
+import { signUpAction } from "../reducers/user";
 
 const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -22,6 +16,15 @@ const Signup = () => {
   const [id, onChangeId] = useInput("");
   const [nick, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (user) {
+      alert("로그인했으니 메인페이지로 이동합니다.");
+      Router.push("/");
+    }
+  }, [user && user.id]);
 
   const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
@@ -30,6 +33,13 @@ const Signup = () => {
     if (!term) {
       return setTermError(true);
     }
+    dispatch(
+      signUpAction({
+        id,
+        password,
+        nick,
+      })
+    );
   }, [password, passwordCheck, term]);
 
   const onChangePasswordCheck = useCallback(
