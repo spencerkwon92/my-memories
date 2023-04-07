@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "/react";
+import React, { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { Card, Button, Avatar, Popover, List, Comment } from "antd";
 import PropTypes from "prop-types";
@@ -21,7 +21,7 @@ const CardWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-export default PostCard = ({ post }) => {
+export default function PostCard({ post }){
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const id = useSelector((state) => state.user.me && state.user.id);
   const [isLiked, setIsLiked] = useState(false);

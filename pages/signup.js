@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useState,useEffect, useCallback } from "react";
 import { Form, Input, Checkbox, Button } from "antd";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
-import { signUpAction } from "../reducers/user";
+import { SIGN_UP_REQUEST } from "../reducers/user";
 
 const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -17,14 +17,14 @@ const Signup = () => {
   const [nick, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const { signupLoading, me } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (user) {
+    if (me) {
       alert("로그인했으니 메인페이지로 이동합니다.");
       Router.push("/");
     }
-  }, [user && user.id]);
+  }, [me?.id]);
 
   const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
@@ -34,13 +34,14 @@ const Signup = () => {
       return setTermError(true);
     }
     dispatch(
-      signUpAction({
-        id,
-        password,
-        nick,
-      })
+      {
+        type: SIGN_UP_REQUEST,
+        data:{
+          email, password, nick,
+        }
+      }
     );
-  }, [password, passwordCheck, term]);
+  }, [password, password, passwordCheck, term]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
@@ -108,7 +109,7 @@ const Signup = () => {
           )}
         </div>
         <div style={{ marginTop: 10 }}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={signupLoading}>
             가입하기
           </Button>
         </div>

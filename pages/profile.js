@@ -8,24 +8,13 @@ import AppLayout from "../components/AppLayout";
 import FollowList from "../components/FollowList";
 
 const Profile = () => {
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!(me&& me.id)) {
       Router.replace("/");
     }
-  }, [isLoggedIn]);
-
-  const followerList = [
-    { nickname: "제로초" },
-    { nickname: "바보" },
-    { nickname: "노드버드오피셜" },
-  ];
-  const followingList = [
-    { nickname: "제로초" },
-    { nickname: "바보" },
-    { nickname: "노드버드오피셜" },
-  ];
+  }, [me?.id]);
 
   return (
     <AppLayout>
@@ -33,8 +22,8 @@ const Profile = () => {
         <title>내 프로필 | NodeBird</title>
       </Head>
       <NicknameEditForm />
-      <FollowList header="팔로잉 목록" data={followingList} />
-      <FollowList header="팔로워 목록" data={followerList} />
+      <FollowList header="팔로잉 목록" data={me.Followings} />
+      <FollowList header="팔로워 목록" data={me.Followers} />
     </AppLayout>
   );
 };
