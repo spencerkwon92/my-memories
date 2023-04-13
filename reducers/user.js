@@ -1,3 +1,5 @@
+import produce from '../util/produce'
+
 const dummyUser = (data) => ({
   ...data,
   id: 1,
@@ -23,6 +25,18 @@ export const initialState = {
   signupDone: false,
   signupError: null,
 
+  followLoading: false,
+  followDone: false,
+  followError: null,
+
+  unfollowLoading: false,
+  unfollowDone: false,
+  unfollowError: null,
+
+  changeNicknameLoading: false,
+  changeNicknameDone: false,
+  changeNicknameError: null,
+
   user: null,
   signUpData: {},
   loginData:{},
@@ -41,6 +55,21 @@ export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
 
+export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
+export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
+export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
+
+export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
+export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
+export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
+
+export const CHANGE_NICKNAME_REQUEST = "CHANGE_NICKNAME_REQUEST";
+export const CHANGE_NICKNAME_SUCCESS = "CHANGE_NICKNAME_SUCCESS";
+export const CHANGE_NICKNAME_FAILURE = "CHANGE_NICKNAME_FAILURE";
+
+export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
+export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
+
 // front에서 dispatch를 위해 action을 만들어준다.
 export const loginRequestAction = (data) => {
   return {
@@ -53,77 +82,92 @@ export const logoutRequestAction = {
 };
 
 
-export default (state = initialState, action)=>{
+export default (state = initialState, action)=>produce(state, (draft)=>{
   switch(action.type){
     case LOG_IN_REQUEST:
-      return{
-        ...state,
-        loginLoading: true,
-        loginDone: false,
-        loginError: null,
-      }
-
+      draft.loginLoading = true;
+      draft.loginDone = false;
+      draft.loginError = null;
+      break
     case LOG_IN_SUCCESS:
-      return {
-        ...state,
-        loginLoading:false,
-        loginDone:true,
-        loginError:null,
-        me: dummyUser(action.data),
-      }
+      draft.loginLoading = false;
+      draft.loginDone = true;
+      draft.loginError = null;
+      draft.me = dummyUser(action.data);
+      break
     case LOG_IN_FAILURE:
-      return{
-        ...state,
-        loginLoading: false,
-        loginDone: false,
-        loginError: action.error,
-      }
-
+      loginLoading = false;
+      loginDone = false;
+      loginError = action.error;
+      break
     case LOG_OUT_REQUEST:
-      return{
-        ...state,
-        logoutLoading: true,
-        logoutDone: false,
-        logoutError: null
-      }
+      draft.logoutLoading = true;
+      draft.logoutDone = false;
+      draft.logoutError = null;
+      break
     case LOG_OUT_SUCCESS:
-      return{
-        ...state,
-        logoutLoading:false,
-        logoutDone: true,
-        logoutError: null,
-      }
+      draft.logoutLoading = false;
+      draft.logoutDone = true;
+      draft.me = null;
+      break
     case LOG_OUT_FAILURE:
-      return{
-        ...state,
-        logoutLoading: false,
-        logoutError: action.error,
-      }
-    
+      draft.logoutLoading = false;
+      draft.logoutError = action.error;
+      break
     case SIGN_UP_REQUEST:
-      return {
-        ...state,
-        signupLoading: true,
-        signupDone: false,
-        signupError: null,
-      }
-      //TODO: it might be better to use spread operator
+      draft.signupLoading = true;
+      draft.signupDone = false;
+      draft.signupError = null;
+      break
     case SIGN_UP_SUCCESS:
-      return {
-        ...state,
-        signupLoading: false,
-        signupDone:true,
-      }
+      draft.signupLoading = false;
+      draft.signupDone = true;
+      break
     case SIGN_UP_FAILURE:
-      return {
-        ...state,
-        signupLoading: false,
-        signupError: action.error,
-      }
-
-    default:
-      return{
-        ...state,
-      }
+      draft.signupLoading = false;
+      draft.signupError = action.error;
+      break
+    case CHANGE_NICKNAME_REQUEST:
+      draft.changeNicknameLoading = true;
+      draft.changeNicknameDone = false;
+      draft.changeNicknameError = null;
+      break
+    case CHANGE_NICKNAME_SUCCESS:
+      draft.changeNicknameLoading = false;
+      draft.changeNicknameDone = true;
+      break
+    case CHANGE_NICKNAME_FAILURE:
+      draft.changeNicknameLoading = false;
+      draft.changeNicknameError = action.error;
+      break
+    case FOLLOW_REQUEST:
+      draft.followLoading = true;
+      draft.followDone = false;
+      draft.followError = null;
+      break
+    case FOLLOW_SUCCESS:
+      draft.followLoading = false;
+      draft.me.Followings.push({id: action.data});
+      draft.followDone = true;
+      break
+    case FOLLOW_FAILURE:
+      draft.followLoading = false;
+      draft.followError = action.error;
+      break
+    case UNFOLLOW_REQUEST:
+      draft.unfollowLoading = true;
+      draft.unfollowDone = false;
+      draft.unfollowError = null;
+    case UNFOLLOW_SUCCESS:
+      draft.unfollowLoading = false;
+      draft.me.Followings = draft.me.Followings.filter((v)=> v.id !== action.data)
+      draft.unfollowDone = true;
+    case UNFOLLOW_FAILURE:
+      draft.unfollowLoading = false;
+      draft.unfollowError = action.error;
+    case ADD_POST_TO_ME:
+      draft.me.Posts = draft.me.Posts.unshift({id: action.data});
+    case REMOVE_POST_OF_ME:
+      draft.me.Posts = draft.me.Posts.filter((v)=> v.id !== action.data);
   }
-}
+})
