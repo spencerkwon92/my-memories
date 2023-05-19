@@ -15,17 +15,31 @@ const Signup = () => {
   const [termError, setTermError] = useState(false);
 
   const [email, onChangeEmail] = useInput('');
-  const [nick, onChangeNick] = useInput('');
+  const [nickname, onChangeNick] = useInput('');
   const [password, onChangePassword] = useInput('');
   const dispatch = useDispatch();
-  const { isSigningUp, me } = useSelector((state) => state.user);
+  const { signupLoading, signupDone, signupError, me } = useSelector((state) => state.user);
+
+  useEffect(()=>{
+    if(me?.id){
+      Router.replace('/')
+    }
+  },[me?.id])
 
   useEffect(() => {
     if (me) {
       alert('로그인했으니 메인페이지로 이동합니다.');
-      Router.push('/');
+      Router.replace('/');
     }
   }, [me && me.id]);
+
+  useEffect(()=>{
+     if(signupDone) Router.push('/')
+  },[signupDone])
+
+  useEffect(()=>{
+    if(signupError) alert(signupError)
+  })
 
   const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
@@ -39,10 +53,10 @@ const Signup = () => {
       data: {
         email,
         password,
-        nick,
+        nickname,
       },
     });
-  }, [email, password, passwordCheck, term]);
+  }, [email, password, nickname, passwordCheck, term]);
 
   const onChangePasswordCheck = useCallback((e) => {
     setPasswordError(e.target.value !== password);
@@ -68,7 +82,7 @@ const Signup = () => {
         <div>
           <label htmlFor="user-nick">닉네임</label>
           <br />
-          <Input name="user-nick" value={nick} required onChange={onChangeNick} />
+          <Input name="user-nick" value={nickname} required onChange={onChangeNick} />
         </div>
         <div>
           <label htmlFor="user-password">비밀번호</label>
@@ -92,7 +106,7 @@ const Signup = () => {
           {termError && <div style={{ color: 'red' }}>약관에 동의하셔야 합니다.</div>}
         </div>
         <div style={{ marginTop: 10 }}>
-          <Button type="primary" htmlType="submit" loading={isSigningUp}>가입하기</Button>
+          <Button type="primary" htmlType="submit" loading={signupLoading}>가입하기</Button>
         </div>
       </Form>
     </AppLayout>

@@ -93,12 +93,12 @@ export default (state = initialState, action)=>produce(state, (draft)=>{
       draft.loginLoading = false;
       draft.loginDone = true;
       draft.loginError = null;
-      draft.me = dummyUser(action.data);
+      draft.me = action.data;
       break
     case LOG_IN_FAILURE:
-      loginLoading = false;
-      loginDone = false;
-      loginError = action.error;
+      draft.loginLoading = false;
+      draft.loginDone = false; 
+      draft.loginError = action.error;
       break
     case LOG_OUT_REQUEST:
       draft.logoutLoading = true;
