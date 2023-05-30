@@ -7,11 +7,14 @@ const dummyUser = (data) => ({
   Posts: [{ id: 1 }],
   Followings: [{ nickname: '부기초' }, { nickname: 'Chanho Lee' }, { nickname: 'neue zeal' }],
   Followers: [{ nickname: '부기초' }, { nickname: 'Chanho Lee' }, { nickname: 'neue zeal' }],
-
 });
 
 export const initialState = {
   me: null,
+
+  loadUserLoading: false, // 유저 정보 가져오기 시도중
+  loadUserDone: false,
+  loadUserError: null,
   
   loginLoading: false, // 로그인 시도중
   loginDone: false,
@@ -21,7 +24,7 @@ export const initialState = {
   logoutDone: false,
   logoutError: null,
 
-  signupLoading: false, // 회원가입 시도중
+  signupLoading: false, // 회원가입  우도중
   signupDone: false,
   signupError: null,
 
@@ -42,7 +45,6 @@ export const initialState = {
   loginData:{},
 }
 
-
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
 export const LOG_IN_FAILURE = "LOG_IN_FAILURE"; 
@@ -54,6 +56,10 @@ export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+
+export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST";
+export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS";
+export const LOAD_USER_FAILURE = "LOAD_USER_FAILURE";
 
 export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
 export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
@@ -77,13 +83,28 @@ export const loginRequestAction = (data) => {
     data,
   };
 };
-export const logoutRequestAction = {
-  type: LOG_OUT_REQUEST,
-};
 
+export const logoutRequestAction = () => ({
+  type: LOG_OUT_REQUEST,
+});
 
 export default (state = initialState, action)=>produce(state, (draft)=>{
   switch(action.type){
+
+    case LOAD_USER_REQUEST:
+      draft.loadUserLoading = true;
+      draft.loadUserDone = false;
+      draft.loadUserError = null;
+      break
+    case LOAD_USER_SUCCESS:
+      draft.loadUserLoading = false;
+      draft.loadUserDone = true;
+      draft.me = action.data;
+      break
+    case LOAD_USER_FAILURE:
+      draft.loadUserLoading = false;
+      draft.loadUserError = action.error;
+      break
     case LOG_IN_REQUEST:
       draft.loginLoading = true;
       draft.loginDone = false;
@@ -92,12 +113,10 @@ export default (state = initialState, action)=>produce(state, (draft)=>{
     case LOG_IN_SUCCESS:
       draft.loginLoading = false;
       draft.loginDone = true;
-      draft.loginError = null;
       draft.me = action.data;
       break
     case LOG_IN_FAILURE:
       draft.loginLoading = false;
-      draft.loginDone = false; 
       draft.loginError = action.error;
       break
     case LOG_OUT_REQUEST:
@@ -158,16 +177,23 @@ export default (state = initialState, action)=>produce(state, (draft)=>{
       draft.unfollowLoading = true;
       draft.unfollowDone = false;
       draft.unfollowError = null;
+      break
     case UNFOLLOW_SUCCESS:
       draft.unfollowLoading = false;
       draft.me.Followings = draft.me.Followings.filter((v)=> v.id !== action.data)
       draft.unfollowDone = true;
+      break
     case UNFOLLOW_FAILURE:
       draft.unfollowLoading = false;
       draft.unfollowError = action.error;
+      break
     case ADD_POST_TO_ME:
       draft.me.Posts = draft.me.Posts.unshift({id: action.data});
+      break
     case REMOVE_POST_OF_ME:
       draft.me.Posts = draft.me.Posts.filter((v)=> v.id !== action.data);
+      break
+    default:
+      break
   }
 })

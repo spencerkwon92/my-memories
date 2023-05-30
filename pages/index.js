@@ -5,6 +5,7 @@ import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
 import AppLayout from '../components/AppLayout';
 import { LOAD_POSTS_REQUEST } from '../reducers/post';
+import { LOAD_USER_REQUEST } from '../reducers/user';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,10 @@ const Home = () => {
   const { mainPosts, hasMorePost, loadPostsLoading } = useSelector((state) => state.post);
 
   useEffect(() => {
+    dispatch({
+      type: LOAD_USER_REQUEST,
+    })
+
     dispatch({
       type: LOAD_POSTS_REQUEST,
     });
@@ -37,8 +42,8 @@ const Home = () => {
   return (
     <AppLayout>
       {me && <PostForm />}
-      {mainPosts.map((c) => (
-        <PostCard key={c.id} post={c} />
+      {mainPosts.map((post) => (
+        <PostCard key={post.id} post={post} />
       ))}
     </AppLayout>
   );

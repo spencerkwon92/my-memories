@@ -1,44 +1,29 @@
-import shortId from 'shortid';
-import faker from 'faker';
-
 import produce from '../util/produce';
 
 export const initialState = {
   mainPosts: [],
+  
   imagePaths: [],
+
   hasMorePosts: true,
+
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
 };
 
-export const generateDummyPost = (number) => Array(number).fill().map(() => ({
-  id: shortId.generate(),
-  User: {
-    id: shortId.generate(),
-    nickname: faker.name.findName(),
-  },
-  content: faker.lorem.paragraph(),
-  Images: [{
-    src: faker.image.image(),
-  }],
-  Comments: [{
-    User: {
-      id: shortId.generate(),
-      nickname: faker.name.findName(),
-    },
-    content: faker.lorem.sentence(),
-  }],
-}));
 
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
@@ -66,25 +51,6 @@ export const addComment = (data) => ({
   data,
 });
 
-const dummyPost = (data) => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickname: '제로초',
-  },
-  Images: [],
-  Comments: [],
-});
-
-const dummyComment = (data) => ({
-  id: shortId.generate(),
-  content: data,
-  User: {
-    id: 1,
-    nickname: '제로초',
-  },
-});
 // 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수(불변성은 지키면서)
 const reducer = (state = initialState, action) => produce(state, (draft) => {
   switch (action.type) {
@@ -111,7 +77,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
     case ADD_POST_SUCCESS:
       draft.addPostLoading = false;
       draft.addPostDone = true;
-      draft.mainPosts.unshift(dummyPost(action.data));
+      draft.mainPosts.unshift(action.data);
       break;
     case ADD_POST_FAILURE:
       draft.addPostLoading = false;
@@ -137,8 +103,8 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.addCommentError = null;
       break;
     case ADD_COMMENT_SUCCESS: {
-      const post = draft.mainPosts.find((v) => v.id === action.data.postId);
-      post.Comments.unshift(dummyComment(action.data.content));
+      const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+      post.Comments.unshift(action.data);
       draft.addCommentLoading = false;
       draft.addCommentDone = true;
       break;

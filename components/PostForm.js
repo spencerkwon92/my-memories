@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { ADD_POST_REQUEST } from '../reducers/post';
+import { ADD_POST_REQUEST, addComment } from '../reducers/post';
 
 const PostForm = () => {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const PostForm = () => {
       <div>
         <input type="file" multiple hidden ref={imageInput} />
         <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-        <Button type="primary" style={{ float: 'right' }} htmlType="submit" loading={addPostLoading}>짹짹</Button>
+        <Button type="primary" style={{ float: 'right' }} htmlType="submit" loading={addPostLoading}>올리기</Button>
       </div>
       <div>
         {imagePaths.map((v) => (

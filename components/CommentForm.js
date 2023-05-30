@@ -19,6 +19,7 @@ const CommentForm = ({ post }) => {
   }, [addCommentDone]);
 
   const onSubmitComment = useCallback(() => {
+    console.log('clicked comment button')
     dispatch({
       type: ADD_COMMENT_REQUEST,
       data: { content: commentText, userId: id, postId: post.id },
@@ -34,7 +35,7 @@ const CommentForm = ({ post }) => {
           type="primary"
           htmlType="submit"
           loading={addCommentLoading}
-        >삐약
+        >댓글달기
         </Button>
       </Form.Item>
     </Form>
