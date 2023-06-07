@@ -28,7 +28,7 @@ const Home = () => {
         if (hasMorePost && !loadPostsLoading) {
           dispatch({
             type: LOAD_POSTS_REQUEST,
-            data: mainPosts[mainPosts.length - 1].id,
+            // data: mainPosts[mainPosts.length - 1].id,
           });
         }
       }
