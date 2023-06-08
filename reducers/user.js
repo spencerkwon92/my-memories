@@ -3,6 +3,7 @@ import produce from '../util/produce'
 export const initialState = {
   me: null,
 
+
   loadUserLoading: false, // 유저 정보 가져오기 시도중
   loadUserDone: false,
   loadUserError: null,
