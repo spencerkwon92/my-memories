@@ -1,37 +1,35 @@
-import React from 'react';
-import Link from 'next/link';
-import PropTypes from 'prop-types';
-import { Col, Input, Menu, Row } from 'antd';
-import { useSelector } from 'react-redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { Menu, MenuButton } from "@chakra-ui/react";
+import { css } from "@emotion/react";
 
-import LoginForm from './LoginForm';
-import UserProfile from './UserProfile';
+const linkCss = css`
+  & > * {
+    font-size: 30px;
+  }
+`;
+
+const wrapperCss = css`
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 10px;
+`;
 
 const AppLayout = ({ children }) => {
-  const { me } = useSelector((state) => state.user);
   return (
-    <div>
-      <Menu mode="horizontal">
-        <Menu.Item key="home"><Link href="/" legacyBehavior><a>노드버드</a></Link></Menu.Item>
-        <Menu.Item key="profile"><Link href="/profile" legacyBehavior><a>프로필</a></Link></Menu.Item>
-        <Menu.Item key="mail">
-          <Input.Search enterButton style={{ verticalAlign: 'middle' }} />
-        </Menu.Item>
+    <>
+      <Menu>
+        <div css={wrapperCss}>
+          <MenuButton as="a" href="/" css={linkCss}>
+            My Memories
+          </MenuButton>
+          <MenuButton as="a" href="/profile" css={linkCss}>
+            profile
+          </MenuButton>
+        </div>
       </Menu>
-      <Row gutter={8}>
-        <Col xs={24} md={6}>
-          {me
-            ? <UserProfile />
-            : <LoginForm />}
-        </Col>
-        <Col xs={24} md={12}>
-          {children}
-        </Col>
-        <Col xs={24} md={6}>
-          <a href="https://www.zerocho.com" target="_blank" rel="noreferrer noopener">Made by ZeroCho</a>
-        </Col>
-      </Row>
-    </div>
+      <div>{children}</div>
+    </>
   );
 };
 

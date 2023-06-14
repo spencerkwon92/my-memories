@@ -29,7 +29,9 @@ import {
   LOAD_FOLLOWINGS_REQUEST,
   LOAD_FOLLOWINGS_SUCCESS,
   LOAD_FOLLOWINGS_FAILURE,
-
+  LOAD_MY_INFO_REQUEST,
+  LOAD_MY_INFO_SUCCESS,
+  LOAD_MY_INFO_FAILURE,
 } from '../reducers/user';
 
 
@@ -92,8 +94,27 @@ function* signUp(action){
   
 }
 
-function loadUserAPI(){
+function loadMyInfoAPI(){
   return axios.get('/user');
+}
+
+function* loadMyInfo(action){
+  try{
+    const result = yield call(loadMyInfoAPI)
+    yield put({
+      type: LOAD_MY_INFO_SUCCESS,
+      data: result.data,
+    })
+  }catch(err){
+    yield put({
+      type: LOAD_MY_INFO_FAILURE,
+      error: err.response.data,
+    })
+  }
+}
+
+function loadUserAPI(data){
+  return axios.get(`/user/${data}`);
 }
 
 function* loadUser(action){
@@ -110,6 +131,7 @@ function* loadUser(action){
     })
   }
 }
+
 
 function changeNicknameAPI(data){
   return axios.patch('/user/nickname', {nickname: data});
@@ -246,6 +268,10 @@ function* watchLoadFollowings(){
   yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
 }
 
+function* watchLoadMyInfo(){
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+
 export default function* rootSaga(){
    yield all([
       fork(watchLogin),
@@ -257,5 +283,6 @@ export default function* rootSaga(){
       fork(watchChangeNickname),
       fork(watchLoadFollowers),
       fork(watchLoadFollowings),
+      fork(watchLoadMyInfo)
     ])
  }
