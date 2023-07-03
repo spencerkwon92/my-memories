@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Menu, MenuButton } from "@chakra-ui/react";
+import { Menu, MenuButton, Divider, Center } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 
 const linkCss = css`
@@ -28,6 +28,9 @@ const AppLayout = ({ children }) => {
           </MenuButton>
         </div>
       </Menu>
+      <Center height="25px">
+        <Divider />
+      </Center>
       <div>{children}</div>
     </>
   );

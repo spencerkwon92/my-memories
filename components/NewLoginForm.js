@@ -14,8 +14,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Router from "next/router";
 
-import { loginRequestAction } from "../../../reducers/user";
-import useInput from "../../../hooks/useInput";
+import { loginRequestAction } from "../reducers/user";
+import useInput from "../hooks/useInput";
 
 const wrapperCss = css`
   display: flex;

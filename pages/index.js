@@ -4,7 +4,7 @@ import { END } from "redux-saga";
 import axios from "axios";
 import { Grid, GridItem } from "@chakra-ui/react";
 
-import NewLoginForm from "./demo/components/NewLoginForm";
+import NewLoginForm from "../components/NewLoginForm";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import AppLayout from "../components/AppLayout";
