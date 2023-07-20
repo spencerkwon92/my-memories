@@ -1,23 +1,24 @@
 import React from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import {Text} from '@chakra-ui/react'
 
 const PostCardContent = ({ postData }) => (
   <div>
-    {postData.split(/(#[^\s#]+)/g).map((v) => {
-      if (v.match(/(#[^\s#]+)/)) {
+    {postData.split(/(#[^\s#]+)/g).map((ele) => {
+      if (ele.match(/(#[^\s#]+)/)) {
         return (
           <Link
-            href={{ pathname: '/hashtag', query: { tag: v.slice(1) } }}
-            as={`/hashtag/${v.slice(1)}`}
-            key={v}
+            href={{ pathname: "/hashtag", query: { tag: v.slice(1) } }}
+            as={`/hashtag/${ele.slice(1)}`}
+            key={ele}
             legacyBehavior
           >
-            <a>{v}</a>
+            <Text>{ele}</Text>
           </Link>
         );
       }
-      return v;
+      return ele;
     })}
   </div>
 );

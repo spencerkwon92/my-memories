@@ -10,6 +10,7 @@ import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/AppLayout";
 import PostCard from "../../components/PostCard";
+import NewPostCard from '../../components/NewPostCard'
 
 export default function UserPage() {
   const { me } = useSelector((state) => state.user);
@@ -26,7 +27,7 @@ export default function UserPage() {
     <AppLayout>
       <UserHeader me={me} />
       {userPosts?.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <NewPostCard key={post.id} post={post} />
       ))}
     </AppLayout>
   );

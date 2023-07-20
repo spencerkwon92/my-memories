@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { END } from "redux-saga";
 import axios from "axios";
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid, GridItem, Spacer } from "@chakra-ui/react";
 
 import NewLoginForm from "../components/NewLoginForm";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
+import NewPostCard from '../components/NewPostCard'
 import AppLayout from "../components/AppLayout";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
@@ -49,7 +50,10 @@ const Home = () => {
           <GridItem colSpan={4}>
             <PostForm />
             {mainPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <>
+                <NewPostCard key={post.id} post={post}/>
+                <Spacer/>
+              </>
             ))}
           </GridItem>
           <GridItem colSpan={2}>
