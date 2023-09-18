@@ -11,6 +11,7 @@ import {
 
 //TODO: Add Go to page && Change the ugly layout!
 export default function RelationNameCard({ user }) {
+    
   return (
     <Center>
       <Avatar name={user?.nickname} bgColor="gray" size="md" />
@@ -19,7 +20,7 @@ export default function RelationNameCard({ user }) {
       </Center>
       <Spacer />
       <Center>
-        <Link color="blue" href="#">
+        <Link color="blue" href={`/user/${user?.id}`}>
           Visit
         </Link>
       </Center>

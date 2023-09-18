@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Button } from 'antd';
+import { Button } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from '../reducers/user';
@@ -28,8 +28,13 @@ const FollowButton = ({ post }) => {
   }
 
   return (
-    <Button loading={followLoading || unfollowLoading} onClick={onClickButton}>
-      {isFollowing ? '언팔로우' : '팔로우'}
+    <Button
+      loading={followLoading || unfollowLoading}
+      onClick={onClickButton}
+      colorScheme="teal"
+      variant="ghost"
+    >
+      {isFollowing ? "Unfollow" : "Follow"}
     </Button>
   );
 };

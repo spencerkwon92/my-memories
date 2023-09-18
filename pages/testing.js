@@ -1,12 +1,16 @@
 import React from 'react'
+import {css} from 'emotion/react'
+import {Button, IconButton} from '@chakra-ui/react'
 
-import NewPostCard from '../components/NewPostCard'
 import AppLayout from '../components/AppLayout'
+import BaseButton from '../components/BaseButton'
+import NewButton from '../components/NewButton'
 
 export default function testing() {
   return (
     <AppLayout>
-      <NewPostCard />
+      <div>Hello world!!</div>
     </AppLayout>
   )
 }
+ 

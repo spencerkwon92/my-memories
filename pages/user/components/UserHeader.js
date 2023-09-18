@@ -12,26 +12,26 @@ import {
   Divider,
 } from "@chakra-ui/react";
 
-export default function UserHeader({ me }) {
+export default function UserHeader({ user }) {
   return (
     <>
       <Center gap="50px">
-        <Avatar name={me?.nickname} bgColor="gray" size="2xl" />
+        <Avatar name={user?.nickname} bgColor="gray" size="2xl" />
         <VStack spacing={1} align="right">
-          <Heading>{me?.nickname}</Heading>
+          <Heading>{user?.nickname}</Heading>
           <HStack>
             <Text fontSize="xl" fontWeight="bold">
-              게시물 {me?.Posts.length}
+              게시물 {user?.Posts.length}
             </Text>
             <Text fontSize="xl" fontWeight="bold">
-              팔로워 {me?.Followers.length}
+              팔로워 {user?.Followers.length}
             </Text>
             <Text fontSize="xl" fontWeight="bold">
-              팔로우 {me?.Followings.length}
+              팔로우 {user?.Followings.length}
             </Text>
           </HStack>
           <Text fontSize="xl" fontWeight="bold">
-            {me?.email}
+            {user?.email}
           </Text>
         </VStack>
       </Center>

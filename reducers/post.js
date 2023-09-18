@@ -3,8 +3,6 @@ import produce from "../util/produce";
 export const initialState = {
   mainPosts: [],
 
-  userPosts: [],
-
   imagePaths: [],
 
   hasMorePosts: true,
@@ -41,10 +39,6 @@ export const initialState = {
   uploadImagesDone: false,
   uploadImagesError: null,
 };
-
-export const LOAD_USER_POSTS_REQUEST = "LOAD_USER_POSTS_REQUEST";
-export const LOAD_USER_POSTS_SUCCESS = "LOAD_USER_POSTS_SUCCESS";
-export const LOAD_USER_POSTS_FAILURE = "LOAD_USER_POSTS_FAILURE";
 
 export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
 export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
@@ -90,20 +84,7 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
-      case LOAD_USER_POSTS_REQUEST:
-        draft.loadUserPostsLoading = true;
-        draft.loadUserPostsDone = false;
-        draft.loadUserPostsError = null;
-        break;
-      case LOAD_USER_POSTS_SUCCESS:
-        draft.loadUserPostsLoading = false;
-        draft.loadUserPostsDone = true;
-        draft.userPosts = draft.userPosts.concat(action.data);
-        break;
-      case LOAD_USER_POSTS_FAILURE:
-        draft.loadUserPostsLoading = false;
-        draft.loadUserPostsError = action.error;
-        break;
+
       case LIKE_POST_REQUEST:
         draft.likePostLoading = true;
         draft.likePostDone = false;

@@ -10,13 +10,14 @@ import PostCard from "../components/PostCard";
 import NewPostCard from '../components/NewPostCard'
 import AppLayout from "../components/AppLayout";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
-import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import { LOAD_MY_INFO_REQUEST, LOAD_FOLLOWERS_REQUEST } from "../reducers/user";
 import wrapper from "../store/configureStore";
 import UserProfile from "../components/UserProfile";
+import useContainer from '../hooks/useContainer'
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  const { me, loginDone } = useSelector((state) => state.user);
   const { mainPosts, hasMorePost, loadPostsLoading } = useSelector(
     (state) => state.post
   );
@@ -43,22 +44,36 @@ const Home = () => {
     };
   }, [mainPosts, hasMorePost, loadPostsLoading, mainPosts]);
 
+  useEffect(()=>{
+    if(loginDone){
+      dispatch({
+        type: LOAD_FOLLOWERS_REQUEST,
+      });
+    }
+  },[loginDone])
+
+  const isMobile = useContainer({default: false, md:true})
+
+  console.log({me})
+
   if (me) {
     return (
       <AppLayout>
         <Grid templateColumns="repeat(6, 1fr)" gap={3}>
-          <GridItem colSpan={4}>
+          <GridItem colSpan={isMobile ? 6 : 4}>
             <PostForm />
             {mainPosts.map((post) => (
               <>
-                <NewPostCard key={post.id} post={post}/>
-                <Spacer/>
+                <NewPostCard key={post.id} post={post} />
+                <Spacer />
               </>
             ))}
           </GridItem>
-          <GridItem colSpan={2}>
-            <UserProfile />
-          </GridItem>
+          {!isMobile && (
+            <GridItem colSpan={2}>
+              <UserProfile />
+            </GridItem>
+          )}
         </Grid>
       </AppLayout>
     );
@@ -81,6 +96,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store.dispatch({
         type: LOAD_POSTS_REQUEST,
       });
+
       store.dispatch(END);
       await store.sagaTask.toPromise();
     }

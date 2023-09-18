@@ -31,32 +31,10 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
-  LOAD_USER_POSTS_FAILURE,
-  LOAD_USER_POSTS_REQUEST,
-  LOAD_USER_POSTS_SUCCESS,
+
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
-function loadUserPostsAPI(data) {
-  return axios.get(`/posts/${data}`);
-}
-
-function* loadUserPosts(action) {
-  try {
-    const result = yield call(loadUserPostsAPI, action.data);
-    console.log(result);
-    yield put({
-      type: LOAD_USER_POSTS_SUCCESS,
-      data: result.data,
-    });
-  } catch (err) {
-    console.log(err);
-    yield put({
-      type: LOAD_USER_POSTS_FAILURE,
-      data: err.response.data,
-    });
-  }
-}
 
 function loadPostsAPI(lastId) {
   return axios.get(`posts?lastId=${lastId || 0}`);
@@ -234,9 +212,6 @@ function* WatchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, UploadImages);
 }
 
-function* WatchLoadUserPosts() {
-  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
-}
 
 export default function* postSaga() {
   yield all([
@@ -247,6 +222,5 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchAddComment),
     fork(WatchUploadImages),
-    fork(WatchLoadUserPosts),
   ]);
 }
