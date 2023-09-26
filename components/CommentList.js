@@ -14,7 +14,7 @@ const StyledListItem = styled(ListItem)`
   align-items: center;
   
   & > :nth-child(2){
-    margin: 0px 20px 0px 10px;
+    margin: 0px 10px 0px 10px;
   }
 
 `

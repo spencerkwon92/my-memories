@@ -5,26 +5,24 @@ import { css } from "@emotion/react";
 
 const linkCss = css`
   & > * {
-    font-size: 30px;
+    font-size: 20px;
   }
 `;
 
 const wrapperCss = css`
   display: flex;
   justify-content: space-between;
-  padding: 0px 10px;
+  padding: 20px 10px 0px 10px;
 `;
+
 
 const AppLayout = ({ children }) => {
   return (
-    <>
+    <div>
       <Menu>
         <div css={wrapperCss}>
           <MenuButton as="a" href="/" css={linkCss}>
             My Memories
-          </MenuButton>
-          <MenuButton as="a" href="/profile" css={linkCss}>
-            profile
           </MenuButton>
         </div>
       </Menu>
@@ -32,7 +30,7 @@ const AppLayout = ({ children }) => {
         <Divider />
       </Center>
       <div>{children}</div>
-    </>
+    </div>
   );
 };
 

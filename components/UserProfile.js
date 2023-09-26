@@ -84,12 +84,12 @@ const UserProfile = () => {
       <Center height="15px">
         <Divider />
       </Center>
-      {/* <Container>
+      <Container>
         <Heading size="md">Follower List</Heading>
         {me?.Followers.map((follower) => (
           <RelationNameCard key={follower.id} user={follower} />
         ))}
-      </Container> */}
+      </Container>
     </>
     //TODO: Add following, follower, post count
   );

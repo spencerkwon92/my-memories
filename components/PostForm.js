@@ -59,9 +59,7 @@ const PostForm = () => {
         type: REMOVE_LOADED_IMAGE,
         data: index,
       });
-    },
-    []
-  );
+    },[]);
 
   useEffect(() => {
     if (addPostDone) {

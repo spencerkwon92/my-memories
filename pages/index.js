@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { END } from "redux-saga";
 import axios from "axios";
-import { Grid, GridItem, Spacer } from "@chakra-ui/react";
+import { Grid, GridItem } from "@chakra-ui/react";
 
 import NewLoginForm from "../components/NewLoginForm";
 import PostForm from "../components/PostForm";
@@ -14,10 +14,11 @@ import { LOAD_MY_INFO_REQUEST, LOAD_FOLLOWERS_REQUEST } from "../reducers/user";
 import wrapper from "../store/configureStore";
 import UserProfile from "../components/UserProfile";
 import useContainer from '../hooks/useContainer'
+import Spacer from "../components/CustomizedUI/Spacer";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { me, loginDone } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePost, loadPostsLoading } = useSelector(
     (state) => state.post
   );
@@ -44,17 +45,7 @@ const Home = () => {
     };
   }, [mainPosts, hasMorePost, loadPostsLoading, mainPosts]);
 
-  useEffect(()=>{
-    if(loginDone){
-      dispatch({
-        type: LOAD_FOLLOWERS_REQUEST,
-      });
-    }
-  },[loginDone])
-
   const isMobile = useContainer({default: false, md:true})
-
-  console.log({me})
 
   if (me) {
     return (
@@ -65,7 +56,8 @@ const Home = () => {
             {mainPosts.map((post) => (
               <>
                 <NewPostCard key={post.id} post={post} />
-                <Spacer />
+                <Spacer size='20'/>
+                
               </>
             ))}
           </GridItem>
@@ -95,6 +87,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       });
       store.dispatch({
         type: LOAD_POSTS_REQUEST,
+      });
+      store.dispatch({
+        type: LOAD_FOLLOWERS_REQUEST,
       });
 
       store.dispatch(END);

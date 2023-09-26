@@ -193,7 +193,7 @@ function* unfollow(action) {
 }
 
 function loadFollowersAPI(data){
-  return axios.get('/user/followers', data); //Get/user/followers
+  return axios.get('/user/demo/followers', data); //Get/user/followers
 }
 
 function* loadFollowers(action){

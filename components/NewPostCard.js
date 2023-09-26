@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
-import {Card, CardHeader, Avatar, Box, Heading, Text, CardBody, Button, Flex, CardFooter, Image, IconButton} from '@chakra-ui/react'
+import { css } from "@emotion/react";
+import {Card, CardHeader, Avatar, Box, Heading, CardBody, Button, Flex, CardFooter, Image, Divider} from '@chakra-ui/react'
 import {useSelector, useDispatch} from 'react-redux'
 import {BiLike, BiChat, BiShare, BiSolidLike } from 'react-icons/bi'
 
@@ -10,6 +11,11 @@ import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST} from "../reducers/post";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 import useContainer from '../hooks/useContainer'
+import Spacer from "./CustomizedUI/Spacer"
+
+const commentListCss=css`
+  margin: 0px 10px;
+`
 
 export default function NewPostCard({post}) {
   const [shewCommentForm, setShowCommentForm] = useState(false)
@@ -38,19 +44,16 @@ export default function NewPostCard({post}) {
 
   return (
     <>
-      <Card>
+      <Card variant="outline">
         <CardHeader>
           <Flex spacing="4">
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Avatar
-                name={post?.User?.nickname}
-              />
+              <Avatar name={post?.User?.nickname} />
               <Box>
                 <Heading size="sm">{post?.User?.nickname}</Heading>
               </Box>
-              
-              <FollowButton post={post} />
 
+              <FollowButton post={post} />
             </Flex>
           </Flex>
         </CardHeader>
@@ -64,14 +67,8 @@ export default function NewPostCard({post}) {
         alt='Chakra UI'
       /> */}
 
-        <CardFooter
-          justify="space-between"
-          flexWrap="wrap"
-
-        >
-          {
-            !isMobile
-            ?
+        <CardFooter justify="space-between" flexWrap="wrap">
+          {!isMobile ? (
             <>
               <Button
                 flex="1"
@@ -93,21 +90,28 @@ export default function NewPostCard({post}) {
                 Share
               </Button>
             </>
-            :
+          ) : (
             <>
-              <IconButton icon = {liked ? <BiSolidLike/> : <BiLike/>} onClick={liked ? unlikedHandle : likedHandle}/>
-              <IconButton icon = {<BiChat/>} onClick={onToggleComment}/>
-              <IconButton icon = {<BiShare/>}/>
+              <IconButton
+                icon={liked ? <BiSolidLike /> : <BiLike />}
+                onClick={liked ? unlikedHandle : likedHandle}
+              />
+              <IconButton icon={<BiChat />} onClick={onToggleComment} />
+              <IconButton icon={<BiShare />} />
             </>
-          }
+          )}
         </CardFooter>
+        {shewCommentForm && (
+          <div css={commentListCss}>
+            <Divider/>
+            <Spacer/>
+            <CommentList comments={post?.Comments} />
+            <CommentForm post={post} />
+          </div>
+        )}
       </Card>
-      {shewCommentForm && (
-        <>
-          <CommentList comments={post?.Comments} />
-          <CommentForm post={post} />
-        </>
-      )}
+
+      <Spacer size="lg" />
     </>
   );
 }
