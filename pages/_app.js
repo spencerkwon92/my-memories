@@ -11,6 +11,7 @@ function MyApp({ Component }) {
     <ChakraProvider>
       <Head>
         <meta charSet="utf-8" />
+        <link rel="icon" href="/favicon.ico" />
         <title>My Memories</title>
       </Head>
       <Container maxW="container.lg">

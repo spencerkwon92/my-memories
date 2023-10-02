@@ -11,6 +11,7 @@ import {LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST} from '../reducers/user'
 const Profile = () => {
   const { me } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!(me && me.id)) {
       Router.push('/');

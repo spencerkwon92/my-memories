@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from "react";
 import { css } from "@emotion/react";
-import {Card, CardHeader, Avatar, Box, Heading, CardBody, Button, Flex, CardFooter, Image, Divider} from '@chakra-ui/react'
+import {Card, CardHeader, Avatar, Box, Heading, CardBody, Button, Flex, CardFooter, Image, Divider, IconButton} from '@chakra-ui/react'
 import {useSelector, useDispatch} from 'react-redux'
 import {BiLike, BiChat, BiShare, BiSolidLike } from 'react-icons/bi'
 
@@ -20,7 +20,8 @@ const commentListCss=css`
 export default function NewPostCard({post}) {
   const [shewCommentForm, setShowCommentForm] = useState(false)
   const dispatch = useDispatch()
-  const id = useSelector((state)=>state.user.me?.id)
+  const {me} = useSelector((state)=>state.user)
+  const id = me?.id
   const isMobile = useContainer({default: false, md:true})
   const liked = post.Likers.find((liker)=>liker.id === id)
 
@@ -53,7 +54,7 @@ export default function NewPostCard({post}) {
                 <Heading size="sm">{post?.User?.nickname}</Heading>
               </Box>
 
-              <FollowButton post={post} />
+              {me && <FollowButton post={post} />}
             </Flex>
           </Flex>
         </CardHeader>
@@ -94,17 +95,22 @@ export default function NewPostCard({post}) {
             <>
               <IconButton
                 icon={liked ? <BiSolidLike /> : <BiLike />}
+                variant="ghost"
                 onClick={liked ? unlikedHandle : likedHandle}
               />
-              <IconButton icon={<BiChat />} onClick={onToggleComment} />
-              <IconButton icon={<BiShare />} />
+              <IconButton
+                icon={<BiChat />}
+                variant="ghost"
+                onClick={onToggleComment}
+              />
+              <IconButton variant="ghost" icon={<BiShare />} />
             </>
           )}
         </CardFooter>
         {shewCommentForm && (
           <div css={commentListCss}>
-            <Divider/>
-            <Spacer/>
+            <Divider />
+            <Spacer />
             <CommentList comments={post?.Comments} />
             <CommentForm post={post} />
           </div>

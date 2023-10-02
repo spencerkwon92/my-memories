@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { END } from "redux-saga";
 import axios from "axios";
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid, GridItem, Card, Text, Center, Link } from "@chakra-ui/react";
 
 import NewLoginForm from "../components/NewLoginForm";
 import PostForm from "../components/PostForm";
@@ -10,7 +10,7 @@ import PostCard from "../components/PostCard";
 import NewPostCard from '../components/NewPostCard'
 import AppLayout from "../components/AppLayout";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
-import { LOAD_MY_INFO_REQUEST, LOAD_FOLLOWERS_REQUEST } from "../reducers/user";
+import { LOAD_MY_INFO_REQUEST, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from "../reducers/user";
 import wrapper from "../store/configureStore";
 import UserProfile from "../components/UserProfile";
 import useContainer from '../hooks/useContainer'
@@ -47,31 +47,34 @@ const Home = () => {
 
   const isMobile = useContainer({default: false, md:true})
 
-  if (me) {
-    return (
-      <AppLayout>
-        <Grid templateColumns="repeat(6, 1fr)" gap={3}>
-          <GridItem colSpan={isMobile ? 6 : 4}>
-            <PostForm />
-            {mainPosts.map((post) => (
-              <>
-                <NewPostCard key={post.id} post={post} />
-                <Spacer size='20'/>
-                
-              </>
-            ))}
+  return (
+    <AppLayout>
+      <Grid templateColumns="repeat(6, 1fr)" gap={3}>
+        <GridItem colSpan={isMobile ? 6 : 4}>
+          <PostForm />
+          {mainPosts.map((post) => (
+            <>
+              <NewPostCard key={post.id} post={post} />
+              <Spacer size='20'/>
+              
+            </>
+          ))}
+        </GridItem>
+        {!isMobile && (
+          <GridItem colSpan={2}>
+            {me?<UserProfile />
+            :
+            <Card>
+              <Center>
+                <Link href='/login'>Click Here for Log in!</Link>
+              </Center>
+            </Card>
+              }
           </GridItem>
-          {!isMobile && (
-            <GridItem colSpan={2}>
-              <UserProfile />
-            </GridItem>
-          )}
-        </Grid>
-      </AppLayout>
-    );
-  }
-
-  return <NewLoginForm />;
+        )}
+      </Grid>
+    </AppLayout>
+  );
 };
 
 //It will render those part before rendering the HOME component. || new version has different form.
@@ -80,16 +83,23 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req }) => {
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
-      req && cookie && (axios.defaults.headers.Cookie = cookie);
-
+      const {user} = store.getState();
+      if(req && cookie){
+        axios.defaults.headers.Cookie = cookie;
+      }
       store.dispatch({
         type: LOAD_MY_INFO_REQUEST,
       });
       store.dispatch({
         type: LOAD_POSTS_REQUEST,
       });
+
       store.dispatch({
         type: LOAD_FOLLOWERS_REQUEST,
+      });
+      
+      store.dispatch({
+        type: LOAD_FOLLOWINGS_REQUEST,
       });
 
       store.dispatch(END);

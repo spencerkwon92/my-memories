@@ -1,18 +1,36 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Button, Checkbox, Form, Input } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import {css} from '@emotion/react'
 import Router from "next/router";
 import Head from "next/head";
+import {
+  Container,
+  FormControl,
+  Input,
+  Button,
+  VStack,
+  Center,
+  Heading,
+} from "@chakra-ui/react";
 
 import { SIGN_UP_REQUEST } from "../reducers/user";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
+import Spacer from "../components/CustomizedUI/Spacer";
+import logo from '../images/logo.png'
+
+const wrapperCss = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+`
 
 const Signup = () => {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [term, setTerm] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [termError, setTermError] = useState(false);
 
   const [email, onChangeEmail] = useInput("");
   const [nickname, onChangeNick] = useInput("");
@@ -47,9 +65,6 @@ const Signup = () => {
     if (password !== passwordCheck) {
       return setPasswordError(true);
     }
-    if (!term) {
-      return setTermError(true);
-    }
     return dispatch({
       type: SIGN_UP_REQUEST,
       data: {
@@ -78,66 +93,54 @@ const Signup = () => {
       <Head>
         <title>회원가입 | MyMemories</title>
       </Head>
-      <Form onFinish={onSubmit} style={{ padding: 10 }}>
-        <div>
-          <label htmlFor="user-email">아이디</label>
-          <br />
-          <Input
-            name="user-email"
-            value={email}
-            required
-            onChange={onChangeEmail}
-          />
-        </div>
-        <div>
-          <label htmlFor="user-nick">닉네임</label>
-          <br />
-          <Input
-            name="user-nick"
-            value={nickname}
-            required
-            onChange={onChangeNick}
-          />
-        </div>
-        <div>
-          <label htmlFor="user-password">비밀번호</label>
-          <br />
-          <Input
-            name="user-password"
-            type="password"
-            value={password}
-            required
-            onChange={onChangePassword}
-          />
-        </div>
-        <div>
-          <label htmlFor="user-password-check">비밀번호체크</label>
-          <br />
-          <Input
-            name="user-password-check"
-            type="password"
-            value={passwordCheck}
-            required
-            onChange={onChangePasswordCheck}
-          />
-          {passwordError && (
-            <div style={{ color: "red" }}>비밀번호가 일치하지 않습니다.</div>
-          )}
-        </div>
-        <div>
-          <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>
-            제로초 말을 잘 들을 것을 동의합니다.
-          </Checkbox>
-          {termError && (
-            <div style={{ color: "red" }}>약관에 동의하셔야 합니다.</div>
-          )}
-        </div>
-        <div style={{ marginTop: 10 }}>
-          <Button type="primary" htmlType="submit" loading={signupLoading}>
-            가입하기
-          </Button>
-        </div>
-      </Form>
+      <div css={wrapperCss}>
+        <Container>
+          <Center>
+            <Heading size="2xl">Sign Up</Heading>
+          </Center>
+          <FormControl>
+            <VStack spacing={5} align="center">
+              <Input
+                type="email"
+                placeholder="User Email"
+                onChange={onChangeEmail}
+                required
+              />
+              <Input
+                type="Nickname"
+                placeholder="Nickname"
+                onChange={onChangeNick}
+                required
+              />
+              <Input
+                type="password"
+                placeholder="Password"
+                onChange={onChangePassword}
+                required
+              />
+              <Input
+                type="password"
+                placeholder="Password Check"
+                onChange={onChangePasswordCheck}
+                required
+              />
+              {passwordError && (
+                <div style={{ color: "red" }}>
+                  비밀번호가 일치하지 않습니다.
+                </div>
+              )}
+
+              <Button
+                width="60vw"
+                isLoading={signupLoading}
+                onClick={onSubmit}
+              >
+                회원가입 하기
+              </Button>
+            </VStack>
+          </FormControl>
+        </Container>
+      </div>
     </AppLayout>
   );
 };

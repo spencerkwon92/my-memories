@@ -15,6 +15,8 @@ const NicknameEditForm = () => {
       type: CHANGE_NICKNAME_REQUEST,
       data: nickname,
     });
+
+    alert('닉네임이 변경되었습니다.');
   }, [nickname]);
 
   return (

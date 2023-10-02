@@ -1,7 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Menu, MenuButton, Divider, Center } from "@chakra-ui/react";
+import { Menu, MenuButton, Divider, Center, Container } from "@chakra-ui/react";
 import { css } from "@emotion/react";
+import {useSelector} from 'react-redux'
+
+import Spacer from "./CustomizedUI/Spacer";
 
 const linkCss = css`
   & > * {
@@ -17,20 +20,29 @@ const wrapperCss = css`
 
 
 const AppLayout = ({ children }) => {
+  const {me} = useSelector((state)=>state.user)
+  
   return (
-    <div>
+    <Container maxW="container.lg">
       <Menu>
         <div css={wrapperCss}>
           <MenuButton as="a" href="/" css={linkCss}>
             My Memories
           </MenuButton>
+          <MenuButton
+            as="a"
+            href={me ? `/user/${me.id}` : "/login"}
+            css={linkCss}
+          >
+            {me ? "My Profile" : "Login"}
+          </MenuButton>
         </div>
       </Menu>
-      <Center height="25px">
-        <Divider />
-      </Center>
+      <Spacer />
+      <Divider />
+      <Spacer />
       <div>{children}</div>
-    </div>
+    </Container>
   );
 };
 

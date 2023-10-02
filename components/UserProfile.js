@@ -12,7 +12,6 @@ import {
   MenuButton,
   MenuList,
   IconButton,
-  Spacer,
   MenuItem,
   Divider,
   Center,
@@ -20,24 +19,31 @@ import {
   Heading,
   Link,
   VStack,
+  Spacer,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import Router from "next/router";
 
 import { logoutRequestAction } from "../reducers/user";
 import RelationNameCard from "./RelationNameCard";
 import { LOAD_FOLLOWERS_REQUEST } from "../reducers/user";
+import {default as CustomSpacer} from "./CustomizedUI/Spacer";
 
 const flexCss = css`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  > div {
+    padding-top: 10px;
+    margin-left: 10px;
+  }
 `;
 
-const innerDiv = css`
-  padding-top: 10px;
-  margin-left: 10px;
-`
+const lineMesCss = css`
+  color: rgb(130, 129, 129);
+`;
 
 const UserProfile = () => {
   const { me, logoutLoading } = useSelector((state) => state.user);
@@ -47,17 +53,15 @@ const UserProfile = () => {
     dispatch(logoutRequestAction());
   }, []);
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: LOAD_FOLLOWERS_REQUEST,
-  //   });
-  // }, []);
+  const profileButtonHandler = useCallback(()=>{
+    Router.push('/profile')
+  },[])
 
   return (
     <>
       <div css={flexCss}>
         <Avatar name={me.nickname} bgColor="gray" size="lg" />
-        <div css={innerDiv}>
+        <div>
           <Link fontWeight="bold" href={`/user/${me?.id}`}>
             {me.nickname}
           </Link>
@@ -75,9 +79,7 @@ const UserProfile = () => {
             <MenuItem onClick={onLogOut} loading={logoutLoading}>
               로그아웃
             </MenuItem>
-            <MenuItem onClick={onLogOut} loading={logoutLoading}>
-              프로필 관리
-            </MenuItem>
+            <MenuItem onClick={profileButtonHandler}>프로필 관리</MenuItem>
           </MenuList>
         </Menu>
       </div>
@@ -85,10 +87,19 @@ const UserProfile = () => {
         <Divider />
       </Center>
       <Container>
-        <Heading size="md">Follower List</Heading>
-        {me?.Followers.map((follower) => (
-          <RelationNameCard key={follower.id} user={follower} />
-        ))}
+        <Heading size="md">Following List</Heading>
+        <div
+          css={lineMesCss}
+        >{`${me?.nickname}님을 팔로우 하는 사용자들입니다.`}</div>
+        <CustomSpacer />
+        {me?.Followers.map((follower) => {
+          return (
+            <>
+              <RelationNameCard key={follower.id} user={follower} />
+              <CustomSpacer />
+            </>
+          );
+        })}
       </Container>
     </>
     //TODO: Add following, follower, post count

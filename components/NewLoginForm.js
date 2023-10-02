@@ -22,7 +22,11 @@ const wrapperCss = css`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 30vh;
+  margin-top: 20vh;
+  
+  .signUpAnker{
+    color: blue;
+  }
 `;
 
 export default function NewLoginForm() {
@@ -51,7 +55,7 @@ export default function NewLoginForm() {
           <VStack spacing={5}>
             <Input
               type="email"
-              placeholder="User Name"
+              placeholder="User Email"
               onChange={onChangeEmail}
               required
             />
@@ -61,16 +65,16 @@ export default function NewLoginForm() {
               onChange={onChangePassword}
               required
             />
-            <Button width="500px" isLoading={loginLoading} onClick={onSubmit}>
-              Log In
-            </Button>
+              <Button width='52vw' isLoading={loginLoading} onClick={onSubmit}>
+                Log In
+              </Button>
           </VStack>
         </FormControl>
       </Container>
       <Spacer />
       <Center h="100px">
         <Text fontSize="lg">
-          Don't have an account? <a href="/signup">Sign Up</a>
+          Don't have an account? <a className="signUpAnker" href="/signup">Sign Up</a>
         </Text>
       </Center>
     </div>

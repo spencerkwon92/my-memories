@@ -213,7 +213,7 @@ function* loadFollowers(action){
 }
 
 function loadFollowingsAPI(data){
-  return axios.get('/user/followings', data);
+  return axios.get('/user/demo/followings', data);
 }
 
 function* loadFollowings(action){

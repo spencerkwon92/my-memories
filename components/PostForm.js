@@ -19,6 +19,8 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { PlusSquareIcon, ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
+import {css} from '@emotion/react'
+import styled from "@emotion/styled";
 
 import {
   UPLOAD_IMAGES_REQUEST,
@@ -27,15 +29,45 @@ import {
   addComment,
 } from "../reducers/post";
 //TODO: 이미지 업로드 과정 다시 공부 && useRef, useReducer, useCallback, useMemo 다시 공부...
+
+const imageGroupWrapperCss = css`
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  white-space: nowrap;
+  transition: transform 0.3s ease;
+`;
+
+const imageWrapperCss = css`
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+  min-width: 100%;
+  transition: transform 0.3s ease;
+`; 
+const StyledImage = styled(Image)`
+  max-width: 100%;
+  height: auto;
+`
+const StyledRemoveButton = styled(Button)`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px 10px;
+  margin: 10px
+`
+
 const PostForm = () => {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
   const { imagePaths, addPostLoading, addPostDone } = useSelector(
     (state) => state.post
   );
+  const {me} = useSelector((state)=>state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const imageInput = useRef();
+  const imageGroupRef = useRef(null);
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
@@ -92,6 +124,8 @@ const PostForm = () => {
     setText(e.target.value);
   }, []);
 
+  if (!me) return null;
+
   return (
     <>
       <IconButton onClick={onOpen} width="full" icon={<AddIcon />}>
@@ -100,7 +134,7 @@ const PostForm = () => {
       <Center height="25px">
         <Divider />
       </Center>
-      <Modal isOpen={isOpen} onClose={onClose} width="100px">
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>메모리 작성하기</ModalHeader>
@@ -111,16 +145,19 @@ const PostForm = () => {
               onChange={onChangeText}
             />
           </ModalBody>
-          <Box>
+          <div css={imageGroupWrapperCss} >
             {imagePaths.map((image, i) => (
-              <div key={image} style={{ display: "inline-block" }}>
-                <Image src={`http://localhost:3065/${image}`} alt={image} />
-                <Center>
-                  <Button onClick={onRemoveImage(i)}>제거</Button>
-                </Center>
+              <div key={image} css={imageWrapperCss}>
+                <StyledImage
+                  src={`http://localhost:3065/${image}`}
+                  alt={image}
+                />
+                <StyledRemoveButton onClick={onRemoveImage(i)}>
+                  제거
+                </StyledRemoveButton>
               </div>
             ))}
-          </Box>
+          </div>
           <ModalFooter>
             <input
               type="file"
