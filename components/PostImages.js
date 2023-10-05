@@ -24,37 +24,12 @@ const PostImages = ({ images }) => {
       </>
     );
   }
-  if (images.length === 2) {
-    return (
-      <>
-        <div>
-          <img role="presentation" src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} width="50%" onClick={onZoom} />
-          <img role="presentation" src={`http://localhost:3065/${images[1].src}`} alt={images[1].src} width="50%" onClick={onZoom} />
-        </div>
-        {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
-      </>
-    );
-  }
+
   return (
     <>
-    <ImageCarousel images={images}/>
+      <ImageCarousel images={images}/>
     </>
-    // <>
-    //   <div>
-    //     <img role="presentation" src={`http://localhost:3065/${images[0].src}`} alt={images[0].src} width="50%" onClick={onZoom} />
-    //     <div
-    //       role="presentation"
-    //       style={{ display: 'inline-block', width: '50%', textAlign: 'center', verticalAlign: 'middle' }}
-    //       onClick={onZoom}
-    //     >
-    //       <PlusOutlined />
-    //       <br />
-    //       {images.length - 1}
-    //       개의 사진 더보기
-    //     </div>
-    //   </div>
-    //   {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />}
-    // </>
+
   );
 };
 
