@@ -71,7 +71,7 @@ const UserProfile = () => {
         <Menu>
           <MenuButton
             as={IconButton}
-            aria-label="Options"
+            aria-label="profile menu"
             icon={<HamburgerIcon />}
             variant="outline"
           />

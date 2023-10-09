@@ -1,17 +1,22 @@
 import React, {useCallback, useState} from "react";
 import { css } from "@emotion/react";
-import {Card, CardHeader, Avatar, Box, Heading, CardBody, Button, Flex, CardFooter, Image, Divider, IconButton} from '@chakra-ui/react'
+import {Card, CardHeader, Avatar, Box, Heading, CardBody, Button, Flex, CardFooter, Image, Divider, IconButton, MenuList, MenuItem, Menu, MenuButton} from '@chakra-ui/react'
 import {useSelector, useDispatch} from 'react-redux'
-import {BiLike, BiChat, BiShare, BiSolidLike } from 'react-icons/bi'
+import {BiLike, BiChat, BiShare, BiSolidLike,BiDotsHorizontalRounded  } from 'react-icons/bi'
 
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
 import PostImages from './PostImages'
-import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST} from "../reducers/post";
+import {
+  LIKE_POST_REQUEST,
+  UNLIKE_POST_REQUEST,
+  REMOVE_POST_REQUEST,
+} from "../reducers/post";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
 import useContainer from '../hooks/useContainer'
 import Spacer from "./CustomizedUI/Spacer"
+import PostMenuButton from "./CustomizedUI/PostMenuButton";
 
 const commentListCss=css`
   margin: 0px 10px;
@@ -54,6 +59,8 @@ export default function NewPostCard({post}) {
                 <Heading size="sm">{post?.User?.nickname}</Heading>
               </Box>
 
+              {post.User.id === me?.id && <PostMenuButton post={post} />}
+
               {me && <FollowButton post={post} />}
             </Flex>
           </Flex>
@@ -62,11 +69,6 @@ export default function NewPostCard({post}) {
           <PostCardContent postData={post.content} />
         </CardBody>
         {post.Images[0] && <PostImages images={post.Images} />}
-        {/* <Image
-        objectFit='cover'
-        src='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-        alt='Chakra UI'
-      /> */}
 
         <CardFooter justify="space-between" flexWrap="wrap">
           {!isMobile ? (

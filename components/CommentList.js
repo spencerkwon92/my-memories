@@ -3,12 +3,17 @@ import {Container, List, ListItem, Avatar, HStack, Text} from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
 const StyledList = styled(List)`
-  max-height:  500px;
-  overflow-y: scroll;
-  & > *{
-    padding: 5px 0px 5px 0px
+  max-height: 500px;
+  overflow-y: hidden;
+
+  :hover{
+    overflow-y: auto;
   }
-`
+
+  & > * {
+    padding: 5px 0px 5px 0px;
+  }
+`;
 const StyledListItem = styled(ListItem)`
   display: flex;
   align-items: center;
