@@ -31,7 +31,15 @@ import {
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
-
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
+  UPDATE_POST_CONTENT_REQUEST,
+  UPDATE_POST_CONTENT_SUCCESS,
+  UPDATE_POST_CONTENT_FAILURE,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -184,8 +192,71 @@ function* UploadImages(action) {
   }
 }
 
+function loadUserPostsAPI(data, lastId){
+  return axios.get(`user/${data}/posts?lastId=${lastId || 0}`)
+}
+
+function* loadUserPosts(action){
+  try{
+    const result = yield call(loadUserPostsAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    })
+  }catch(err){
+    console.error(err);
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
+      error: err.response.data,
+    })
+  }
+}
+
+function loadHashtagPostsAPI(data, lastId){
+  return axios.get(`hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`)
+}
+
+function* loadHashtagPosts(action){
+  try{
+    const result = yield call(loadHashtagPostsAPI, action.data, action.lastId);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    })
+  }catch(err){
+    console.error(err);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      error: err.response.data,
+    })
+  }
+}
+
+function updatePostContentAPI(data,postId){
+  return axios.patch(`/post/${postId}`, {content: data})
+}
+
+function* updatePostContent(action){
+  try{
+    const result = yield call(updatePostContentAPI, action.data, action.postId)
+    yield put({
+      type: UPDATE_POST_CONTENT_SUCCESS,
+      data: result.data,
+    })
+  }catch(err){
+    console.error(err)
+    yield put({
+      type: UPDATE_POST_CONTENT_FAILURE,
+      error: err.response.data,
+    })
+  }
+
+}
+
+
+
 function* watchLoadPosts() {
-  yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
+  yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
 
 function* watchAddPost() {
@@ -204,23 +275,38 @@ function* watchLikePost() {
   yield takeLatest(LIKE_POST_REQUEST, likePost);
 }
 
-function* WatchUnlikePost() {
+function* watchUnlikePost() {
   yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 }
 
-function* WatchUploadImages() {
+function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, UploadImages);
+}
+
+function* watchUpdatePost() {
+  yield takeLatest(UPDATE_POST_CONTENT_REQUEST, updatePostContent);
+}
+
+function* watchLoadUserPosts(){
+  yield throttle(5000, LOAD_USER_POSTS_REQUEST, loadUserPosts )
+}
+
+function* watchLoadHashtagPosts() {
+  yield throttle(5000, LOAD_HASHTAG_POSTS_REQUEST, loadHashtagPosts);
 }
 
 
 export default function* postSaga() {
   yield all([
     fork(watchLikePost),
-    fork(WatchUnlikePost),
+    fork(watchUnlikePost),
     fork(watchAddPost),
     fork(watchLoadPosts),
     fork(watchRemovePost),
     fork(watchAddComment),
-    fork(WatchUploadImages),
+    fork(watchUploadImages),
+    fork(watchLoadUserPosts),
+    fork(watchLoadHashtagPosts),
+    fork(watchUpdatePost)
   ]);
 }

@@ -1,24 +1,34 @@
 import React from 'react';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
-import {Text} from '@chakra-ui/react'
+import {Link} from '@chakra-ui/react'
+import {css} from '@emotion/react'
 
-const PostCardContent = ({ postData }) => (
+const LinkCss = css`
+  color: blue;
+  font-weight: bold;
+`
+
+const PostCardContent = ({ postContent }) => (
   <div>
-    {postData.split(/(#[^\s#]+)/g).map((ele) => {
+    {postContent.split(/(#[^\s#]+)/g).map((ele, index) => {
       if (ele.match(/(#[^\s#]+)/)) {
         return (
-          <Link
-            href={{ pathname: "/hashtag", query: { tag: v.slice(1) } }}
-            as={`/hashtag/${ele.slice(1)}`}
-            key={ele}
-            legacyBehavior
-          >
-            <Text>{ele}</Text>
+          <Link key={ele + index} href={`/post/${ele.slice(1)}`} css={LinkCss}>
+            {ele}
           </Link>
         );
       }
-      return ele;
+      const lines = ele.split(/\n/g);
+      return (
+        <React.Fragment key={ele + index}>
+          {lines.map((line, lineIndex) => (
+            <React.Fragment key={`line-${lineIndex}`}>
+              {line}
+              {lineIndex < lines.length - 1 && <br />}
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      );
     })}
   </div>
 );

@@ -131,11 +131,11 @@ const Signup = () => {
               )}
 
               <Button
-                width="60vw"
+                width="100%"
                 isLoading={signupLoading}
                 onClick={onSubmit}
               >
-                회원가입 하기
+                회원가입
               </Button>
             </VStack>
           </FormControl>

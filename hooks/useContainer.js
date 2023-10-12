@@ -1,23 +1,30 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useRef, useLayoutEffect, useCallback} from 'react'
 
 //Is it effective to prevent re-rendering?
 export default function useContainer(size){
-  const [isWidth, setIsWidth] = useState(false)
+  const [isWidth, setIsWidth] = useState(false);
+  const sizeRef = useRef(size);
+  const isWidthRef = useRef(isWidth);//false
 
+  const handleResize = useCallback(() => {
+    isWidthRef.current = checkWindowSize(sizeRef.current);//initall value that I provide.
+    setIsWidth(isWidthRef.current);
+  }, []);
 
-  useEffect(()=>{
-    const handleResize = () => {
-      setIsWidth(checkWindowSize(size))
-    }
+  useLayoutEffect(() => {
+    isWidthRef.current = checkWindowSize(sizeRef.current);
+    setIsWidth(isWidthRef.current);
+  }, []);
 
-    window.addEventListener('resize', handleResize)
+  useLayoutEffect(() => {
+    window.addEventListener("resize", handleResize);
 
-    return () =>{
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize]);
 
-  return isWidth 
+  return isWidth;
 }
 
 function checkWindowSize(size) {

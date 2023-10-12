@@ -7,10 +7,6 @@ export const initialState = {
 
   hasMorePosts: true,
 
-  loadUserPostsLoading: false,
-  loadUserPostsDone: false,
-  loadUserPostsError: null,
-
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
@@ -38,6 +34,10 @@ export const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  
+  updatePostLoading: false,
+  updatePostDone: false,
+  updatePostError: null,
 };
 
 export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
@@ -67,6 +67,18 @@ export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+export const LOAD_USER_POSTS_REQUEST = "LOAD_USER_POSTS_REQUEST";
+export const LOAD_USER_POSTS_SUCCESS = "LOAD_USER_POSTS_SUCCESS";
+export const LOAD_USER_POSTS_FAILURE = "LOAD_USER_POSTS_FAILURE";
+
+export const LOAD_HASHTAG_POSTS_REQUEST = "LOAD_HASHTAG_POSTS_REQUEST";
+export const LOAD_HASHTAG_POSTS_SUCCESS = "LOAD_HASHTAG_POSTS_SUCCESS";
+export const LOAD_HASHTAG_POSTS_FAILURE = "LOAD_HASHTAG_POSTS_FAILURE";
+
+export const UPDATE_POST_CONTENT_REQUEST = "UPDATE_POST_CONTENT_REQUEST";
+export const UPDATE_POST_CONTENT_SUCCESS = "UPDATE_POST_CONTENT_SUCCESS";
+export const UPDATE_POST_CONTENT_FAILURE = "UPDATE_POST_CONTENT_FAILURE";
 
 export const REMOVE_LOADED_IMAGE = "REMOVE_LOADED_IMAGE";
 
@@ -117,17 +129,23 @@ const reducer = (state = initialState, action) =>
         draft.unLikePostLoading = false;
         draft.unLikePostError = action.error;
         break;
+      case LOAD_USER_POSTS_REQUEST:
+      case LOAD_HASHTAG_POSTS_REQUEST:
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
         draft.loadPostsError = null;
         break;
+      case LOAD_USER_POSTS_SUCCESS:
+      case LOAD_HASHTAG_POSTS_SUCCESS:
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
         draft.mainPosts = draft.mainPosts.concat(action.data);
-        draft.hasMorePosts = draft.mainPosts.length === 10;
+        draft.hasMorePosts = action.data.length === 10;
         break;
+      case LOAD_USER_POSTS_FAILURE:
+      case LOAD_HASHTAG_POSTS_FAILURE:
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
@@ -192,6 +210,22 @@ const reducer = (state = initialState, action) =>
       case UPLOAD_IMAGES_FAILURE:
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
+        break;
+      case UPDATE_POST_CONTENT_REQUEST:
+        draft.updatePostLoading = true;
+        draft.updatePostDone = false;
+        draft.updatePostError = null;
+        break;
+      case UPDATE_POST_CONTENT_SUCCESS: {
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        post.content = action.data.content;
+        draft.updatePostLoading = false;
+        draft.updatePostDone = true;
+        break;
+      }
+      case UPDATE_POST_CONTENT_FAILURE:
+        draft.updatePostLoading = false;
+        draft.updatePostError = action.error;
         break;
       case REMOVE_LOADED_IMAGE:
         draft.imagePaths = draft.imagePaths.filter((e, i) => i !== action.data);

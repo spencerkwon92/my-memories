@@ -26,7 +26,6 @@ import {
   UPLOAD_IMAGES_REQUEST,
   REMOVE_LOADED_IMAGE,
   ADD_POST_REQUEST,
-  addComment,
 } from "../reducers/post";
 //TODO: 이미지 업로드 과정 다시 공부 && useRef, useReducer, useCallback, useMemo 다시 공부...
 
@@ -67,7 +66,6 @@ const PostForm = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const imageInput = useRef();
-  const imageGroupRef = useRef(null);
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
@@ -134,7 +132,7 @@ const PostForm = () => {
       <Center height="25px">
         <Divider />
       </Center>
-      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+      <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>메모리 작성하기</ModalHeader>
@@ -145,7 +143,7 @@ const PostForm = () => {
               onChange={onChangeText}
             />
           </ModalBody>
-          <div css={imageGroupWrapperCss} >
+          <div css={imageGroupWrapperCss}>
             {imagePaths.map((image, i) => (
               <div key={image} css={imageWrapperCss}>
                 <StyledImage
@@ -181,27 +179,6 @@ const PostForm = () => {
       </Modal>
     </>
   );
-
-  // return (
-  //   <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmitForm}>
-  //     <Input.TextArea maxLength={140} placeholder="어떤 신기한 일이 있었나요?" value={text} onChange={onChangeText} />
-  //     <div>
-  //       <input type="file" multiple hidden ref={imageInput} onChange ={onChangeImages}/>
-  //       <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-  //       <Button type="primary" style={{ float: 'right' }} htmlType="submit" loading={addPostLoading}>올리기</Button>
-  //     </div>
-  //     <div>
-  //       {imagePaths.map((image, i) => (
-  //         <div key={image} style={{ display: 'inline-block' }}>
-  //           <img src={`http://localhost:3065/${image}`} style={{ width: '200px' }} alt={image} />
-  //           <div>
-  //             <Button onClick={onRemoveImage(i)}>제거</Button>
-  //           </div>
-  //         </div>
-  //       ))}
-  //     </div>
-  //   </Form>
-  // );
 };
 
 export default PostForm;

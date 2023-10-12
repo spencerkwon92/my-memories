@@ -10,7 +10,6 @@ import PostImages from './PostImages'
 import {
   LIKE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
-  REMOVE_POST_REQUEST,
 } from "../reducers/post";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
@@ -66,7 +65,7 @@ export default function NewPostCard({post}) {
           </Flex>
         </CardHeader>
         <CardBody>
-          <PostCardContent postData={post.content} />
+          <PostCardContent postContent={post.content} />
         </CardBody>
         {post.Images[0] && <PostImages images={post.Images} />}
 

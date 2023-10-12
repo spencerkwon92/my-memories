@@ -4,9 +4,7 @@ import { END } from "redux-saga";
 import axios from "axios";
 import { Grid, GridItem, Card, Text, Center, Link } from "@chakra-ui/react";
 
-import NewLoginForm from "../components/NewLoginForm";
 import PostForm from "../components/PostForm";
-import PostCard from "../components/PostCard";
 import NewPostCard from '../components/NewPostCard'
 import AppLayout from "../components/AppLayout";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
@@ -19,7 +17,7 @@ import Spacer from "../components/CustomizedUI/Spacer";
 const Home = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePost, loadPostsLoading } = useSelector(
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post
   );
 
@@ -29,12 +27,11 @@ const Home = () => {
         window.scrollY + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
-        if (hasMorePost && !loadPostsLoading) {
+        if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
             lastId,
-            // data: mainPosts[mainPosts.length - 1].id,
           });
         }
       }
@@ -43,9 +40,10 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [mainPosts, hasMorePost, loadPostsLoading, mainPosts]);
+  }, [mainPosts, hasMorePosts, loadPostsLoading]);
+  const isMobile = useContainer({ default: false, md: true });
 
-  const isMobile = useContainer({default: false, md:true})
+  console.log(mainPosts)
 
   return (
     <AppLayout>
@@ -56,7 +54,6 @@ const Home = () => {
             <>
               <NewPostCard key={post.id} post={post} />
               <Spacer size='20'/>
-              
             </>
           ))}
         </GridItem>
@@ -83,7 +80,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req }) => {
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
-      const {user} = store.getState();
       if(req && cookie){
         axios.defaults.headers.Cookie = cookie;
       }

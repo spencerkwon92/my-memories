@@ -1,31 +1,35 @@
-import React, {useEffect} from 'react'
-import {css} from '@emotion/react'
-import {Button, IconButton} from '@chakra-ui/react'
-import { useSelector, useDispatch } from 'react-redux'
+import React,{ useState, useRef } from "react";
 
-import AppLayout from '../components/AppLayout'
-import BaseButton from '../components/BaseButton'
-import NewButton from '../components/NewButton'
-import {LOAD_FOLLOWERS_REQUEST} from '../reducers/user'
+export default function Stopwatch() {
+  const [startTime, setStartTime] = useState(null);
+  const [now, setNow] = useState(null);
+  const intervalRef = useRef(null);
 
-export default function testing() {
-  const {me} = useSelector((state)=> state.user)
+  function handleStart() {
+    setStartTime(Date.now());
+    setNow(Date.now());
 
-  const dispatch = useDispatch()
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      setNow(Date.now());
+    }, 10);
+  }
 
-  useEffect(()=>{
-    dispatch({
-      type: LOAD_FOLLOWERS_REQUEST
-    })
-  },[])
+  function handleStop() {
+    clearInterval(intervalRef.current);
+  }
 
-  console.log(me)
-  
+  let secondsPassed = 0;
+  if (startTime != null && now != null) {
+    secondsPassed = (now - startTime) / 1000;
+  }
 
+  console.log(intervalRef)
   return (
-    <AppLayout>
-      <div>Hello world!!</div>
-    </AppLayout>
-  )
+    <>
+      <h1>Time passed: {secondsPassed}</h1>
+      <button onClick={handleStart}>Start</button>
+      <button onClick={handleStop}>Stop</button>
+    </>
+  );
 }
- 

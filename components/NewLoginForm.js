@@ -38,12 +38,14 @@ export default function NewLoginForm() {
   const [password, onChangePassword] = useInput("");
 
   useEffect(() => {
+    if (loginError) alert(loginError);
     if (loginDone || me) Router.push("/");
-  }, [loginDone, me]);
+  }, [loginDone, me,loginError]);
 
   const onSubmit = useCallback(() => {
     dispatch(loginRequestAction({ email, password }));
   }, [email, password]);
+
 
   return (
     <div css={wrapperCss}>
@@ -65,8 +67,8 @@ export default function NewLoginForm() {
               onChange={onChangePassword}
               required
             />
-              <Button width='52vw' isLoading={loginLoading} onClick={onSubmit}>
-                Log In
+              <Button width='100%' isLoading={loginLoading} onClick={onSubmit}>
+                로그인
               </Button>
           </VStack>
         </FormControl>
