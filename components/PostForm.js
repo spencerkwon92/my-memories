@@ -13,7 +13,6 @@ import {
   Textarea,
   Divider,
   Center,
-  Box,
   Image,
   HStack,
   IconButton,
@@ -72,7 +71,7 @@ const PostForm = () => {
 
   const onChangeImages = useCallback((e) => {
     console.log("images", e.target.files);
-    const imageFormData = new FormData();
+    const imageFormData = new FormData(); // 폼데이터 인스턴스 생성...
     [].forEach.call(e.target.files, (file) => {
       imageFormData.append("image", file);
     });
@@ -102,7 +101,7 @@ const PostForm = () => {
       return alert("게시글을 작성하세요.");
     }
 
-    const formData = new FormData();
+    const formData = new FormData();// path에 있는 이미지를 폼에 모은다....{Image: ..., content: ...} 이런 식으로...
 
     imagePaths.forEach((path) => {
       formData.append("image", path);

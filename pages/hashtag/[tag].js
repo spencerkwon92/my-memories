@@ -1,22 +1,24 @@
-import React,{useEffect} from 'react'
-import {useRouter} from 'next/router'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { END } from "redux-saga";
-import {Text, Center} from '@chakra-ui/react'
+import { Heading, Center } from "@chakra-ui/react";
 
-import { LOAD_HASHTAG_POSTS_REQUEST } from '../../reducers/post'
-import { LOAD_MY_INFO_REQUEST } from '../../reducers/user'
-import NewPostCard from '../../components/NewPostCard'
-import wrapper from '../../store/configureStore'
-import AppLayout from '../../components/AppLayout';
-import Spacer from '../../components/CustomizedUI/Spacer';
+import { LOAD_HASHTAG_POSTS_REQUEST } from "../../reducers/post";
+import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
+import NewPostCard from "../../components/NewPostCard";
+import wrapper from "../../store/configureStore";
+import AppLayout from "../../components/AppLayout";
+import Spacer from "../../components/CustomizedUI/Spacer";
 
-export default function TagPage(){
-  const router = useRouter()
-  const {tag} = router.query
-  const dispatch = useDispatch()
-  const {mainPosts, hasMorePosts, loadPostsLoading,} = useSelector((state) => state.post);
+export default function TagPage() {
+  const router = useRouter();
+  const { tag } = router.query;
+  const dispatch = useDispatch();
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+    (state) => state.post
+  );
 
   useEffect(() => {
     function onScroll() {
@@ -40,14 +42,22 @@ export default function TagPage(){
     };
   }, [mainPosts, hasMorePosts, loadPostsLoading, tag]);
 
+  if (mainPosts.length === 0) {
+    return (
+      <AppLayout>
+        <Center h="80vh">
+          <Heading size="lg">{`${tag}와/과 관련된 메모리가 없네요😭`}</Heading>
+        </Center>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
-
       {mainPosts.map((post) => (
         <>
           <NewPostCard key={post.id} post={post} />
-          <Spacer/>
+          <Spacer />
         </>
       ))}
     </AppLayout>
@@ -57,13 +67,11 @@ export default function TagPage(){
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, params }) => {
+      const { tag } = params;
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
-      const {tag} = params
-      const { user } = store.getState();
-      if (req && cookie) {
-        axios.defaults.headers.Cookie = cookie;
-      }
+      req && cookie && (axios.defaults.headers.Cookie = cookie);
+
       store.dispatch({
         type: LOAD_MY_INFO_REQUEST,
       });
@@ -72,7 +80,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
         type: LOAD_HASHTAG_POSTS_REQUEST,
         data: tag,
       });
-
       store.dispatch(END);
       await store.sagaTask.toPromise();
     }

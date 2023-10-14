@@ -4,7 +4,7 @@ import Router from "next/router";
 import { Menu, MenuButton, Divider, Center, Container, IconButton, Button } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import {useSelector} from 'react-redux'
-import { BiHome, BiSearch, BiUserCircle } from "react-icons/bi";
+import { BiHome,BiUserCircle } from "react-icons/bi";
 
 import Spacer from "./CustomizedUI/Spacer";
 import useContainer from "../hooks/useContainer";
@@ -29,7 +29,6 @@ const wrapperCss = css`
   padding: 20px 10px 0px 10px;
 `;
 
-//make trasparent.
 const mobileMenuWrapper = css`
   position: fixed;
   bottom: 0;
@@ -64,7 +63,6 @@ useEffect(() => {
       window.scrollY + document.documentElement.clientHeight >
       document.documentElement.scrollHeight - 300
     ) {
-      // The user has scrolled to the end of the page
       if(footerMenuRef.current !==null)footerMenuRef.current.style.opacity=0;
     }else{
     if (footerMenuRef.current !== null)

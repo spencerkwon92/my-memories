@@ -217,7 +217,7 @@ const reducer = (state = initialState, action) =>
         draft.updatePostError = null;
         break;
       case UPDATE_POST_CONTENT_SUCCESS: {
-        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        const post = draft.mainPosts.find((post) => post.id === action.data.PostId);
         post.content = action.data.content;
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
@@ -228,7 +228,7 @@ const reducer = (state = initialState, action) =>
         draft.updatePostError = action.error;
         break;
       case REMOVE_LOADED_IMAGE:
-        draft.imagePaths = draft.imagePaths.filter((e, i) => i !== action.data);
+        draft.imagePaths = draft.imagePaths.filter((path, i) => i !== action.data); //데이터 상에는 어떤 이미지가 있었는짖 알 필요가 있음...
         break;
 
       default:

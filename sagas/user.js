@@ -32,6 +32,13 @@ import {
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
+  UPLOAD_PROFILE_IMAGE_REQUEST,
+  UPLOAD_PROFILE_IMAGE_SUCCESS,
+  UPLOAD_PROFILE_IMAGE_FAILURE,
+  EDIT_PROFILE_IMAGE_REQUEST,
+  EDIT_PROFILE_IMAGE_SUCCESS,
+  EDIT_PROFILE_IMAGE_FAILURE,
+
 } from '../reducers/user';
 
 
@@ -134,7 +141,7 @@ function* loadUser(action){
 
 
 function changeNicknameAPI(data){
-  return axios.patch('/user/nickname', {nickname: data});
+  return axios.patch('/user/nickname', {nickname: data}); //req.body.nickname
 }
 
 function* changeNickname(action){
@@ -232,6 +239,45 @@ function* loadFollowings(action){
   }
 }
 
+function uploadProfileImageAPI(data){
+  return axios.post('/user/profileImage', data);
+}
+
+function* uploadProfileImage(action){
+  try{
+    const result = yield call(uploadProfileImageAPI, action.data)
+    yield put({
+      type: UPLOAD_PROFILE_IMAGE_SUCCESS,
+      data: result.data,
+    })
+  }catch(err){
+    console.error(err)
+    yield put({
+      type: UPLOAD_PROFILE_IMAGE_FAILURE,
+      error: err.response.data,
+    })
+  }
+}
+
+function editProfileImageAPI(data){
+  return axios.patch('/user/profileImage', data); // {profileImage:...} => req.body.
+}
+
+function* editProfileImage(action){
+  try{
+    const result = yield call(editProfileImageAPI, action.data)
+    yield put({
+      type: EDIT_PROFILE_IMAGE_SUCCESS,
+      data: result.data,
+    })
+  }catch(err){
+    console.error(err)
+    yield put({
+      type: EDIT_PROFILE_IMAGE_FAILURE,
+      error: err.response.data,
+    })
+  }
+}
 
 function* watchLogin(){
   yield takeLatest(LOG_IN_REQUEST, login);
@@ -272,6 +318,14 @@ function* watchLoadMyInfo(){
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
 
+function* watchUploadProfileImage(){
+  yield takeLatest(UPLOAD_PROFILE_IMAGE_REQUEST, uploadProfileImage);
+}
+
+function* watchEditProfileImage(){
+  yield takeLatest(EDIT_PROFILE_IMAGE_REQUEST, editProfileImage);
+}
+
 export default function* rootSaga(){
    yield all([
       fork(watchLogin),
@@ -283,6 +337,8 @@ export default function* rootSaga(){
       fork(watchChangeNickname),
       fork(watchLoadFollowers),
       fork(watchLoadFollowings),
-      fork(watchLoadMyInfo)
+      fork(watchLoadMyInfo),
+      fork(watchUploadProfileImage),
+      fork(watchEditProfileImage)
     ])
  }

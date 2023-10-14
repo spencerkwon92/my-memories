@@ -1,19 +1,11 @@
 import React, {useCallback} from "react";
 import {
-  Flex,
   Avatar,
-  Box,
-  Text,
-  Center,
-  Spacer,
   Link,
-  Container,
 } from "@chakra-ui/react";
 import {useDispatch, useSelector } from "react-redux";
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
 import {css} from '@emotion/react'
-
-//TODO: Add Go to page && Change the ugly layout!
 
 const mainCss = css`
   display: flex;
@@ -54,11 +46,20 @@ export default function RelationNameCard({ user }) {
   return (
     <div css={mainCss}>
       <div>
-        <Avatar name={user?.nickname} bgColor="gray" size="md" />
+        <Avatar
+          name={user?.nickname}
+          bgColor="gray"
+          size="md"
+          src={
+            user.ProfileImage
+              ? `http://localhost:3065/${user.ProfileImage?.src}`
+              : null
+          }
+        />
         <Link href={`/user/${id}`}>{user?.nickname}</Link>
       </div>
       <Link color="blue" onClick={onFollowingHandle}>
-        {isFollowing? "Unfollow" : "Follow"}
+        {isFollowing ? "Unfollow" : "Follow"}
       </Link>
     </div>
   );

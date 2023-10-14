@@ -1,8 +1,9 @@
 import React, {useCallback, useState} from "react";
 import { css } from "@emotion/react";
-import {Card, CardHeader, Avatar, Box, Heading, CardBody, Button, Flex, CardFooter, Image, Divider, IconButton, MenuList, MenuItem, Menu, MenuButton} from '@chakra-ui/react'
+import {Spacer as ChakraSpacer, Link, Center, Card, CardHeader, Avatar, Box, Heading, CardBody, Button, Flex, CardFooter, Image, Divider, IconButton, MenuList, MenuItem, Menu, MenuButton} from '@chakra-ui/react'
 import {useSelector, useDispatch} from 'react-redux'
-import {BiLike, BiChat, BiShare, BiSolidLike,BiDotsHorizontalRounded  } from 'react-icons/bi'
+import {BiLike, BiChat, BiShare, BiSolidLike  } from 'react-icons/bi'
+import PropTypes from 'prop-types'
 
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
@@ -52,14 +53,15 @@ export default function NewPostCard({post}) {
       <Card variant="outline">
         <CardHeader>
           <Flex spacing="4">
-            <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Avatar name={post?.User?.nickname} />
-              <Box>
-                <Heading size="sm">{post?.User?.nickname}</Heading>
-              </Box>
-
+            <Flex flex="1" alignItems="center" flexWrap="wrap">
+              <Flex alignItem="center" gap="4">
+                <Avatar name={post?.User?.nickname} src={post.User.ProfileImage?`http://localhost:3065/${post.User.ProfileImage?.src}`:null} />
+                <Center>
+                  <Link fontWeight='bold' fontSize='15px' href={`/user/${post.User?.id}`}>{post?.User?.nickname}</Link>
+                </Center>
+              </Flex>
+              <ChakraSpacer />
               {post.User.id === me?.id && <PostMenuButton post={post} />}
-
               {me && <FollowButton post={post} />}
             </Flex>
           </Flex>
@@ -121,4 +123,8 @@ export default function NewPostCard({post}) {
       <Spacer size="lg" />
     </>
   );
+}
+
+NewPostCard.propTypes = {
+  post: PropTypes.object.isRequired,
 }

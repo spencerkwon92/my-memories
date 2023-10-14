@@ -1,5 +1,6 @@
 import React from 'react'
-import {Container, List, ListItem, Avatar, HStack, Text} from '@chakra-ui/react'
+import PropTypes from 'prop-types'
+import {List, ListItem, Avatar } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 
 const StyledList = styled(List)`
@@ -38,11 +39,22 @@ const CommentList = ({comments}) =>{
 const Comment = ({comment})=>{
   return (
     <StyledListItem>
-      <Avatar size="sm" name={comment.User.nickname} />
+      <Avatar
+        size="sm"
+        name={comment.User.nickname}
+        src={
+          comment.User.ProfileImage
+            ? `http://localhost:3065/${comment.User.ProfileImage?.src}`
+            : null
+        }
+      />
       <div>{comment.User.nickname}</div>
       <div>{comment.content}</div>
     </StyledListItem>
   );
 }
 
+CommentList.propTypes = {
+  comments: PropTypes.array.isRequired,
+}
 export default CommentList

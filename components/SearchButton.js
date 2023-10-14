@@ -1,8 +1,9 @@
-import React,{useState,useCallback} from 'react'
-import {HStack, Input, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton, iseDisclosure, useDisclosure} from '@chakra-ui/react'
+import React,{useCallback} from 'react'
+import {HStack, Input, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, useDisclosure} from '@chakra-ui/react'
 import {BiSearch} from 'react-icons/bi'
 import { css } from '@emotion/react'
-import {useRouter} from 'next/router'
+import Router from 'next/router'
+import PropTypes from 'prop-types'
 
 import useInput from '../hooks/useInput'
 import Spacer from './CustomizedUI/Spacer'
@@ -17,14 +18,9 @@ const buttonCss = css`
 export default function SearchButton({type, children}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [value, onChangeValue, setValue] = useInput('')
-  const Router = useRouter()
-
 
   const onClickHandler = useCallback(()=>{
-    console.log(`this is search: ${value}`);
-    Router.push(`post/${value}`);
-    setValue('')
-    onClose()
+    Router.push(`/hashtag/${value}`);
   },[value])
 
   const ConditionButton = type;
@@ -55,12 +51,18 @@ export default function SearchButton({type, children}) {
                 onChange={onChangeValue}
                 required
               />
+
               <Button onClick={onClickHandler}>Search</Button>
             </HStack>
-            <Spacer/>
+            <Spacer />
           </ModalBody>
         </ModalContent>
       </Modal>
     </>
   );
+}
+
+SearchButton.propTypes = {
+  type: PropTypes.elementType.isRequired,
+  children: PropTypes.node.isRequired,
 }

@@ -27,12 +27,9 @@ import {
 } from "@chakra-ui/react";
 import { PlusSquareIcon, ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
 
-
 import { REMOVE_POST_REQUEST } from '../../reducers/post';
 import useInput from '../../hooks/useInput'
 import { UPDATE_POST_CONTENT_REQUEST } from '../../reducers/post';
-
-
 
 function PostMenuButton({post}) {
 
@@ -49,6 +46,7 @@ function PostMenuButton({post}) {
         <MenuButton
           as={IconButton}
           aria-label="post menu"
+          variant={"outline"}
           icon={<BiDotsHorizontalRounded />}
         />
         <MenuList>
@@ -104,19 +102,22 @@ function AlertModal({isOpen, onClose, post}){
 function UpdateModal({isOpen, onClose, post}){
   const {imagePaths} = useSelector((state)=>state.post) // imagePaths는 일시적인것... 그렇다면 이미지 페스도 수정해줘야 하나?
   const dispatch = useDispatch();
-  console.log(post);
-  const [text, onChangeText, setText] = useInput(post?.content)
+  const [text, onChangeText, setText] = useInput(post?.content||'')
 
-  const onUpdateClickHandler = useCallback(()=>{
-    console.log(text)
+  const onUpdateContentClickHandler = useCallback(()=>{
+    dispatch({
+      type: UPDATE_POST_CONTENT_REQUEST,
+      data: text,
+      postId: post.id,
+    })
 
-    // dispatch({
-    //   type: UPDATE_POST_CONTENT_REQUEST,
-    //   data: text,
-    //   postId: post.id,
-    // })
-    onClose();
+    alert('메모리 내용이 수정되었습니다.')
+    onClose()
   },[text])
+
+  const onImageUploadClickHandler = useCallback(()=>{
+    alert('기능이 아직 완성 되지 않았어요')
+  })
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
@@ -129,11 +130,11 @@ function UpdateModal({isOpen, onClose, post}){
         </ModalBody>
         <ModalFooter>
           <HStack>
-            <Button>
+            <Button onClick={onImageUploadClickHandler}>
               이미지
               <PlusSquareIcon />
             </Button>
-            <Button onClick={onUpdateClickHandler}>
+            <Button onClick={onUpdateContentClickHandler}>
               메모리 수정하기
               <ArrowUpIcon />
             </Button>

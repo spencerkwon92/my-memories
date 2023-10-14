@@ -66,7 +66,7 @@ function* loadPosts(action) {
 }
 
 function addPostAPI(data) {
-  return axios.post("/post", data);
+  return axios.post("/post", data); // 이때 데이터는 폼데이터 겠지?
 }
 
 function* addPost(action) {
@@ -232,8 +232,8 @@ function* loadHashtagPosts(action){
   }
 }
 
-function updatePostContentAPI(data,postId){
-  return axios.patch(`/post/${postId}`, {content: data})
+function updatePostContentAPI(data, postId){
+  return axios.patch(`/post/${postId}/content`, {content: data})
 }
 
 function* updatePostContent(action){
