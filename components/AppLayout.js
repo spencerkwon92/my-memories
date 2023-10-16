@@ -1,7 +1,7 @@
-import React,{useEffect,useRef} from "react";
+import React,{useEffect,useRef, useCallback} from "react";
 import PropTypes from "prop-types";
 import Router from "next/router";
-import { Menu, MenuButton, Divider, Center, Container, IconButton, Button } from "@chakra-ui/react";
+import { Menu, MenuButton, Divider, Center, Container, IconButton, Button, Avatar } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import {useSelector} from 'react-redux'
 import { BiHome,BiUserCircle } from "react-icons/bi";
@@ -44,18 +44,18 @@ const mobileMenuListCss = css`
   justify-content: space-between;
 `
 
-const AppLayout = ({ children }) => {
+function AppLayout({ children }){
   const isMobile = useContainer({ default: false, md: true });
   const {me} = useSelector((state)=>state.user) 
   const footerMenuRef = useRef(null);
 
-  const onLoginButtonHandler = (e) => {
+  const onLoginButtonHandler = useCallback(() => {
     Router.push(me?`/user/${me?.id}`:"/login");
-  }
+  },[me?.id])
 
-  const onHomeButtonHandler = () => {
+  const onHomeButtonHandler = useCallback(() => {
     Router.push('/')
-  }
+  },[])
 
 useEffect(() => {
   function onScroll() {
@@ -116,12 +116,24 @@ useEffect(() => {
                 onClick={onHomeButtonHandler}
               />
               <SearchButton type={IconButton} />
-              <IconButton
-                icon={<BiUserCircle />}
-                fontSize="25px"
-                variant="ghost"
-                onClick={onLoginButtonHandler}
-              />
+              {me ? (
+                <Avatar
+                  src={
+                    me?.ProfileImage
+                      ? `http://localhost:3065/${me?.ProfileImage?.src}`
+                      : null
+                  }
+                  size="sm"
+                  onClick={onLoginButtonHandler}
+                />
+              ) : (
+                <IconButton
+                  icon={<BiUserCircle />}
+                  fontSize="25px"
+                  variant="ghost"
+                  onClick={onLoginButtonHandler}
+                />
+              )}
             </div>
           </div>
         </>

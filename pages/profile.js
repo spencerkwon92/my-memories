@@ -4,18 +4,20 @@ import { useSelector, useDispatch } from 'react-redux';
 import Head from 'next/head';
 import axios from "axios";
 import { END } from "redux-saga";
+import { SimpleGrid, Divider } from '@chakra-ui/react';
 
 import ProfileEditForm from '../components/ProfileEditForm';
 import AppLayout from '../components/AppLayout';
 import FollowList from '../components/FollowList';
 import {LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_MY_INFO_REQUEST} from '../reducers/user';
 import wrapper from '../store/configureStore';
+import useContainer from '../hooks/useContainer';
+import Spacer from '../components/CustomizedUI/Spacer';
 
-// User model에 이미지 기능 추가 하기.
-// Follow, following list 구조 바꾸기...
-const Profile = () => {
+function Profile(){
   const { me } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const isMobile = useContainer({ default: false, md: true });
 
   useEffect(() => {
     if (!(me && me.id)) {
@@ -39,11 +41,15 @@ const Profile = () => {
   return (
     <AppLayout>
       <Head>
-        <title>내 프로필 | NodeBird</title>
+        <title>내 프로필 | My-Memories</title>
       </Head>
       <ProfileEditForm />
-      <FollowList header="팔로잉 목록" data={me.Followings} />
-      <FollowList header="팔로워 목록" data={me.Followers} />
+      <Divider/>
+      <Spacer size='20'/>
+      <SimpleGrid columns={isMobile?1:2} spacing={10}>
+        <FollowList as='following' header="팔로잉 목록" data={me.Followings} />
+        <FollowList as='follower' header="팔로워 목록" data={me.Followers} />
+      </SimpleGrid>
     </AppLayout>
   );
 };

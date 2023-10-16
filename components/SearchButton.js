@@ -14,10 +14,9 @@ const buttonCss = css`
     color: #1890ff;
   }
 `;
-
-export default function SearchButton({type, children}) {
+function SearchButton({type, children}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [value, onChangeValue, setValue] = useInput('')
+  const [value, onChangeValue] = useInput('')
 
   const onClickHandler = useCallback(()=>{
     Router.push(`/hashtag/${value}`);
@@ -66,3 +65,5 @@ SearchButton.propTypes = {
   type: PropTypes.elementType.isRequired,
   children: PropTypes.node.isRequired,
 }
+
+export default SearchButton

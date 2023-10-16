@@ -1,7 +1,11 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {List, ListItem, Avatar } from '@chakra-ui/react'
+import {List, ListItem, Avatar, IconButton,Spacer } from '@chakra-ui/react'
 import styled from '@emotion/styled'
+import {DeleteIcon} from '@chakra-ui/icons'
+import { useDispatch,useSelector } from 'react-redux'
+
+import {REMOVE_POST_COMMENT_REQUEST} from '../reducers/post'
 
 const StyledList = styled(List)`
   max-height: 500px;
@@ -25,18 +29,34 @@ const StyledListItem = styled(ListItem)`
 
 `
 
-const CommentList = ({comments}) =>{
+function CommentList({comments, postUserId}){
   
   return (
     <StyledList>
       {comments.map((comment) => (
-          <Comment key={comment.id}comment={comment} />
+          <Comment key={comment.id} comment={comment} postUserId={postUserId}/>
       ))}
     </StyledList>
   );
 }
 
-const Comment = ({comment})=>{
+
+function Comment({comment, postUserId}){
+  const dispatch = useDispatch()
+  const { me } = useSelector(
+    (state) => state.user
+  );
+  const onDeleteButtonClick = useCallback(() => {
+    dispatch({
+      type: REMOVE_POST_COMMENT_REQUEST,
+      data: comment?.id,
+      postId: comment?.PostId,
+    });
+    alert('댓글이 삭제되었습니다.')
+  }, [comment?.id, comment?.PostId]);
+
+  const isRemoveable = me?.id === postUserId || me?.id === comment?.UserId
+
   return (
     <StyledListItem>
       <Avatar
@@ -50,6 +70,17 @@ const Comment = ({comment})=>{
       />
       <div>{comment.User.nickname}</div>
       <div>{comment.content}</div>
+      {isRemoveable && (
+        <>
+          <Spacer />
+          <IconButton
+            icon={<DeleteIcon />}
+            onClick={onDeleteButtonClick}
+            size="sm"
+            variant="ghost"
+          />
+        </>
+      )}
     </StyledListItem>
   );
 }

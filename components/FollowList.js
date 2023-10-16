@@ -1,28 +1,52 @@
-import { Button, Card, List } from 'antd';
-import { StopOutlined } from '@ant-design/icons';
 import React from 'react';
+import { Heading,VStack,Center,Text, Box, Divider} from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import {useSelector} from 'react-redux'
 
-const FollowList = ({ header, data }) => (
-  <List
-    style={{ marginBottom: '20px' }}
-    grid={{ gutter: 4, xs: 2, md: 3 }}
-    size="small"
-    header={<div>{header}</div>}
-    loadMore={<div style={{ textAlign: 'center', margin: '10px 0'}}><Button>더 보기</Button></div>}
-    bordered
-    dataSource={data}
-    renderItem={(item) => (
-      <List.Item style={{ marginTop: '20px' }}>
-        <Card actions={[<StopOutlined key="stop" />]}>
-          <Card.Meta description={item.nickname} />
-        </Card>
-      </List.Item>
-    )}
-  />
-);
+import useContainer from '../hooks/useContainer';
+import RelationNameCard from './RelationNameCard';
+import {css} from '@emotion/react';
+import Spacer from './CustomizedUI/Spacer';
+
+const listCss = css`
+  height: 100vh;
+  overflow-y: hidden;
+  :hover{
+    overflow-y: auto;
+  }
+`
+
+function FollowList({as, header, data }){
+  const isMobile = useContainer({ default: false, md: true });
+  const {me} = useSelector((state)=>state.user)
+
+  return (
+    <Box shadow="md" borderWidth="1px" p="20px">
+      <VStack align="left" h="50vh">
+        <Center>
+          <Heading size={isMobile ? "sm" : "md"}>{header}</Heading>
+        </Center>
+        {as === "following" ? (
+          <Text margin="0">{`${me?.nickname}님이 팔로잉 하고 있는 사용자들 입니다.`}</Text>
+        ) : (
+          <Text margin="0">{`${me?.nickname}님을 팔로우 하고 있는 사용자들 입니다.`}</Text>
+        )}
+        <Divider />
+        <div className="listContent" css={listCss}>
+          {data.map((follow) => (
+            <>
+              <RelationNameCard key={follow.id} user={follow} />
+              <Spacer />
+            </>
+          ))}
+        </div>
+      </VStack>
+    </Box>
+  );
+}
 
 FollowList.propTypes = {
+  as: PropTypes.string.isRequired,
   header: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
 };

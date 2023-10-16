@@ -1,3 +1,4 @@
+import { de } from "faker/lib/locales";
 import produce from "../util/produce";
 
 export const initialState = {
@@ -23,6 +24,10 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 
+  removePostCommentLoading: false,
+  removePostCommentDone: false,
+  removePostCommentError: null,
+
   likePostLoading: false,
   likePostDone: false,
   likePostError: null,
@@ -34,7 +39,7 @@ export const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
-  
+
   updatePostLoading: false,
   updatePostDone: false,
   updatePostError: null,
@@ -80,6 +85,10 @@ export const UPDATE_POST_CONTENT_REQUEST = "UPDATE_POST_CONTENT_REQUEST";
 export const UPDATE_POST_CONTENT_SUCCESS = "UPDATE_POST_CONTENT_SUCCESS";
 export const UPDATE_POST_CONTENT_FAILURE = "UPDATE_POST_CONTENT_FAILURE";
 
+export const REMOVE_POST_COMMENT_REQUEST = "REMOVE_POST_COMMENT_REQUEST";
+export const REMOVE_POST_COMMENT_SUCCESS = "REMOVE_POST_COMMENT_SUCCESS";
+export const REMOVE_POST_COMMENT_FAILURE = "REMOVE_POST_COMMENT_FAILURE";
+
 export const REMOVE_LOADED_IMAGE = "REMOVE_LOADED_IMAGE";
 
 export const addPost = (data) => ({
@@ -96,7 +105,6 @@ export const addComment = (data) => ({
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
-
       case LIKE_POST_REQUEST:
         draft.likePostLoading = true;
         draft.likePostDone = false;
@@ -217,7 +225,9 @@ const reducer = (state = initialState, action) =>
         draft.updatePostError = null;
         break;
       case UPDATE_POST_CONTENT_SUCCESS: {
-        const post = draft.mainPosts.find((post) => post.id === action.data.PostId);
+        const post = draft.mainPosts.find(
+          (post) => post.id === action.data.PostId
+        );
         post.content = action.data.content;
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
@@ -227,8 +237,30 @@ const reducer = (state = initialState, action) =>
         draft.updatePostLoading = false;
         draft.updatePostError = action.error;
         break;
+      case REMOVE_POST_COMMENT_REQUEST:
+        draft.removePostCommentLoading = true;
+        draft.removePostCommentDone = false;
+        draft.removePostCommentError = null;
+        break;
+      case REMOVE_POST_COMMENT_SUCCESS:{
+        const post = draft.mainPosts.find(
+          (post) => post.id === action.data.PostId
+        );
+        post.Comments = post.Comments.filter(
+          (comment) => comment.id !== action.data.CommentId
+        );
+        draft.removePostCommentLoading = false;
+        draft.removePostCommentDone = true;
+        break;
+      }
+      case REMOVE_POST_COMMENT_FAILURE:
+        draft.removePostCommentLoading = false;
+        draft.removePostCommentError = action.error;
+        break;
       case REMOVE_LOADED_IMAGE:
-        draft.imagePaths = draft.imagePaths.filter((path, i) => i !== action.data); //데이터 상에는 어떤 이미지가 있었는짖 알 필요가 있음...
+        draft.imagePaths = draft.imagePaths.filter(
+          (path, i) => i !== action.data
+        ); //데이터 상에는 어떤 이미지가 있었는짖 알 필요가 있음...
         break;
 
       default:

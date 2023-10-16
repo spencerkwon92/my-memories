@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { END } from "redux-saga";
 import axios from "axios";
-import { Grid, GridItem, Card, Text, Center, Link } from "@chakra-ui/react";
+import { Grid, GridItem, Card, Center, Link } from "@chakra-ui/react";
 
 import PostForm from "../components/PostForm";
-import NewPostCard from '../components/NewPostCard'
+import PostCard from '../components/PostCard'
 import AppLayout from "../components/AppLayout";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
 import { LOAD_MY_INFO_REQUEST, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from "../reducers/user";
@@ -14,7 +14,7 @@ import UserProfile from "../components/UserProfile";
 import useContainer from '../hooks/useContainer'
 import Spacer from "../components/CustomizedUI/Spacer";
 
-const Home = () => {
+function Home(){
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
@@ -43,16 +43,14 @@ const Home = () => {
   }, [mainPosts, hasMorePosts, loadPostsLoading]);
   const isMobile = useContainer({ default: false, md: true });
 
-  console.log(mainPosts)
-
   return (
     <AppLayout>
-      <Grid templateColumns="repeat(6, 1fr)" gap={3}>
+      <Grid templateColumns="repeat(6, 1fr)" gap={5}>
         <GridItem colSpan={isMobile ? 6 : 4}>
           <PostForm />
           {mainPosts.map((post) => (
             <>
-              <NewPostCard key={post.id} post={post} />
+              <PostCard key={post.id} post={post} />
               <Spacer size='20'/>
             </>
           ))}
@@ -62,8 +60,8 @@ const Home = () => {
             {me?<UserProfile />
             :
             <Card>
-              <Center>
-                <Link href='/login'>Click Here for Log in!</Link>
+              <Center h='10vh'>
+                <Link href='/login'>로그인 하려면 클릭하세요!</Link>
               </Center>
             </Card>
               }
@@ -74,7 +72,6 @@ const Home = () => {
   );
 };
 
-//It will render those part before rendering the HOME component. || new version has different form.
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req }) => {

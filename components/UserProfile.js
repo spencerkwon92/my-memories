@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import Router from "next/router";
+import PropTypes from 'prop-types'
 
 import { logoutRequestAction } from "../reducers/user";
 import RelationNameCard from "./RelationNameCard";
@@ -39,7 +40,7 @@ const lineMesCss = css`
   color: rgb(130, 129, 129);
 `;
 
-const UserProfile = () => {
+function UserProfile(){
   const { me, logoutLoading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -107,5 +108,10 @@ const UserProfile = () => {
     </>
   );
 };
+
+UserProfile.propTypes = {
+  me: PropTypes.object.isRequired,
+  logoutLoading: PropTypes.bool.isRequired,
+}
 
 export default UserProfile;

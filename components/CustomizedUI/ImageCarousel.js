@@ -3,6 +3,7 @@ import {Box, Button, HStack, Image, IconButton, Center} from '@chakra-ui/react'
 import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons';
 import {css} from '@emotion/react'
 import styled from '@emotion/styled'
+import PropTypes from 'prop-types'
 
 import Spacer from './Spacer'
 
@@ -179,3 +180,7 @@ export default function ImageCarousel({images}) {
     </StyledBox>
   );
 }
+
+ImageCarousel.propTypes = {
+  images: PropTypes.array.isRequired,
+};

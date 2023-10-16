@@ -29,22 +29,22 @@ const wrapperCss = css`
   }
 `;
 
-export default function loginPage() {
- const dispatch = useDispatch();
- const { loginLoading, loginError, loginDone, me } = useSelector(
-   (state) => state.user
- );
- const [email, onChangeEmail] = useInput("");
- const [password, onChangePassword] = useInput("");
+function LoginPage() {
+  const dispatch = useDispatch();
+  const { loginLoading, loginError, loginDone, me } = useSelector(
+    (state) => state.user
+  );
+  const [email, onChangeEmail] = useInput("");
+  const [password, onChangePassword] = useInput("");
 
- useEffect(() => {
-   if (loginError) alert(loginError);
-   if (loginDone || me) Router.push("/");
- }, [loginDone, me, loginError]);
+  useEffect(() => {
+    if (loginError) alert(loginError);
+    if (loginDone || me) Router.push("/");
+  }, [loginDone, me, loginError]);
 
- const onSubmit = useCallback(() => {
-   dispatch(loginRequestAction({ email, password }));
- }, [email, password]);
+  const onSubmit = useCallback(() => {
+    dispatch(loginRequestAction({ email, password }));
+  }, [email, password]);
 
   return (
     <AppLayout>
@@ -85,3 +85,5 @@ export default function loginPage() {
     </AppLayout>
   );
 }
+
+export default LoginPage;

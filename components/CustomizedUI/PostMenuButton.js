@@ -25,7 +25,8 @@ import {
   Textarea,
   HStack,
 } from "@chakra-ui/react";
-import { PlusSquareIcon, ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
+import { PlusSquareIcon, ArrowUpIcon } from "@chakra-ui/icons";
+import PropTypes from "prop-types";
 
 import { REMOVE_POST_REQUEST } from '../../reducers/post';
 import useInput from '../../hooks/useInput'
@@ -144,5 +145,15 @@ function UpdateModal({isOpen, onClose, post}){
     </Modal>
   );
 }
+
+PostMenuButton.propTypes = {
+  post: PropTypes.object.isRequired,
+};
+
+UpdateModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  post: PropTypes.object.isRequired,
+};
 
 export default PostMenuButton;

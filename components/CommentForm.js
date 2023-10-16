@@ -7,7 +7,7 @@ import useInput from '../hooks/useInput';
 import { ADD_COMMENT_REQUEST } from '../reducers/post';
 import Spacer from './CustomizedUI/Spacer';
 
-const CommentForm = ({ post }) => {
+function CommentForm({ post }){
   const dispatch = useDispatch();
   const { addCommentDone, addCommentLoading } = useSelector((state) => state.post);
   const id = useSelector((state) => state.user.me?.id);

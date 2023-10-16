@@ -1,7 +1,6 @@
 import axios from "axios";
 import {
   all,
-  delay,
   fork,
   put,
   takeLatest,
@@ -40,6 +39,9 @@ import {
   UPDATE_POST_CONTENT_REQUEST,
   UPDATE_POST_CONTENT_SUCCESS,
   UPDATE_POST_CONTENT_FAILURE,
+  REMOVE_POST_COMMENT_REQUEST,
+  REMOVE_POST_COMMENT_SUCCESS,
+  REMOVE_POST_COMMENT_FAILURE,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
@@ -250,10 +252,27 @@ function* updatePostContent(action){
       error: err.response.data,
     })
   }
-
 }
 
+function deletePostCommentAPI(data, postId) {
+  return axios.delete(`/comment/${data}?postId=${postId}`);
+}
 
+function* deletePostComment(action) {
+  try {
+    const result = yield call(deletePostCommentAPI, action.data, action.postId);
+    yield put({
+      type: REMOVE_POST_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: REMOVE_POST_COMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function* watchLoadPosts() {
   yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
@@ -287,6 +306,10 @@ function* watchUpdatePost() {
   yield takeLatest(UPDATE_POST_CONTENT_REQUEST, updatePostContent);
 }
 
+function* watchDeletePostComment() {
+  yield takeLatest(REMOVE_POST_COMMENT_REQUEST, deletePostComment);
+}
+
 function* watchLoadUserPosts(){
   yield throttle(5000, LOAD_USER_POSTS_REQUEST, loadUserPosts )
 }
@@ -307,6 +330,7 @@ export default function* postSaga() {
     fork(watchUploadImages),
     fork(watchLoadUserPosts),
     fork(watchLoadHashtagPosts),
-    fork(watchUpdatePost)
+    fork(watchUpdatePost),
+    fork(watchDeletePostComment),
   ]);
 }

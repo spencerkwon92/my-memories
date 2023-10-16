@@ -5,7 +5,6 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   useDisclosure,
@@ -23,6 +22,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import {PlusSquareIcon} from '@chakra-ui/icons'
+import PropTypes from 'prop-types';
 
 import useInput from '../hooks/useInput';
 import { CHANGE_NICKNAME_REQUEST, UPLOAD_PROFILE_IMAGE_REQUEST, EDIT_PROFILE_IMAGE_REQUEST } from '../reducers/user';
@@ -38,7 +38,7 @@ const ButtonImage = styled(Image)`
   }
 `
 
-const ProfileEditForm = () => {
+function ProfileEditForm(){
   const { me, profileImagePath } = useSelector((state) => state.user);
   const [nickname, onChangeNickname] = useInput(me?.nickname || '');
   const dispatch = useDispatch();
@@ -82,7 +82,7 @@ const ProfileEditForm = () => {
           <Button onClick={onNicknameEditButton}>닉네임 수정</Button>
         </HStack>
       </Container>
-      <Spacer size="40" />
+      <Spacer size="20" />
       <ProfileImageEditModal
         isOpen={isOpen}
         onClose={onClose}
@@ -187,5 +187,11 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
     </Modal>
   );
 }
+
+ProfileImageEditModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  imagePath: PropTypes.string,
+};
 
 export default ProfileEditForm;

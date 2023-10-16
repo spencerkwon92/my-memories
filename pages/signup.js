@@ -27,7 +27,7 @@ const wrapperCss = css`
   min-height: 80vh;
 `
 
-const Signup = () => {
+function Signup(){
   const [passwordCheck, setPasswordCheck] = useState("");
   const [term, setTerm] = useState(false);
   const [passwordError, setPasswordError] = useState(false);

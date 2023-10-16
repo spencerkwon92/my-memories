@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from '../reducers/user';
 
-const FollowButton = ({ post }) => {
+function FollowButton({ post }){
   const dispatch = useDispatch();
   const { me, followLoading, unfollowLoading } = useSelector((state) => state.user);
 

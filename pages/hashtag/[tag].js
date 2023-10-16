@@ -7,7 +7,7 @@ import { Heading, Center } from "@chakra-ui/react";
 
 import { LOAD_HASHTAG_POSTS_REQUEST } from "../../reducers/post";
 import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
-import NewPostCard from "../../components/NewPostCard";
+import PostCard from "../../components/PostCard";
 import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/AppLayout";
 import Spacer from "../../components/CustomizedUI/Spacer";
@@ -56,7 +56,7 @@ export default function TagPage() {
     <AppLayout>
       {mainPosts.map((post) => (
         <>
-          <NewPostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} />
           <Spacer />
         </>
       ))}

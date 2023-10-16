@@ -11,7 +11,7 @@ import {LOAD_USER_POSTS_REQUEST } from "../../reducers/post";
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST} from "../../reducers/user";
 import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/AppLayout";
-import NewPostCard from '../../components/NewPostCard'
+import PostCard from '../../components/PostCard'
 import Spacer from "../../components/CustomizedUI/Spacer";
 
 export default function UserPage() {
@@ -69,7 +69,7 @@ export default function UserPage() {
       ) : (
         mainPosts?.map((post) => (
           <>
-            <NewPostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} />
             <Spacer size="20" />
           </>
         ))

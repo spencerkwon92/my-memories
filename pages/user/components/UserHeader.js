@@ -8,14 +8,14 @@ import {
   Divider,
   Button,
 } from "@chakra-ui/react";
-import styled from '@emotion/styled'
 import {useRouter} from 'next/router'
 import { useSelector } from "react-redux";
+import PropTypes from 'prop-types'
 
 import useContainer from "../../../hooks/useContainer";
 import Spacer from '../../../components/CustomizedUI/Spacer'
 
-export default function UserHeader({ user }) {
+function UserHeader({ user }) {
   const isMobile = useContainer({ default: false, md: true });
   const {me} = useSelector((state)=>state.user)
   const router = useRouter();
@@ -84,3 +84,9 @@ export default function UserHeader({ user }) {
     </>
   );
 }
+
+UserHeader.propTypes = {
+  user: PropTypes.object.isRequired,
+}
+
+export default UserHeader;

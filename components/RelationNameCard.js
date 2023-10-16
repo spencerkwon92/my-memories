@@ -6,6 +6,7 @@ import {
 import {useDispatch, useSelector } from "react-redux";
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
 import {css} from '@emotion/react'
+import PropTypes from 'prop-types'
 
 const mainCss = css`
   display: flex;
@@ -22,7 +23,7 @@ const mainCss = css`
   }
 `;
 
-export default function RelationNameCard({ user }) {
+function RelationNameCard({ user }) {
   const dispatch = useDispatch();
   const {me} = useSelector((state)=>state.user)
   const id = user?.id
@@ -64,3 +65,9 @@ export default function RelationNameCard({ user }) {
     </div>
   );
 }
+
+RelationNameCard.propTypes = {
+  user: PropTypes.object.isRequired,
+};
+
+export default RelationNameCard;

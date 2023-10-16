@@ -26,7 +26,6 @@ import {
   REMOVE_LOADED_IMAGE,
   ADD_POST_REQUEST,
 } from "../reducers/post";
-//TODO: 이미지 업로드 과정 다시 공부 && useRef, useReducer, useCallback, useMemo 다시 공부...
 
 const imageGroupWrapperCss = css`
   display: flex;
@@ -55,7 +54,7 @@ const StyledRemoveButton = styled(Button)`
   margin: 10px
 `
 
-const PostForm = () => {
+function PostForm(){
   const dispatch = useDispatch();
   const [text, setText] = useState("");
   const { imagePaths, addPostLoading, addPostDone } = useSelector(
@@ -71,7 +70,7 @@ const PostForm = () => {
 
   const onChangeImages = useCallback((e) => {
     console.log("images", e.target.files);
-    const imageFormData = new FormData(); // 폼데이터 인스턴스 생성...
+    const imageFormData = new FormData();
     [].forEach.call(e.target.files, (file) => {
       imageFormData.append("image", file);
     });
@@ -101,7 +100,7 @@ const PostForm = () => {
       return alert("게시글을 작성하세요.");
     }
 
-    const formData = new FormData();// path에 있는 이미지를 폼에 모은다....{Image: ..., content: ...} 이런 식으로...
+    const formData = new FormData();
 
     imagePaths.forEach((path) => {
       formData.append("image", path);
