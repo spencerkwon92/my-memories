@@ -1,5 +1,5 @@
-import {css} from '@emotion/react'
 import React, { useCallback } from "react";
+import {css} from '@emotion/react'
 import { useSelector, useDispatch } from "react-redux";
 import {
   Avatar,
@@ -19,6 +19,7 @@ import {
 import { HamburgerIcon } from "@chakra-ui/icons";
 import Router from "next/router";
 import PropTypes from 'prop-types'
+import NextLink from 'next/link'
 
 import { logoutRequestAction } from "../reducers/user";
 import RelationNameCard from "./RelationNameCard";
@@ -66,7 +67,7 @@ function UserProfile(){
           }
         />
         <div>
-          <Link fontWeight="bold" href={`/user/${me?.id}`}>
+          <Link as={NextLink} fontWeight='bold' href={`/user/${me?.id}`}>
             {me.nickname}
           </Link>
           <Text fontSize="sm">{me.email}</Text>

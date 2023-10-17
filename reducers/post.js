@@ -1,4 +1,3 @@
-import { de } from "faker/lib/locales";
 import produce from "../util/produce";
 
 export const initialState = {

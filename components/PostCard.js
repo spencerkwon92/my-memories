@@ -4,6 +4,7 @@ import {Spacer as ChakraSpacer, Link, Center, Card, CardHeader, Avatar, CardBody
 import {useSelector, useDispatch} from 'react-redux'
 import {BiLike, BiChat, BiShare, BiSolidLike  } from 'react-icons/bi'
 import PropTypes from 'prop-types'
+import NextLink from 'next/link'
 
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
@@ -49,14 +50,14 @@ function PostCard({post}) {
 
   return (
     <>
-      <Card variant="outline">
+      <Card>
         <CardHeader>
           <Flex spacing="4">
             <Flex flex="1" alignItems="center" flexWrap="wrap">
               <Flex alignItem="center" gap="4">
                 <Avatar name={post?.User?.nickname} src={post.User.ProfileImage?`http://localhost:3065/${post.User.ProfileImage?.src}`:null} />
                 <Center>
-                  <Link fontWeight='bold' fontSize='15px' href={`/user/${post.User?.id}`}>{post?.User?.nickname}</Link>
+                  <Link as={NextLink} fontWeight='bold' fontSize='15px' href={`/user/${post.User?.id}`}>{post?.User?.nickname}</Link>
                 </Center>
               </Flex>
               <ChakraSpacer />

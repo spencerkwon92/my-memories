@@ -7,6 +7,7 @@ import {useDispatch, useSelector } from "react-redux";
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
+import NextLink from 'next/link'
 
 const mainCss = css`
   display: flex;
@@ -57,7 +58,9 @@ function RelationNameCard({ user }) {
               : null
           }
         />
-        <Link href={`/user/${id}`}>{user?.nickname}</Link>
+        <Link as={NextLink} href={`/user/${id}`}>
+          {user?.nickname}
+        </Link>
       </div>
       <Link color="blue" onClick={onFollowingHandle}>
         {isFollowing ? "Unfollow" : "Follow"}

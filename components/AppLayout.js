@@ -5,6 +5,7 @@ import { Menu, MenuButton, Divider, Center, Container, IconButton, Button, Avata
 import { css } from "@emotion/react";
 import {useSelector} from 'react-redux'
 import { BiHome,BiUserCircle } from "react-icons/bi";
+import NextLink from 'next/link'
 
 import Spacer from "./CustomizedUI/Spacer";
 import useContainer from "../hooks/useContainer";
@@ -81,7 +82,7 @@ useEffect(() => {
     <Container maxW="container.lg">
       <Menu>
         <div css={wrapperCss}>
-          <MenuButton as="a" href="/" css={linkCss}>
+          <MenuButton as={NextLink} href="/" css={linkCss}>
             My Memories
           </MenuButton>
           {!isMobile && (

@@ -73,7 +73,7 @@ function LoginPage() {
             </VStack>
           </FormControl>
         </Container>
-        <Center marginTop='10px'>
+        <Center marginTop="10px">
           <Text fontSize="lg">
             Don't have an account?{" "}
             <a className="signUpAnker" href="/signup">

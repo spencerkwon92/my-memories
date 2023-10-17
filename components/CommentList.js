@@ -1,9 +1,10 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {List, ListItem, Avatar, IconButton,Spacer } from '@chakra-ui/react'
+import {List, ListItem, Avatar, IconButton, Spacer, Link } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 import {DeleteIcon} from '@chakra-ui/icons'
 import { useDispatch,useSelector } from 'react-redux'
+import NextLink from 'next/link'
 
 import {REMOVE_POST_COMMENT_REQUEST} from '../reducers/post'
 
@@ -68,7 +69,7 @@ function Comment({comment, postUserId}){
             : null
         }
       />
-      <div>{comment.User.nickname}</div>
+      <Link as={NextLink} fontWeight='bold' href={`/user/${comment.UserId}`}>{comment.User.nickname}</Link>
       <div>{comment.content}</div>
       {isRemoveable && (
         <>
