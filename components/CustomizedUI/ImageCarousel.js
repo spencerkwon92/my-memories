@@ -6,6 +6,7 @@ import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
 
 import Spacer from './Spacer'
+import {backUrl} from '../../config/config'
 
 const StyledBox = styled(Box)`
   position: relative;
@@ -130,7 +131,7 @@ export default function ImageCarousel({images}) {
           <div key={index} css={imageContainerCss}>
             <Image
               key={index}
-              src={`http://localhost:3065/${image.src}`}
+              src={`${backUrl}/${image.src}`}
               alt={image.src}
               width="100%"
               height="auto"
@@ -167,10 +168,7 @@ export default function ImageCarousel({images}) {
         <Center className="imageMarks">
           <HStack spacing={2}>
             {images.map((image, index) => (
-              <button
-                key={index}
-                css={indexMarkerCss}
-              >
+              <button key={index} css={indexMarkerCss}>
                 {index === currentImageIndex ? "●" : "○"}
               </button>
             ))}

@@ -24,6 +24,7 @@ import NextLink from 'next/link'
 import { logoutRequestAction } from "../reducers/user";
 import RelationNameCard from "./RelationNameCard";
 import {default as CustomSpacer} from "./CustomizedUI/Spacer";
+import {backUrl} from '../config/config'
 
 const flexCss = css`
   display: flex;
@@ -62,7 +63,7 @@ function UserProfile(){
           size="lg"
           src={
             me.ProfileImage
-              ? `http://localhost:3065/${me.ProfileImage?.src}`
+              ? `${backUrl}/${me.ProfileImage?.src}`
               : null
           }
         />

@@ -7,6 +7,7 @@ import { useDispatch,useSelector } from 'react-redux'
 import NextLink from 'next/link'
 
 import {REMOVE_POST_COMMENT_REQUEST} from '../reducers/post'
+import {backUrl} from '../config/config'
 
 const StyledList = styled(List)`
   max-height: 500px;
@@ -65,11 +66,13 @@ function Comment({comment, postUserId}){
         name={comment.User.nickname}
         src={
           comment.User.ProfileImage
-            ? `http://localhost:3065/${comment.User.ProfileImage?.src}`
+            ? `${backUrl}/${comment.User.ProfileImage?.src}`
             : null
         }
       />
-      <Link as={NextLink} fontWeight='bold' href={`/user/${comment.UserId}`}>{comment.User.nickname}</Link>
+      <Link as={NextLink} fontWeight="bold" href={`/user/${comment.UserId}`}>
+        {comment.User.nickname}
+      </Link>
       <div>{comment.content}</div>
       {isRemoveable && (
         <>

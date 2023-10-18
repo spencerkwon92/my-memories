@@ -21,6 +21,8 @@ import { PlusSquareIcon, ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
 import {css} from '@emotion/react'
 import styled from "@emotion/styled";
 
+import {backUrl} from '../config/config'
+
 import {
   UPLOAD_IMAGES_REQUEST,
   REMOVE_LOADED_IMAGE,
@@ -145,7 +147,7 @@ function PostForm(){
             {imagePaths.map((image, i) => (
               <div key={image} css={imageWrapperCss}>
                 <StyledImage
-                  src={`http://localhost:3065/${image}`}
+                  src={`${backUrl}/${image}`}
                   alt={image}
                 />
                 <StyledRemoveButton onClick={onRemoveImage(i)}>

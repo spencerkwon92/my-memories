@@ -18,6 +18,7 @@ import CommentList from "./CommentList";
 import useContainer from '../hooks/useContainer'
 import Spacer from "./CustomizedUI/Spacer"
 import PostMenuButton from "./CustomizedUI/PostMenuButton";
+import {backUrl} from '../config/config'
 
 const commentListCss=css`
   margin: 0px 10px;
@@ -55,7 +56,7 @@ function PostCard({post}) {
           <Flex spacing="4">
             <Flex flex="1" alignItems="center" flexWrap="wrap">
               <Flex alignItem="center" gap="4">
-                <Avatar name={post?.User?.nickname} src={post.User.ProfileImage?`http://localhost:3065/${post.User.ProfileImage?.src}`:null} />
+                <Avatar name={post?.User?.nickname} src={post.User.ProfileImage?`${backUrl}/${post.User.ProfileImage?.src}`:null} />
                 <Center>
                   <Link as={NextLink} fontWeight='bold' fontSize='15px' href={`/user/${post.User?.id}`}>{post?.User?.nickname}</Link>
                 </Center>
