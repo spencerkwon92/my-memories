@@ -1,5 +1,4 @@
 import React from 'react'
-import {useSelector} from 'react-redux'
 import {
   Container,
   HStack,
@@ -16,10 +15,7 @@ import Spacer from './CustomizedUI/Spacer'
 import useContainer from '../hooks/useContainer';
 
 function PageLoadingIndicator() {
-  const {mainPosts} = useSelector((state)=>state.post)
   const isMobile = useContainer({ default: false, md: true });
-  const howManyPosts = mainPosts.length
-  console.log(howManyPosts)
   return (
     <Container maxW="container.lg" p="5">
       <HStack>

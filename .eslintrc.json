@@ -16,8 +16,10 @@
     "airbnb"
   ],
   "plugins": [
+    "next",
     "import",
-    "react-hooks"
+    "react-hooks",
+    "jsx-a11y"
   ],
   "rules": {
     "jsx-a11y/label-has-associated-control": "off",
