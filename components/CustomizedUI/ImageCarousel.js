@@ -6,7 +6,6 @@ import styled from '@emotion/styled'
 import PropTypes from 'prop-types'
 
 import Spacer from './Spacer'
-import {backUrl} from '../../config/config'
 
 const StyledBox = styled(Box)`
   position: relative;
@@ -116,13 +115,6 @@ export default function ImageCarousel({images}) {
       imageGroupRef.current.scrollLeft += imageGroupRef.current.clientWidth;
     }
   },[currentImageIndex, imageListSize]);
-
-  const markerButtonHander = useCallback(
-    (index) => {
-      setCurrentImageIndex(index);
-    },
-    []
-  );
 
   return (
     <StyledBox>

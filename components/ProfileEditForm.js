@@ -28,7 +28,6 @@ import useInput from '../hooks/useInput';
 import { CHANGE_NICKNAME_REQUEST, UPLOAD_PROFILE_IMAGE_REQUEST, EDIT_PROFILE_IMAGE_REQUEST } from '../reducers/user';
 import Spacer from './CustomizedUI/Spacer'
 import styled from '@emotion/styled';
-import {backUrl} from '../config/config' 
 
 const ButtonImage = styled(Image)`
   opacity: 0.5;
@@ -64,7 +63,7 @@ function ProfileEditForm(){
             size="lg"
             src={
               me.ProfileImage !==null
-                ? `${backUrl}/${me.ProfileImage.src}`
+                ? me.ProfileImage.src
                 : null
             }
           />
@@ -139,7 +138,7 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
     if(imagePath){
       ConditionalImageButton = (
         <ButtonImage
-          src={`${backUrl}/${imagePath}`}
+          src={imagePath}
           alt="프로필 이미지"
           width="100%"
           height="100%"
@@ -150,7 +149,7 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
     }else{
       ConditionalImageButton=(
         <ButtonImage
-          src={`${backUrl}/${me.ProfileImage.src}`}
+          src={me.ProfileImage.src}
           alt="프로필 이미지"
           width="100%"
           height="100%"

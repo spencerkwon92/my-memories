@@ -10,7 +10,6 @@ import NextLink from 'next/link'
 import Spacer from "./CustomizedUI/Spacer";
 import useContainer from "../hooks/useContainer";
 import SearchButton from "./SearchButton";
-import {backUrl} from '../config/config'
 
 const buttonCss = css`
   &:hover {
@@ -122,7 +121,7 @@ useEffect(() => {
                 <Avatar
                   src={
                     me?.ProfileImage
-                      ? `${backUrl}/${me?.ProfileImage?.src}`
+                      ? me?.ProfileImage?.src
                       : null
                   }
                   size="sm"

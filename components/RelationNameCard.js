@@ -9,8 +9,6 @@ import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
 import NextLink from 'next/link'
 
-import {backUrl} from '../config/config'
-
 const mainCss = css`
   display: flex;
   flex-direction: row;
@@ -56,7 +54,7 @@ function RelationNameCard({ user }) {
           size="md"
           src={
             user.ProfileImage
-              ? `${backUrl}/${user.ProfileImage?.src}`
+              ? user.ProfileImage?.src
               : null
           }
         />

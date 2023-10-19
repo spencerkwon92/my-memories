@@ -21,8 +21,6 @@ import { PlusSquareIcon, ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
 import {css} from '@emotion/react'
 import styled from "@emotion/styled";
 
-import {backUrl} from '../config/config'
-
 import {
   UPLOAD_IMAGES_REQUEST,
   REMOVE_LOADED_IMAGE,

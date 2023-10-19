@@ -14,7 +14,6 @@ import PropTypes from 'prop-types'
 
 import useContainer from "../../../hooks/useContainer";
 import Spacer from '../../../components/CustomizedUI/Spacer'
-import {backUrl} from '../../../config/config'
 
 function UserHeader({ user }) {
   const isMobile = useContainer({ default: false, md: true });
@@ -47,7 +46,7 @@ function UserHeader({ user }) {
           size={isMobile ? "xl" : "2xl"}
           src={
             user?.ProfileImage
-              ? `${backUrl}/${user.ProfileImage?.src}`
+              ? user.ProfileImage?.src
               : null
           }
         />
