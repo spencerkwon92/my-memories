@@ -18,6 +18,7 @@ import CommentList from "./CommentList";
 import useContainer from '../hooks/useContainer'
 import Spacer from "./CustomizedUI/Spacer"
 import PostMenuButton from "./CustomizedUI/PostMenuButton";
+import {pageUrl} from '../config/config'
 
 const commentListCss=css`
   margin: 0px 10px;
@@ -31,10 +32,15 @@ function PostCard({post}) {
   const liked = post.Likers.find((liker)=>liker.id === id)
 
   const likedHandle = useCallback(()=>{
-    dispatch({
-      type: LIKE_POST_REQUEST,
-      data: post.id,
-    })
+    if(!me){
+      alert('좋아요를 누르시려면 로그인이 필요합니다.')
+    }else{
+      dispatch({
+        type: LIKE_POST_REQUEST,
+        data: post.id,
+      });
+    }
+
   },[])
 
   const unlikedHandle = useCallback(()=>{
@@ -48,6 +54,21 @@ function PostCard({post}) {
     setShowCommentForm((prev)=>!prev)
   },[])
 
+  const onShareClick = useCallback(()=>{
+    const pageUrl = window.location.origin;
+    const urlForCopy = `${pageUrl}/post/${post.id}`;
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "기록하며 성장하기",
+          text: "Hello World",
+          url: urlForCopy,
+        })
+        .then(() => console.log("공유 성공"))
+        .catch((error) => console.log("공유 실패", error));
+    }
+  },[])
+
   return (
     <>
       <Card>
@@ -55,9 +76,21 @@ function PostCard({post}) {
           <Flex spacing="4">
             <Flex flex="1" alignItems="center" flexWrap="wrap">
               <Flex alignItem="center" gap="4">
-                <Avatar name={post?.User?.nickname} src={post.User.ProfileImage?post.User.ProfileImage?.src:null} />
+                <Avatar
+                  name={post?.User?.nickname}
+                  src={
+                    post.User.ProfileImage ? post.User.ProfileImage?.src : null
+                  }
+                />
                 <Center>
-                  <Link as={NextLink} fontWeight='bold' fontSize='15px' href={`/user/${post.User?.id}`}>{post?.User?.nickname}</Link>
+                  <Link
+                    as={NextLink}
+                    fontWeight="bold"
+                    fontSize="15px"
+                    href={`/user/${post.User?.id}`}
+                  >
+                    {post?.User?.nickname}
+                  </Link>
                 </Center>
               </Flex>
               <ChakraSpacer />
@@ -90,7 +123,12 @@ function PostCard({post}) {
               >
                 Comment
               </Button>
-              <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
+              <Button
+                flex="1"
+                variant="ghost"
+                leftIcon={<BiShare />}
+                onClick={onShareClick}
+              >
                 Share
               </Button>
             </>
@@ -106,7 +144,11 @@ function PostCard({post}) {
                 variant="ghost"
                 onClick={onToggleComment}
               />
-              <IconButton variant="ghost" icon={<BiShare />} />
+              <IconButton
+                variant="ghost"
+                icon={<BiShare />}
+                onClick={onShareClick}
+              />
             </>
           )}
         </CardFooter>

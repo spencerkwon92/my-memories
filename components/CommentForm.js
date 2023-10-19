@@ -10,7 +10,7 @@ import Spacer from './CustomizedUI/Spacer';
 function CommentForm({ post }){
   const dispatch = useDispatch();
   const { addCommentDone, addCommentLoading } = useSelector((state) => state.post);
-  const id = useSelector((state) => state.user.me?.id);
+  const {me} = useSelector((state) => state.user);
   const [commentText, onChangeCommentText, setCommentText] = useInput('');
   
   useEffect(() => {
@@ -20,12 +20,16 @@ function CommentForm({ post }){
   }, [addCommentDone]);
 
   const onSubmitComment = useCallback(() => {
-    console.log('clicked comment button')
-    dispatch({
-      type: ADD_COMMENT_REQUEST,
-      data: { content: commentText, userId: id, postId: post.id },
+    if(!me){
+      alert('댓글을 달려면 로그인이 필요합니다.')
+    }else{
+      dispatch({
+        type: ADD_COMMENT_REQUEST,
+        data: { content: commentText, userId: me?.id, postId: post.id },
     });
-  }, [commentText, id]);
+    }
+
+  }, [commentText, me?.id]);
 
   return (
     <FormControl>

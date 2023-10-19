@@ -1,7 +1,6 @@
 import React,{useState, useEffect} from "react";
 import Head from "next/head";
 import PropTypes from "prop-types";
-import "antd/dist/antd.css";
 import { ChakraProvider, Container } from "@chakra-ui/react";
 import {useRouter} from 'next/router'
 import PageLoadingIndicator from "../components/PageLoadingIndicator";

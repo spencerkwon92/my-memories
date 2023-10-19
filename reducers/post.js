@@ -3,6 +3,8 @@ import produce from "../util/produce";
 export const initialState = {
   mainPosts: [],
 
+  singlePost: null,
+
   imagePaths: [],
 
   hasMorePosts: true,
@@ -10,6 +12,10 @@ export const initialState = {
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
 
   addPostLoading: false,
   addPostDone: false,
@@ -88,6 +94,10 @@ export const REMOVE_POST_COMMENT_REQUEST = "REMOVE_POST_COMMENT_REQUEST";
 export const REMOVE_POST_COMMENT_SUCCESS = "REMOVE_POST_COMMENT_SUCCESS";
 export const REMOVE_POST_COMMENT_FAILURE = "REMOVE_POST_COMMENT_FAILURE";
 
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
+
 export const REMOVE_LOADED_IMAGE = "REMOVE_LOADED_IMAGE";
 
 export const addPost = (data) => ({
@@ -156,6 +166,20 @@ const reducer = (state = initialState, action) =>
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
         draft.loadPostsError = action.error;
+        break;
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.data;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
         break;
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
@@ -241,7 +265,7 @@ const reducer = (state = initialState, action) =>
         draft.removePostCommentDone = false;
         draft.removePostCommentError = null;
         break;
-      case REMOVE_POST_COMMENT_SUCCESS:{
+      case REMOVE_POST_COMMENT_SUCCESS: {
         const post = draft.mainPosts.find(
           (post) => post.id === action.data.PostId
         );
