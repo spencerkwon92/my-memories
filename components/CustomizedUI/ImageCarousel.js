@@ -131,7 +131,7 @@ export default function ImageCarousel({images}) {
           <div key={index} css={imageContainerCss}>
             <Image
               key={index}
-              src={`${backUrl}/${image.src}`}
+              src={image.src}
               alt={image.src}
               width="100%"
               height="auto"

@@ -147,7 +147,7 @@ function PostForm(){
             {imagePaths.map((image, i) => (
               <div key={image} css={imageWrapperCss}>
                 <StyledImage
-                  src={`${backUrl}/${image}`}
+                  src={image}
                   alt={image}
                 />
                 <StyledRemoveButton onClick={onRemoveImage(i)}>
