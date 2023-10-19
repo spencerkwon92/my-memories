@@ -42,6 +42,7 @@ function Home(){
     };
   }, [mainPosts, hasMorePosts, loadPostsLoading]);
   const isMobile = useContainer({ default: false, md: true });
+  console.log(me)
 
   return (
     <AppLayout>
