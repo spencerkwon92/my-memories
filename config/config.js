@@ -1,1 +1,1 @@
-export const backUrl = "http://mymemories.kr";
+export const backUrl = "http://api.mymemories.kr";
