@@ -3,10 +3,10 @@ import axios from 'axios';
 
 import userSaga from './user';
 import postSaga from './post';
-import {backUrl, devUrl} from '../config/config';
+import {backUrl} from '../config/config';
 
 //ec2 back server IP
-axios.defaults.baseURL = (process.env.NODE_ENV==='production')?backUrl:devUrl;
+axios.defaults.baseURL = backUrl;
 axios.defaults.withCredentials = true;
 
 export default function* rootSaga(){

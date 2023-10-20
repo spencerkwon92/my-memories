@@ -18,7 +18,6 @@ import CommentList from "./CommentList";
 import useContainer from '../hooks/useContainer'
 import Spacer from "./CustomizedUI/Spacer"
 import PostMenuButton from "./CustomizedUI/PostMenuButton";
-import {pageUrl} from '../config/config'
 
 const commentListCss=css`
   margin: 0px 10px;
@@ -55,18 +54,19 @@ function PostCard({post}) {
   },[])
 
   const onShareClick = useCallback(()=>{
-    const pageUrl = window.location.origin;
-    const urlForCopy = `${pageUrl}/post/${post.id}`;
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "기록하며 성장하기",
-          text: "Hello World",
-          url: urlForCopy,
-        })
-        .then(() => console.log("공유 성공"))
-        .catch((error) => console.log("공유 실패", error));
-    }
+    alert('열심히 준비중입니다...')
+    // const pageUrl = window.location.origin;
+    // const urlForCopy = `${pageUrl}/post/${post.id}`;
+    // if (navigator.share) {
+    //   navigator
+    //     .share({
+    //       title: "기록하며 성장하기",
+    //       text: "Hello World",
+    //       url: urlForCopy,
+    //     })
+    //     .then(() => console.log("공유 성공"))
+    //     .catch((error) => console.log("공유 실패", error));
+    // }
   },[])
 
   return (

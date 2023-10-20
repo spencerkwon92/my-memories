@@ -1,3 +1,1 @@
-export const backUrl = "http://api.mymemories.kr";
-export const devUrl = "http://localhost:80"
-export const pageUrl = 'http://mymemories.kr'
+export const backUrl = process.env.NODE_ENV === 'production'? "https://api.mymemories.kr": "http://localhost:3065";
