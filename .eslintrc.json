@@ -13,10 +13,10 @@
     "es6": true
   },
   "extends": [
-    "airbnb"
+    "airbnb",
+    "next/core-web-vitals"
   ],
   "plugins": [
-    "next",
     "import",
     "react-hooks",
     "jsx-a11y"
