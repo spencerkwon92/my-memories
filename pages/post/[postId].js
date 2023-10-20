@@ -40,7 +40,7 @@ function UserPost(){
               : `${pageUrl}/favicon.ico`
           }
         />
-        <meta property="og:url" content={`${pageUrl}/post/${id}`} />
+        <meta property="og:url" content={`https://mymemories.kr/post/${id}`} />
       </Head>
       <Flex
         flexDirection="column"
