@@ -58,6 +58,7 @@ export default function UserPage() {
     })
   },[id]) 
 
+
   return (
     <AppLayout>
       <UserHeader user={me?.id === parseInt(id,10) ? me : userInfo} />

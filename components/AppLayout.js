@@ -1,11 +1,11 @@
 import React,{useEffect,useRef, useCallback} from "react";
 import PropTypes from "prop-types";
 import Router from "next/router";
-import { Menu, MenuButton, Divider, Center, Container, IconButton, Button, Avatar } from "@chakra-ui/react";
+import { Menu, MenuButton, Divider, Container, IconButton, Button, Avatar } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import {useSelector} from 'react-redux'
 import { BiHome,BiUserCircle } from "react-icons/bi";
-import NextLink from 'next/link'
+import Link from 'next/link'
 
 import Spacer from "./CustomizedUI/Spacer";
 import useContainer from "../hooks/useContainer";
@@ -81,10 +81,12 @@ useEffect(() => {
   return (
     <Container maxW="container.lg">
       <Menu>
-        <div css={wrapperCss}>
-          <MenuButton as={NextLink} href="/" css={linkCss}>
-            My Memories
-          </MenuButton>
+        <div css={wrapperCss} passHref>
+          <Link href="/">
+            <MenuButton as="a" css={linkCss}>
+              My Memories
+            </MenuButton>
+          </Link>
           {!isMobile && (
             <div>
               <SearchButton type={Button}>Search</SearchButton>
@@ -119,11 +121,7 @@ useEffect(() => {
               <SearchButton type={IconButton} />
               {me ? (
                 <Avatar
-                  src={
-                    me?.ProfileImage
-                      ? me?.ProfileImage?.src
-                      : null
-                  }
+                  src={me?.ProfileImage ? me?.ProfileImage?.src : null}
                   size="sm"
                   onClick={onLoginButtonHandler}
                 />

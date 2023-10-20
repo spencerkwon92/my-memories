@@ -13,13 +13,11 @@ import {
   Center,
   Container,
   Heading,
-  Link,
   Spacer,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import Router from "next/router";
 import PropTypes from 'prop-types'
-import NextLink from 'next/link'
+import Link from 'next/link'
 
 import { logoutRequestAction } from "../reducers/user";
 import RelationNameCard from "./RelationNameCard";
@@ -32,8 +30,10 @@ const flexCss = css`
   justify-content: center;
 
   > div {
-    padding-top: 10px;
     margin-left: 10px;
+    > a {
+      font-weight: bold;
+    }
   }
 `;
 
@@ -49,10 +49,6 @@ function UserProfile(){
     dispatch(logoutRequestAction());
   }, []);
 
-  const profileButtonHandler = useCallback(()=>{
-    Router.push('/profile')
-  },[])
-
   return (
     <>
       <div css={flexCss}>
@@ -60,15 +56,11 @@ function UserProfile(){
           name={me.nickname}
           bgColor="gray"
           size="lg"
-          src={
-            me.ProfileImage
-              ? me.ProfileImage?.src
-              : null
-          }
+          src={me.ProfileImage ? me.ProfileImage?.src : null}
         />
         <div>
-          <Link as={NextLink} fontWeight='bold' href={`/user/${me?.id}`}>
-            {me.nickname}
+          <Link href={`/user/${me?.id}`} passHref>
+            <a>{me?.nickname}</a>
           </Link>
           <Text fontSize="sm">{me.email}</Text>
         </div>
@@ -81,7 +73,9 @@ function UserProfile(){
             variant="outline"
           />
           <MenuList>
-            <MenuItem onClick={profileButtonHandler}>프로필 관리</MenuItem>
+            <Link href='/profile'>
+              <MenuItem as='a'>프로필 관리</MenuItem>
+            </Link>
             <MenuItem onClick={onLogOut} loading={logoutLoading}>
               로그아웃
             </MenuItem>
@@ -101,7 +95,7 @@ function UserProfile(){
           return (
             <>
               <RelationNameCard key={follower.id} user={follower} />
-              <CustomSpacer />
+              <CustomSpacer key={follower.id} />
             </>
           );
         })}

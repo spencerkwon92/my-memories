@@ -1,13 +1,10 @@
 import React, {useCallback} from "react";
-import {
-  Avatar,
-  Link,
-} from "@chakra-ui/react";
+import {Avatar,Button} from "@chakra-ui/react";
 import {useDispatch, useSelector } from "react-redux";
 import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../reducers/user";
 import {css} from '@emotion/react'
 import PropTypes from 'prop-types'
-import NextLink from 'next/link'
+import Link from 'next/link'
 
 const mainCss = css`
   display: flex;
@@ -52,19 +49,15 @@ function RelationNameCard({ user }) {
           name={user?.nickname}
           bgColor="gray"
           size="md"
-          src={
-            user.ProfileImage
-              ? user.ProfileImage?.src
-              : null
-          }
+          src={user.ProfileImage ? user.ProfileImage?.src : null}
         />
-        <Link as={NextLink} href={`/user/${id}`}>
-          {user?.nickname}
+        <Link href={`/user/${id}`} passHref>
+          <a>{user?.nickname}</a>
         </Link>
       </div>
-      <Link color="blue" onClick={onFollowingHandle}>
+      <Button color="blue" onClick={onFollowingHandle} variant='link' >
         {isFollowing ? "Unfollow" : "Follow"}
-      </Link>
+      </Button>
     </div>
   );
 }

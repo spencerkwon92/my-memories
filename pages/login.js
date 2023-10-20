@@ -16,6 +16,7 @@ import Router from "next/router";
 import { loginRequestAction } from "../reducers/user";
 import useInput from "../hooks/useInput";
 import AppLayout from "../components/AppLayout";
+import Spacer from "../components/CustomizedUI/Spacer";
 
 const wrapperCss = css`
   display: flex;
@@ -53,6 +54,7 @@ function LoginPage() {
           <Center>
             <Heading size="xl">My Memories</Heading>
           </Center>
+          <Spacer size="20" />
           <FormControl>
             <VStack spacing={5}>
               <Input

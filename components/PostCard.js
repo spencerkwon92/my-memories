@@ -1,10 +1,10 @@
 import React, {useCallback, useState} from "react";
 import { css } from "@emotion/react";
-import {Spacer as ChakraSpacer, Link, Center, Card, CardHeader, Avatar, CardBody, Button, Flex, CardFooter, Divider, IconButton} from '@chakra-ui/react'
+import {Spacer as ChakraSpacer, Center, Card, CardHeader, Avatar, CardBody, Button, Flex, CardFooter, Divider, IconButton} from '@chakra-ui/react'
 import {useSelector, useDispatch} from 'react-redux'
 import {BiLike, BiChat, BiShare, BiSolidLike  } from 'react-icons/bi'
 import PropTypes from 'prop-types'
-import NextLink from 'next/link'
+import Link from 'next/link'
 
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
@@ -22,6 +22,11 @@ import PostMenuButton from "./CustomizedUI/PostMenuButton";
 const commentListCss=css`
   margin: 0px 10px;
 `
+const ankerCss = css`
+  font-weight: bold;
+  font-size: 15px;
+`
+
 function PostCard({post}) {
   const [shewCommentForm, setShowCommentForm] = useState(false)
   const dispatch = useDispatch()
@@ -54,19 +59,17 @@ function PostCard({post}) {
   },[])
 
   const onShareClick = useCallback(()=>{
-    alert('열심히 준비중입니다...')
-    // const pageUrl = window.location.origin;
-    // const urlForCopy = `${pageUrl}/post/${post.id}`;
-    // if (navigator.share) {
-    //   navigator
-    //     .share({
-    //       title: "기록하며 성장하기",
-    //       text: "Hello World",
-    //       url: urlForCopy,
-    //     })
-    //     .then(() => console.log("공유 성공"))
-    //     .catch((error) => console.log("공유 실패", error));
-    // }
+    const urlForCopy = `https://mymemories/post/${post.id}`;
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "기록하며 성장하기",
+          text: "Hello World",
+          url: urlForCopy,
+        })
+        .then(() => console.log("공유 성공"))
+        .catch((error) => console.log("공유 실패", error));
+    }
   },[])
 
   return (
@@ -83,13 +86,10 @@ function PostCard({post}) {
                   }
                 />
                 <Center>
-                  <Link
-                    as={NextLink}
-                    fontWeight="bold"
-                    fontSize="15px"
-                    href={`/user/${post.User?.id}`}
-                  >
-                    {post?.User?.nickname}
+                  <Link href={`/user/${post.User?.id}`} passHref>
+                    <a css={ankerCss}>
+                      {post?.User?.nickname}
+                    </a>
                   </Link>
                 </Center>
               </Flex>

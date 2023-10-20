@@ -1,10 +1,10 @@
 import React, {useCallback} from 'react'
 import PropTypes from 'prop-types'
-import {List, ListItem, Avatar, IconButton, Spacer, Link } from '@chakra-ui/react'
+import {List, ListItem, Avatar, IconButton, Spacer } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 import {DeleteIcon} from '@chakra-ui/icons'
 import { useDispatch,useSelector } from 'react-redux'
-import NextLink from 'next/link'
+import Link from 'next/link'
 
 import {REMOVE_POST_COMMENT_REQUEST} from '../reducers/post'
 
@@ -27,7 +27,9 @@ const StyledListItem = styled(ListItem)`
   & > :nth-child(2){
     margin: 0px 10px 0px 10px;
   }
-
+  > a{
+    font-weight: bold;
+  }
 `
 
 function CommentList({comments, postUserId}){
@@ -63,15 +65,14 @@ function Comment({comment, postUserId}){
       <Avatar
         size="sm"
         name={comment.User.nickname}
-        src={
-          comment.User.ProfileImage
-            ? comment.User.ProfileImage?.src
-            : null
-        }
+        src={comment.User.ProfileImage ? comment.User.ProfileImage?.src : null}
       />
-      <Link as={NextLink} fontWeight="bold" href={`/user/${comment.UserId}`}>
-        {comment.User.nickname}
+      <Link href={`/user/${comment.UserId}`} passHref>
+        <a>
+          {comment.User.nickname}
+        </a>
       </Link>
+
       <div>{comment.content}</div>
       {isRemoveable && (
         <>

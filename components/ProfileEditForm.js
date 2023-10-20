@@ -14,7 +14,6 @@ import {
   Avatar,
   Button,
   HStack,
-  Divider,
   Text,
   VStack,
   Input,

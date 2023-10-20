@@ -8,9 +8,10 @@ import {
   Divider,
   Button,
 } from "@chakra-ui/react";
-import {useRouter} from 'next/router'
 import { useSelector } from "react-redux";
 import PropTypes from 'prop-types'
+import {Link} from 'next/link'
+import {useRouter} from 'next/router'
 
 import useContainer from "../../../hooks/useContainer";
 import Spacer from '../../../components/CustomizedUI/Spacer'
@@ -18,10 +19,15 @@ import Spacer from '../../../components/CustomizedUI/Spacer'
 function UserHeader({ user }) {
   const isMobile = useContainer({ default: false, md: true });
   const {me} = useSelector((state)=>state.user)
-  const router = useRouter();
-  const onProfileButtonClicked = useCallback(()=>{
+  const router = useRouter()
+
+  const onClickHandler = useCallback(() =>{
     router.push('/profile')
   },[])
+
+  console.log("header 확인 ");
+  console.log(me?.id === user?.id);
+
 
   const FollowDashboard = (
     <HStack gap={isMobile?'30px': '15px'}>
@@ -44,11 +50,7 @@ function UserHeader({ user }) {
           name={user?.nickname}
           bgColor="gray"
           size={isMobile ? "xl" : "2xl"}
-          src={
-            user?.ProfileImage
-              ? user.ProfileImage?.src
-              : null
-          }
+          src={user?.ProfileImage ? user.ProfileImage?.src : null}
         />
         <VStack align="right">
           <HStack gap={isMobile ? "10px" : "20px"}>
@@ -60,7 +62,7 @@ function UserHeader({ user }) {
               {user?.nickname}
             </Text>
             {me?.id === user?.id && (
-              <Button size="sm" onClick={onProfileButtonClicked}>
+              <Button size="sm" onClick={onClickHandler}>
                 프로필 수정
               </Button>
             )}
@@ -73,20 +75,18 @@ function UserHeader({ user }) {
       </Center>
       <Spacer />
       <Divider />
-      {isMobile&&
+      {isMobile && (
         <>
           <Spacer size="20" />
-          <Center>
-            {FollowDashboard}
-          </Center>
+          <Center>{FollowDashboard}</Center>
         </>
-      }
+      )}
     </>
   );
 }
 
 UserHeader.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
 }
 
 export default UserHeader;

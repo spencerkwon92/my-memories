@@ -16,6 +16,7 @@ import {
 import { SIGN_UP_REQUEST } from "../reducers/user";
 import AppLayout from "../components/AppLayout";
 import useInput from "../hooks/useInput";
+import Spacer from '../components/CustomizedUI/Spacer'
 
 const wrapperCss = css`
   display: flex;
@@ -27,13 +28,13 @@ const wrapperCss = css`
 
 function Signup(){
   const [passwordCheck, setPasswordCheck] = useState("");
-  const [term, setTerm] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
   const [email, onChangeEmail] = useInput("");
   const [nickname, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
   const dispatch = useDispatch();
+  const hasNullText = !email || !nickname || !password || !passwordCheck;
   const { signupLoading, signupDone, signupError, me } = useSelector(
     (state) => state.user
   );
@@ -52,7 +53,11 @@ function Signup(){
   }, [me && me.id]);
 
   useEffect(() => {
-    if (signupDone) Router.push("/");
+
+    if (signupDone){
+      alert("환영합니다! 로그인 페이지로 이동합니다.");
+      Router.push("/login");
+    }
   }, [signupDone]);
 
   useEffect(() => {
@@ -61,17 +66,22 @@ function Signup(){
 
   const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
-      return setPasswordError(true);
+      setPasswordError(true);
     }
-    return dispatch({
-      type: SIGN_UP_REQUEST,
-      data: {
-        email,
-        password,
-        nickname,
-      },
-    });
-  }, [email, password, nickname, passwordCheck, term]);
+    if (!hasNullText) {
+      dispatch({
+        type: SIGN_UP_REQUEST,
+        data: {
+          email,
+          password,
+          nickname,
+        },
+      });
+    }else{
+      alert('회원 정보를 모두 넣어 주세요!.')
+    }
+
+  }, [email, password, nickname, passwordCheck]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
@@ -81,10 +91,6 @@ function Signup(){
     [password]
   );
 
-  const onChangeTerm = useCallback((e) => {
-    setTermError(false);
-    setTerm(e.target.checked);
-  }, []);
 
   return (
     <AppLayout>
@@ -96,6 +102,7 @@ function Signup(){
           <Center>
             <Heading size="2xl">Sign Up</Heading>
           </Center>
+          <Spacer size='20'/>
           <FormControl>
             <VStack spacing={5} align="center">
               <Input
