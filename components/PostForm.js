@@ -124,7 +124,7 @@ function PostForm(){
     setText(e.target.value);
   }, []);
 
-  console.log(uploadImagesError, uploadImagesLoading, uploadImagesDone)
+  console.log(uploadImagesError, uploadImagesLoading)
   
   if (uploadImagesError) {
     alert(uploadImagesError);
