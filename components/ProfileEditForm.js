@@ -137,25 +137,31 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
     if(imagePath){
       ConditionalImageButton = (
         <ButtonImage
-          src={imagePath}
+          src={imagePath.replace(
+            /\/resizedUserImages\//,
+            "/userProfileImages/"
+          )}
           alt="프로필 이미지"
           width="100%"
           height="100%"
           objectFit="cover"
           onClick={onProfileImageUpload}
         />
-      )
+      );
     }else{
-      ConditionalImageButton=(
+      ConditionalImageButton = (
         <ButtonImage
-          src={me.ProfileImage.src}
+          src={me.ProfileImage.src.replace(
+            /\/resizedUserImages\//,
+            "/userProfileImages/"
+          )}
           alt="프로필 이미지"
           width="100%"
           height="100%"
           objectFit="cover"
           onClick={onProfileImageUpload}
         />
-      )
+      );
     }
   }
 

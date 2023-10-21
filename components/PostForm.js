@@ -57,9 +57,13 @@ const StyledRemoveButton = styled(Button)`
 function PostForm(){
   const dispatch = useDispatch();
   const [text, setText] = useState("");
-  const { imagePaths, addPostLoading, addPostDone } = useSelector(
-    (state) => state.post
-  );
+  const {
+    imagePaths,
+    addPostLoading,
+    addPostDone,
+    uploadImagesLoading,
+    uploadImagesError,
+  } = useSelector((state) => state.post);
   const {me} = useSelector((state)=>state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -120,7 +124,11 @@ function PostForm(){
     setText(e.target.value);
   }, []);
 
-  if (!me) return null;
+  console.log(uploadImagesError, uploadImagesLoading, uploadImagesDone)
+  
+  if (uploadImagesError) {
+    alert(uploadImagesError);
+  }
 
   return (
     <>
@@ -145,7 +153,7 @@ function PostForm(){
             {imagePaths.map((image, i) => (
               <div key={image} css={imageWrapperCss}>
                 <StyledImage
-                  src={image}
+                  src={image.replace(/\/resizedPostImages\//, "/postImages/")}
                   alt={image}
                 />
                 <StyledRemoveButton onClick={onRemoveImage(i)}>
