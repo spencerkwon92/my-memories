@@ -106,6 +106,7 @@ export const UPLOAD_PROFILE_IMAGE_FAILURE = "UPLOAD_PROFILE_IMAGE_FAILURE";
 
 export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
+export const REMOVE_LOADED_IMAGE = "REMOVE_LOADED_IMAGE";
 
 // front에서 dispatch를 위해 action을 만들어준다.
 export const loginRequestAction = (data) => {
@@ -298,6 +299,8 @@ export default (state = initialState, action)=>produce(state, (draft)=>{
     case REMOVE_POST_OF_ME:
       draft.me.Posts = draft.me.Posts.filter((v) => v.id !== action.data);
       break;
+    case REMOVE_LOADED_IMAGE:
+      draft.profileImagePath = null;
     default:
       break;
   }

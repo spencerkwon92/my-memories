@@ -99,6 +99,7 @@ export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
 export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
 export const REMOVE_LOADED_IMAGE = "REMOVE_LOADED_IMAGE";
+export const REMOVE_ALL_LOADED_IMAGES = "REMOVE_ALL_LOADED_IMAGES";
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
@@ -218,7 +219,7 @@ const reducer = (state = initialState, action) =>
         draft.addCommentError = null;
         break;
       case ADD_COMMENT_SUCCESS: {
-        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
+        const post = draft.mainPosts.find((post) => post.id === action.data.PostId);
         post.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
@@ -284,6 +285,9 @@ const reducer = (state = initialState, action) =>
         draft.imagePaths = draft.imagePaths.filter(
           (path, i) => i !== action.data
         ); //데이터 상에는 어떤 이미지가 있었는짖 알 필요가 있음...
+        break;
+      case REMOVE_ALL_LOADED_IMAGES:
+        draft.imagePaths = [];
         break;
 
       default:

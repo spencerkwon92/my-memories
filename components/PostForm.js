@@ -24,6 +24,7 @@ import styled from "@emotion/styled";
 import {
   UPLOAD_IMAGES_REQUEST,
   REMOVE_LOADED_IMAGE,
+  REMOVE_ALL_LOADED_IMAGES,
   ADD_POST_REQUEST,
 } from "../reducers/post";
 
@@ -62,9 +63,9 @@ function PostForm(){
     addPostLoading,
     addPostDone,
     uploadImagesLoading,
+    uploadImagesDone,
     uploadImagesError,
   } = useSelector((state) => state.post);
-  const {me} = useSelector((state)=>state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const imageInput = useRef();
@@ -83,6 +84,7 @@ function PostForm(){
       type: UPLOAD_IMAGES_REQUEST,
       data: imageFormData,
     });
+    console.log(uploadImagesLoading, uploadImagesDone, uploadImagesError); 
   }, []);
 
   const onRemoveImage = useCallback(
@@ -124,11 +126,14 @@ function PostForm(){
     setText(e.target.value);
   }, []);
 
-  console.log(uploadImagesError, uploadImagesLoading)
-  
-  if (uploadImagesError) {
-    alert(uploadImagesError);
-  }
+  const modalClosehandler = useCallback(() => {
+    if (imagePaths.length > 0){
+      dispatch({
+        type: REMOVE_ALL_LOADED_IMAGES,
+      });
+    }
+    onClose()
+  },[imagePaths])
 
   return (
     <>
@@ -138,11 +143,11 @@ function PostForm(){
       <Center height="25px">
         <Divider />
       </Center>
-      <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
+      <Modal isOpen={isOpen} onClose={modalClosehandler} size="lg" isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>메모리 작성하기</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton onClick={modalClosehandler} />
           <ModalBody>
             <Textarea
               placeholder="Please input your memory."
@@ -162,6 +167,7 @@ function PostForm(){
               </div>
             ))}
           </div>
+
           <ModalFooter>
             <input
               type="file"

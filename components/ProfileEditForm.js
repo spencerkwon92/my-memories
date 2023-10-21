@@ -24,7 +24,7 @@ import {PlusSquareIcon} from '@chakra-ui/icons'
 import PropTypes from 'prop-types';
 
 import useInput from '../hooks/useInput';
-import { CHANGE_NICKNAME_REQUEST, UPLOAD_PROFILE_IMAGE_REQUEST, EDIT_PROFILE_IMAGE_REQUEST } from '../reducers/user';
+import { REMOVE_LOADED_IMAGE, CHANGE_NICKNAME_REQUEST, UPLOAD_PROFILE_IMAGE_REQUEST, EDIT_PROFILE_IMAGE_REQUEST } from '../reducers/user';
 import Spacer from './CustomizedUI/Spacer'
 import styled from '@emotion/styled';
 
@@ -94,7 +94,7 @@ function ProfileEditForm(){
 function ProfileImageEditModal({isOpen, onClose, imagePath}){
   const dispatch = useDispatch();
   const profileImageInput = useRef();
-  const { me } = useSelector((state) => state.user);
+  const {me, profileImagePath} = useSelector((state) => state.user);
 
   const onChangeProfileImage = useCallback((e) => {
     console.log(e.target.files[0])
@@ -114,13 +114,21 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
   const onClick = useCallback(()=>{
     const formData = new FormData();
     formData.append('profileImage', imagePath)
-
     dispatch({
       type: EDIT_PROFILE_IMAGE_REQUEST,
       data: formData,
     })
     onClose()
   },[imagePath])
+
+  const onCloseModalHandler = useCallback(() => {
+    if (profileImagePath) {
+      dispatch({
+        type: REMOVE_LOADED_IMAGE,
+      });
+    }
+    onClose();
+  }, [profileImagePath]);
 
   let ConditionalImageButton;
   if (me.ProfileImage === null && !imagePath) {
@@ -166,11 +174,11 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
+    <Modal isOpen={isOpen} onClose={onCloseModalHandler} size="lg" isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>프로필 이미지 편집</ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton onClick={onCloseModalHandler} />
         <ModalBody>
           <Center height={"20vh"}>
             <input

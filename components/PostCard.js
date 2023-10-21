@@ -59,17 +59,18 @@ function PostCard({post}) {
   },[])
 
   const onShareClick = useCallback(()=>{
-    const urlForCopy = `https://mymemories/post/${post.id}`;
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "기록하며 성장하기",
-          text: "Hello World",
-          url: urlForCopy,
-        })
-        .then(() => console.log("공유 성공"))
-        .catch((error) => console.log("공유 실패", error));
-    }
+    alert('열심히 만들고 있습니다!🖥️')
+    // const urlForCopy = `https://mymemories/post/${post.id}`;
+    // if (navigator.share) {
+    //   navigator
+    //     .share({
+    //       title: "기록하며 성장하기",
+    //       text: "Hello World",
+    //       url: urlForCopy,
+    //     })
+    //     .then(() => console.log("공유 성공"))
+    //     .catch((error) => console.log("공유 실패", error));
+    // }
   },[])
 
   return (
