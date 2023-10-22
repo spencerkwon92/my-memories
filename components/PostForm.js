@@ -16,6 +16,7 @@ import {
   Image,
   HStack,
   IconButton,
+  Text,
 } from "@chakra-ui/react";
 import { PlusSquareIcon, ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
 import {css} from '@emotion/react'
@@ -74,7 +75,6 @@ function PostForm(){
   }, [imageInput.current]);
 
   const onChangeImages = useCallback((e) => {
-    console.log("images", e.target.files);
     const imageFormData = new FormData();
     [].forEach.call(e.target.files, (file) => {
       imageFormData.append("image", file);
@@ -84,7 +84,6 @@ function PostForm(){
       type: UPLOAD_IMAGES_REQUEST,
       data: imageFormData,
     });
-    console.log(uploadImagesLoading, uploadImagesDone, uploadImagesError); 
   }, []);
 
   const onRemoveImage = useCallback(
@@ -167,7 +166,11 @@ function PostForm(){
               </div>
             ))}
           </div>
-
+          <Center>
+            <Text margin="0" color="red" fontWeight="bold">
+              아직은 1MB 이하 이미지만 업로드가 가능합니다.😰
+            </Text>
+          </Center>
           <ModalFooter>
             <input
               type="file"

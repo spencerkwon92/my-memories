@@ -62,17 +62,17 @@ export default function UserPage() {
   return (
     <AppLayout>
       <UserHeader user={me?.id === parseInt(id,10) ? me : userInfo} />
-      <Spacer size="20" />
+      <Spacer size={20} />
       {mainPosts.length === 0 ? (
         <Center h="50vh">
           <Heading size="lg">메모리가 없습니다.😭</Heading>
         </Center>
       ) : (
         mainPosts?.map((post) => (
-          <>
-            <PostCard key={post.id} post={post} />
-            <Spacer size="20" />
-          </>
+          <div key={post.id}>
+            <PostCard post={post} />
+            <Spacer size={20} />
+          </div>
         ))
       )}
     </AppLayout>

@@ -16,7 +16,6 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import PropTypes from 'prop-types'
 import Link from 'next/link'
 
 import { logoutRequestAction } from "../reducers/user";
@@ -59,7 +58,7 @@ function UserProfile(){
           src={me.ProfileImage ? me.ProfileImage?.src : null}
         />
         <div>
-          <Link href={`/user/${me?.id}`} passHref>
+          <Link href={`/user/${me?.id}`}>
             <a>{me?.nickname}</a>
           </Link>
           <Text fontSize="sm">{me.email}</Text>
@@ -76,7 +75,7 @@ function UserProfile(){
             <Link href='/profile'>
               <MenuItem as='a'>프로필 관리</MenuItem>
             </Link>
-            <MenuItem onClick={onLogOut} loading={logoutLoading}>
+            <MenuItem onClick={onLogOut}>
               로그아웃
             </MenuItem>
           </MenuList>
@@ -93,20 +92,15 @@ function UserProfile(){
         <CustomSpacer />
         {me?.Followers.map((follower) => {
           return (
-            <>
-              <RelationNameCard key={follower.id} user={follower} />
-              <CustomSpacer key={follower.id} />
-            </>
+            <div key={follower.id}>
+              <RelationNameCard user={follower} />
+              <CustomSpacer/>
+            </div>
           );
         })}
       </Container>
     </>
   );
 };
-
-UserProfile.propTypes = {
-  me: PropTypes.object.isRequired,
-  logoutLoading: PropTypes.bool.isRequired,
-}
 
 export default UserProfile;

@@ -34,10 +34,10 @@ function FollowList({as, header, data }){
         <Divider />
         <div className="listContent" css={listCss}>
           {data.map((follow) => (
-            <>
-              <RelationNameCard key={follow.id} user={follow} />
+            <div key={follow.id}>
+              <RelationNameCard user={follow} />
               <Spacer />
-            </>
+            </div>
           ))}
         </div>
       </VStack>

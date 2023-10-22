@@ -49,7 +49,6 @@ function loginAPI(data){
 function* login(action){
   try{
     const result = yield call(loginAPI, action.data)
-    console.log(result) 
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
@@ -88,7 +87,6 @@ function signUpAPI(data){
 function* signUp(action){
   try{
     const result = yield call(signUpAPI, action.data)
-    console.log(result)
     yield put({
       type: SIGN_UP_SUCCESS,
     })    
@@ -200,7 +198,7 @@ function* unfollow(action) {
 }
 
 function loadFollowersAPI(data){
-  return axios.get('/user/demo/followers', data); //Get/user/followers
+  return axios.get('/user/followers', data); //Get/user/followers
 }
 
 function* loadFollowers(action){
@@ -220,7 +218,7 @@ function* loadFollowers(action){
 }
 
 function loadFollowingsAPI(data){
-  return axios.get('/user/demo/followings', data);
+  return axios.get('/user/followings', data);
 }
 
 function* loadFollowings(action){

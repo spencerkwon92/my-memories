@@ -102,7 +102,7 @@ function Signup(){
           <Center>
             <Heading size="2xl">Sign Up</Heading>
           </Center>
-          <Spacer size='20'/>
+          <Spacer size={20}/>
           <FormControl>
             <VStack spacing={5} align="center">
               <Input

@@ -32,9 +32,9 @@ function PageLoadingIndicator() {
       <Divider />
       <Spacer />
       <CardSkeleton />
-      <Spacer size="15" />
+      <Spacer size={15} />
       <CardSkeleton hasImage />
-      <Spacer size="15" />
+      <Spacer size={15} />
       <CardSkeleton />
     </Container>
   );

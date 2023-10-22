@@ -55,10 +55,10 @@ export default function TagPage() {
   return (
     <AppLayout>
       {mainPosts.map((post) => (
-        <>
-          <PostCard key={post.id} post={post} />
+        <div key={post.id}>
+          <PostCard post={post} />
           <Spacer />
-        </>
+        </div>
       ))}
     </AppLayout>
   );

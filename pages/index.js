@@ -50,10 +50,10 @@ function Home(){
         <GridItem colSpan={isMobile ? 6 : 4}>
           {me && <PostForm />}
           {mainPosts.map((post) => (
-            <>
-              <PostCard key={post.id} post={post} />
-              <Spacer size="20" />
-            </>
+            <div key={post.id}>
+              <PostCard post={post} />
+              <Spacer size={20} />
+            </div>
           ))}
         </GridItem>
         {!isMobile && (

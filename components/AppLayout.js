@@ -81,7 +81,7 @@ useEffect(() => {
   return (
     <Container maxW="container.lg">
       <Menu>
-        <div css={wrapperCss} passHref>
+        <div css={wrapperCss}>
           <Link href="/">
             <MenuButton as="a" css={linkCss}>
               My Memories

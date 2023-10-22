@@ -51,7 +51,7 @@ function RelationNameCard({ user }) {
           size="md"
           src={user.ProfileImage ? user.ProfileImage?.src : null}
         />
-        <Link href={`/user/${id}`} passHref>
+        <Link href={`/user/${id}`}>
           <a>{user?.nickname}</a>
         </Link>
       </div>

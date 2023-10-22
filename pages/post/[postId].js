@@ -52,7 +52,7 @@ function UserPost(){
           <Heading>{`${singlePost.User?.nickname}님의 메모리 입니다.`}</Heading>
         </Center>
         <PostCard post={singlePost} />
-        <Spacer size="20" />
+        <Spacer size={20} />
         <Center>
           <Button width="50vw" onClick={onClickToHome}>
             더 많은 메모리 보러가기

@@ -54,7 +54,7 @@ function LoginPage() {
           <Center>
             <Heading size="xl">My Memories</Heading>
           </Center>
-          <Spacer size="20" />
+          <Spacer size={20} />
           <FormControl>
             <VStack spacing={5}>
               <Input

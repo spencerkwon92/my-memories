@@ -79,7 +79,7 @@ function PostCard({post}) {
         <CardHeader>
           <Flex spacing="4">
             <Flex flex="1" alignItems="center" flexWrap="wrap">
-              <Flex alignItem="center" gap="4">
+              <Flex alignItems="center" gap="4">
                 <Avatar
                   name={post?.User?.nickname}
                   src={
@@ -87,7 +87,7 @@ function PostCard({post}) {
                   }
                 />
                 <Center>
-                  <Link href={`/user/${post.User?.id}`} passHref>
+                  <Link href={`/user/${post.User?.id}`}>
                     <a css={ankerCss}>
                       {post?.User?.nickname}
                     </a>
@@ -162,8 +162,6 @@ function PostCard({post}) {
           </div>
         )}
       </Card>
-
-      <Spacer size="lg" />
     </>
   );
 }

@@ -45,7 +45,7 @@ function Profile(){
       </Head>
       <ProfileEditForm />
       <Divider/>
-      <Spacer size='20'/>
+      <Spacer size={20}/>
       <SimpleGrid columns={isMobile?1:2} spacing={10}>
         <FollowList as='following' header="팔로잉 목록" data={me.Followings} />
         <FollowList as='follower' header="팔로워 목록" data={me.Followers} />

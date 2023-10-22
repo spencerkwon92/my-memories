@@ -67,7 +67,7 @@ function Comment({comment, postUserId}){
         name={comment.User.nickname}
         src={comment.User.ProfileImage ? comment.User.ProfileImage?.src : null}
       />
-      <Link href={`/user/${comment.UserId}`} passHref>
+      <Link href={`/user/${comment.UserId}`}>
         <a>
           {comment.User.nickname}
         </a>

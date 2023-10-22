@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 import PropTypes from 'prop-types'
-import {Link} from 'next/link'
 import {useRouter} from 'next/router'
 
 import useContainer from "../../../hooks/useContainer";
@@ -24,9 +23,6 @@ function UserHeader({ user }) {
   const onClickHandler = useCallback(() =>{
     router.push('/profile')
   },[])
-
-  console.log("header 확인 ");
-  console.log(me?.id === user?.id);
 
 
   const FollowDashboard = (
@@ -77,7 +73,7 @@ function UserHeader({ user }) {
       <Divider />
       {isMobile && (
         <>
-          <Spacer size="20" />
+          <Spacer size={20} />
           <Center>{FollowDashboard}</Center>
         </>
       )}
