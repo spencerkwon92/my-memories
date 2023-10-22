@@ -25,7 +25,7 @@ import {
   Textarea,
   HStack,
 } from "@chakra-ui/react";
-import { PlusSquareIcon, ArrowUpIcon } from "@chakra-ui/icons";
+import { ArrowUpIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
 
 import { REMOVE_POST_REQUEST } from '../../reducers/post';
@@ -101,9 +101,8 @@ function AlertModal({isOpen, onClose, post}){
 }
 
 function UpdateModal({isOpen, onClose, post}){
-  const {imagePaths} = useSelector((state)=>state.post) // imagePaths는 일시적인것... 그렇다면 이미지 페스도 수정해줘야 하나?
   const dispatch = useDispatch();
-  const [text, onChangeText, setText] = useInput(post?.content||'')
+  const [text, onChangeText] = useInput(post?.content||'')
 
   const onUpdateContentClickHandler = useCallback(()=>{
     dispatch({
@@ -116,10 +115,6 @@ function UpdateModal({isOpen, onClose, post}){
     onClose()
   },[text])
 
-  const onImageUploadClickHandler = useCallback(()=>{
-    alert('기능이 아직 완성 되지 않았어요')
-  })
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
       <ModalOverlay />
@@ -131,10 +126,6 @@ function UpdateModal({isOpen, onClose, post}){
         </ModalBody>
         <ModalFooter>
           <HStack>
-            <Button onClick={onImageUploadClickHandler}>
-              이미지
-              <PlusSquareIcon />
-            </Button>
             <Button onClick={onUpdateContentClickHandler}>
               메모리 수정하기
               <ArrowUpIcon />

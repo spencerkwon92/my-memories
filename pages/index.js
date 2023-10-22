@@ -41,31 +41,32 @@ function Home(){
       window.removeEventListener("scroll", onScroll);
     };
   }, [mainPosts, hasMorePosts, loadPostsLoading]);
+  
   const isMobile = useContainer({ default: false, md: true });
-  console.log(me)
 
   return (
     <AppLayout>
       <Grid templateColumns="repeat(6, 1fr)" gap={5}>
         <GridItem colSpan={isMobile ? 6 : 4}>
-          <PostForm />
+          {me && <PostForm />}
           {mainPosts.map((post) => (
             <>
               <PostCard key={post.id} post={post} />
-              <Spacer size='20'/>
+              <Spacer size="20" />
             </>
           ))}
         </GridItem>
         {!isMobile && (
           <GridItem colSpan={2}>
-            {me?<UserProfile />
-            :
-            <Card>
-              <Center h='10vh'>
-                <Link href='/login'>로그인 하려면 클릭하세요!</Link>
-              </Center>
-            </Card>
-              }
+            {me ? (
+              <UserProfile />
+            ) : (
+              <Card>
+                <Center h="10vh">
+                  <Link href="/login">로그인 하려면 클릭하세요!</Link>
+                </Center>
+              </Card>
+            )}
           </GridItem>
         )}
       </Grid>
@@ -87,7 +88,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store.dispatch({
         type: LOAD_POSTS_REQUEST,
       });
-
       store.dispatch({
         type: LOAD_FOLLOWERS_REQUEST,
       });
