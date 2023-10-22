@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## 소중한 추억을 공유하는 페이지: My Memories
+['My Memories Product Page'](https://mymemories.kr)
 
-## Getting Started
+['프로젝트 회고록 바로가기'](https://marked-seashore-387.notion.site/My-Memories-61b25b2ef37140f1863936efbcb7e376?pvs=4)
 
-First, run the development server:
+['Back end git Repository'](https://github.com/spencerkwon92/my-memories-back)
+## Introduction
+인스타그램을 모티브로 해서 사용자들이 추억을 공유하는 Social Media 페이지를 구현했습니다.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## 사용한 기술
+* Front-end: JavaScript | Next.js | emotion | Chakra-ui | Redux
+* Back-end: Node | express | my-sql
+* Others: AWS | ec2 | s3Bucket | AWS Lambda
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 페이지 시뮬레이션
+1. Login & Signup
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+https://github.com/spencerkwon92/my-memories/assets/56502807/3a716eba-e02e-4cb3-bd2f-13e1bc8ad55b
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+2. Upload Image & Image Carousel
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+https://github.com/spencerkwon92/my-memories/assets/56502807/9920d452-34d1-4642-8040-18485d4103b3
 
-## Learn More
+5. Profile Page & Profile Info Update.
 
-To learn more about Next.js, take a look at the following resources:
+https://github.com/spencerkwon92/my-memories/assets/56502807/a2d7c640-e3ee-49d9-873b-bb67a36ec23f
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 수정해야할 사항. 
+  * 프로필이미지 바꾸기 기능 버그 수정
+  * 다른 상태관리 라이브러리 적용해보기.
