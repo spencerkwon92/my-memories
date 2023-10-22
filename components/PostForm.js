@@ -17,8 +17,14 @@ import {
   HStack,
   IconButton,
   Text,
+  SimpleGrid,
 } from "@chakra-ui/react";
-import { PlusSquareIcon, ArrowUpIcon, AddIcon } from "@chakra-ui/icons";
+import {
+  PlusSquareIcon,
+  ArrowUpIcon,
+  AddIcon,
+  CloseIcon,
+} from "@chakra-ui/icons";
 import {css} from '@emotion/react'
 import styled from "@emotion/styled";
 
@@ -28,27 +34,25 @@ import {
   REMOVE_ALL_LOADED_IMAGES,
   ADD_POST_REQUEST,
 } from "../reducers/post";
+import useContianer from "../hooks/useContainer";
 
-const imageGroupWrapperCss = css`
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
-  white-space: nowrap;
-  transition: transform 0.3s ease;
-`;
-
+const imageGroupCss = css`
+  max-height: 50vh;
+  overflow-y: hidden;
+  :hover {
+    overflow-y: scroll;
+  }
+`
 const imageWrapperCss = css`
-  display: inline-block;
   position: relative;
-  margin-right: 10px;
-  min-width: 100%;
-  transition: transform 0.3s ease;
+  background-color: black;
 `; 
 const StyledImage = styled(Image)`
-  max-width: 100%;
-  height: auto;
-`
-const StyledRemoveButton = styled(Button)`
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+`;
+const StyledRemoveButton = styled(IconButton)`
   position: absolute;
   top: 0;
   right: 0;
@@ -63,12 +67,9 @@ function PostForm(){
     imagePaths,
     addPostLoading,
     addPostDone,
-    uploadImagesLoading,
-    uploadImagesDone,
-    uploadImagesError,
   } = useSelector((state) => state.post);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const isMobile = useContianer({default: false, md:true});
   const imageInput = useRef();
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
@@ -153,22 +154,30 @@ function PostForm(){
               onChange={onChangeText}
             />
           </ModalBody>
-          <div css={imageGroupWrapperCss}>
-            {imagePaths.map((image, i) => (
-              <div key={image} css={imageWrapperCss}>
-                <StyledImage
-                  src={image.replace(/\/resizedPostImages\//, "/postImages/")}
-                  alt={image}
-                />
-                <StyledRemoveButton onClick={onRemoveImage(i)}>
-                  제거
-                </StyledRemoveButton>
-              </div>
-            ))}
+
+          <div css={imageGroupCss}>
+            <SimpleGrid columns={isMobile ? 2 : 3} spacing={2} margin={3}>
+              {imagePaths.map((image, i) => (
+                <div key={image} css={imageWrapperCss}>
+                  <StyledImage
+                    src={image.replace(/\/resizedPostImages\//, "/postImages/")}
+                    alt={image}
+                  />
+                  <StyledRemoveButton
+                    size="sm"
+                    fontSize="10px"
+                    icon={<CloseIcon />}
+                    isRound={true}
+                    onClick={onRemoveImage(i)}
+                  />
+                </div>
+              ))}
+            </SimpleGrid>
           </div>
+
           <Center>
             <Text margin="0" color="red" fontWeight="bold">
-              아직은 1MB 이하 이미지만 업로드가 가능합니다.😰
+              아직은 20MB 이하 이미지만 업로드가 가능합니다.😰
             </Text>
           </Center>
           <ModalFooter>

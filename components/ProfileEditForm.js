@@ -192,7 +192,7 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
           <Spacer />
           <VStack>
             <Text margin="0" color='red' fontWeight='bold'>
-              아직은 1MB 이하 이미지만 업로드가 가능합니다.😰
+              아직은 20MB 이하 이미지만 업로드가 가능합니다.😰
             </Text>
             <Text margin="0">클릭해서 이미지를 선택하세요!</Text>
             <Button onClick={onClick}> 프로필 이미지로 변경하기</Button>
