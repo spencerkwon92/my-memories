@@ -15,7 +15,7 @@ function PostCardContent({ postContent }){
       {postContent.split(/(#[^\s#]+)/g).map((ele, index) => {
         if (ele.match(/(#[^\s#]+)/)) {
           return (
-            <Link key={ele + index} href={`/post/${ele.slice(1)}`} css={LinkCss}>
+            <Link key={ele + index} href={`/hashtag/${ele.slice(1)}`} css={LinkCss}>
               {ele}
             </Link>
           );
