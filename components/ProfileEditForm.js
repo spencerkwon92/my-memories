@@ -19,6 +19,7 @@ import {
   Input,
   IconButton,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
 import {PlusSquareIcon} from '@chakra-ui/icons'
 import PropTypes from 'prop-types';
@@ -38,7 +39,9 @@ const ButtonImage = styled(Image)`
 `
 
 function ProfileEditForm(){
-  const { me, profileImagePath } = useSelector((state) => state.user);
+  const { me, profileImagePath } = useSelector(
+    (state) => state.user
+  );
   const [nickname, onChangeNickname] = useInput(me?.nickname || '');
   const dispatch = useDispatch();
   const {isOpen, onOpen, onClose} = useDisclosure()
@@ -94,7 +97,9 @@ function ProfileEditForm(){
 function ProfileImageEditModal({isOpen, onClose, imagePath}){
   const dispatch = useDispatch();
   const profileImageInput = useRef();
-  const {me, profileImagePath} = useSelector((state) => state.user);
+  const { me, profileImagePath, uploadProfileImageLoading } = useSelector(
+    (state) => state.user
+  );
 
   const onChangeProfileImage = useCallback((e) => {
     const profileImageFormData = new FormData();
@@ -171,36 +176,43 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
       );
     }
   }
-
-  return (
-    <Modal isOpen={isOpen} onClose={onCloseModalHandler} size="lg" isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>프로필 이미지 편집</ModalHeader>
-        <ModalCloseButton onClick={onCloseModalHandler} />
-        <ModalBody>
-          <Center height={"20vh"}>
-            <input
-              type="file"
-              name="image"
-              hidden
-              ref={profileImageInput}
-              onChange={onChangeProfileImage}
-            />
-            {ConditionalImageButton}
-          </Center>
-          <Spacer />
-          <VStack>
-            <Text margin="0" color='red' fontWeight='bold'>
-              아직은 20MB 이하 이미지만 업로드가 가능합니다.😰
-            </Text>
-            <Text margin="0">클릭해서 이미지를 선택하세요!</Text>
-            <Button onClick={onClick}> 프로필 이미지로 변경하기</Button>
-          </VStack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  );
+    return (
+      <Modal isOpen={isOpen} onClose={onCloseModalHandler} size="lg" isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>프로필 이미지 편집</ModalHeader>
+          <ModalCloseButton onClick={onCloseModalHandler} />
+          <ModalBody>
+            {uploadProfileImageLoading && (
+              <Center>
+                <Text fontWeight='bold'>
+                  이미지를 바꾸고 있어요.
+                  <Spinner />
+                </Text>
+              </Center>
+            )}
+            <Center height={"20vh"}>
+              <input
+                type="file"
+                name="image"
+                hidden
+                ref={profileImageInput}
+                onChange={onChangeProfileImage}
+              />
+              {ConditionalImageButton}
+            </Center>
+            <Spacer />
+            <VStack>
+              <Text margin="0" color="red" fontWeight="bold">
+                아직은 20MB 이하 이미지만 업로드가 가능합니다.😰
+              </Text>
+              <Text margin="0">클릭해서 이미지를 선택하세요!</Text>
+              <Button onClick={onClick}> 프로필 이미지로 변경하기</Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
 }
 
 ProfileImageEditModal.propTypes = {

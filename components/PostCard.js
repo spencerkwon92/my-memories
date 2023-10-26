@@ -21,10 +21,41 @@ import PostMenuButton from "./CustomizedUI/PostMenuButton";
 
 const commentListCss=css`
   margin: 0px 10px;
+
+  animation: fadein 2s;
+  // animation: slidein 2s;
+
+
+  // @keyframes slidein {
+  //   from {
+  //     margin-top: 0%;
+  //   }
+
+  //   to {
+  //     margin-top: 100%;
+  //   }
+  // }
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
 `
 const ankerCss = css`
   font-weight: bold;
   font-size: 15px;
+`
+
+const cardCss = css`
+  :hover{
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
 `
 
 function PostCard({post}) {
@@ -73,9 +104,13 @@ function PostCard({post}) {
     // }
   },[])
 
+  const onClickCardHandler = useCallback(()=>{
+    console.log('Big image needed.')
+  },[])
+
   return (
     <>
-      <Card>
+      <Card onClick={onClickCardHandler} css={cardCss}>
         <CardHeader>
           <Flex spacing="4">
             <Flex flex="1" alignItems="center" flexWrap="wrap">
@@ -88,9 +123,7 @@ function PostCard({post}) {
                 />
                 <Center>
                   <Link href={`/user/${post.User?.id}`}>
-                    <a css={ankerCss}>
-                      {post?.User?.nickname}
-                    </a>
+                    <a css={ankerCss}>{post?.User?.nickname}</a>
                   </Link>
                 </Center>
               </Flex>
