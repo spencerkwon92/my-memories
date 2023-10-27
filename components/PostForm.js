@@ -60,6 +60,7 @@ const StyledRemoveButton = styled(IconButton)`
   margin: 10px
 `
 
+
 function PostForm(){
   const dispatch = useDispatch();
   const [text, setText] = useState("");
@@ -143,7 +144,11 @@ function PostForm(){
       <Center height="25px">
         <Divider />
       </Center>
-      <Modal isOpen={isOpen} onClose={modalClosehandler} size="lg" isCentered>
+      <Modal
+        isOpen={isOpen}
+        onClose={modalClosehandler}
+        isCentered
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>메모리 작성하기</ModalHeader>

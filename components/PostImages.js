@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import ImageCarousel from './CustomizedUI/ImageCarousel';
 
-function PostImages({ images }){
+function PostImages({ images,...props }){
 
   if (images.length === 1) {
     return (
@@ -14,9 +14,9 @@ function PostImages({ images }){
   }
 
   return (
-    <>
+    <div {...props}>
       <ImageCarousel images={images}/>
-    </>
+    </div>
 
   );
 };

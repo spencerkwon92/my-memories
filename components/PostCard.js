@@ -1,6 +1,24 @@
 import React, {useCallback, useState} from "react";
 import { css } from "@emotion/react";
-import {Spacer as ChakraSpacer, Center, Card, CardHeader, Avatar, CardBody, Button, Flex, CardFooter, Divider, IconButton} from '@chakra-ui/react'
+import {Spacer as ChakraSpacer,
+        Center,
+        Card,
+        CardHeader,
+        Avatar,
+        CardBody,
+        Button,
+        Flex,
+        CardFooter,
+        Divider,
+        IconButton,
+        useDisclosure,
+        Modal,
+        ModalOverlay,
+        ModalContent,
+        ModalHeader,
+        ModalFooter,
+        ModalBody,
+        ModalCloseButton} from '@chakra-ui/react'
 import {useSelector, useDispatch} from 'react-redux'
 import {BiLike, BiChat, BiShare, BiSolidLike  } from 'react-icons/bi'
 import PropTypes from 'prop-types'
@@ -18,44 +36,33 @@ import CommentList from "./CommentList";
 import useContainer from '../hooks/useContainer'
 import Spacer from "./CustomizedUI/Spacer"
 import PostMenuButton from "./CustomizedUI/PostMenuButton";
+import ImageCarousel from "./CustomizedUI/ImageCarousel";
 
-const commentListCss=css`
+const commentListCss = css`
   margin: 0px 10px;
 
-  animation: fadein 2s;
-  // animation: slidein 2s;
+  animation: fade-in-ani 0.2s linear;
 
-
-  // @keyframes slidein {
-  //   from {
-  //     margin-top: 0%;
-  //   }
-
-  //   to {
-  //     margin-top: 100%;
-  //   }
-  // }
-
-  @keyframes fadein {
+  @keyframes fade-in-ani {
     from {
+      transform: translateY(-30%);
       opacity: 0;
     }
     to {
+      transform: translateY(0%);
       opacity: 1;
     }
   }
-
-`
+`;
 const ankerCss = css`
   font-weight: bold;
   font-size: 15px;
 `
 
-const cardCss = css`
-  :hover{
+const imageCss = css`
+   :hover{
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  }
+   }
 `
 
 function PostCard({post}) {
@@ -65,6 +72,7 @@ function PostCard({post}) {
   const id = me?.id
   const isMobile = useContainer({default: false, md:true})
   const liked = post.Likers.find((liker)=>liker.id === id)
+  const zoomModalDisclosure= useDisclosure()
 
   const likedHandle = useCallback(()=>{
     if(!me){
@@ -104,13 +112,9 @@ function PostCard({post}) {
     // }
   },[])
 
-  const onClickCardHandler = useCallback(()=>{
-    console.log('Big image needed.')
-  },[])
-
   return (
     <>
-      <Card onClick={onClickCardHandler} css={cardCss}>
+      <Card>
         <CardHeader>
           <Flex spacing="4">
             <Flex flex="1" alignItems="center" flexWrap="wrap">
@@ -136,7 +140,13 @@ function PostCard({post}) {
         <CardBody>
           <PostCardContent postContent={post.content} />
         </CardBody>
-        {post.Images[0] && <PostImages images={post.Images} />}
+        {post.Images[0] && (
+          <PostImages
+            images={post.Images}
+            onClick={zoomModalDisclosure.onOpen}
+            css={imageCss}
+          />
+        )}
 
         <CardFooter justify="space-between" flexWrap="wrap">
           {!isMobile ? (
@@ -195,7 +205,30 @@ function PostCard({post}) {
           </div>
         )}
       </Card>
+      <ImageZoomModal disclosure={zoomModalDisclosure} data={post?.Images} />
     </>
+  );
+}
+
+function ImageZoomModal({ disclosure, data = [] }) {
+  const { isOpen, onOpen, onClose } = disclosure;
+  //way to convert image src.
+
+  const resizedImage = data.map((image) => ({
+    ...image,
+    src: image.src.replace(/\/resizedPostImages\//, "/postImages/"),
+  }));
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        {/* <ModalCloseButton onClick={onClose}/> */}
+        <ModalBody>
+          {data.length !== 0 && <ImageCarousel images={resizedImage} />}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }
 
