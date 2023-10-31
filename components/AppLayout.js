@@ -1,6 +1,6 @@
 import React,{useEffect,useRef, useCallback} from "react";
 import PropTypes from "prop-types";
-import Router from "next/router";
+import Router, {useRouter} from "next/router";
 import { Menu, MenuButton, Divider, Container, IconButton, Button, Avatar } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import {useSelector} from 'react-redux'
@@ -49,13 +49,14 @@ function AppLayout({ children }){
   const isMobile = useContainer({ default: false, md: true });
   const {me} = useSelector((state)=>state.user) 
   const footerMenuRef = useRef(null);
+  const router = useRouter();
 
   const onLoginButtonHandler = useCallback(() => {
     Router.push(me?`/user/${me?.id}`:"/login");
   },[me?.id])
 
   const onHomeButtonHandler = useCallback(() => {
-    Router.push('/')
+    router.push('/')
   },[])
 
 useEffect(() => {
@@ -117,6 +118,8 @@ useEffect(() => {
                 fontSize="25px"
                 variant="ghost"
                 onClick={onHomeButtonHandler}
+                aria-label="Home Button"
+                data-testid="home-button"
               />
               <SearchButton type={IconButton} />
               {me ? (
@@ -131,6 +134,7 @@ useEffect(() => {
                   fontSize="25px"
                   variant="ghost"
                   onClick={onLoginButtonHandler}
+                  aria-label="Profile Button"
                 />
               )}
             </div>
