@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 
 import { SIGN_UP_REQUEST } from "../reducers/user";
-import AppLayout from "../components/AppLayout";
+import AppLayout from "../components/layout/AppLayout";
 import useInput from "../hooks/useInput";
 import Spacer from '../components/CustomizedUI/Spacer'
 

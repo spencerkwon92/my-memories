@@ -13,9 +13,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Router from "next/router";
 
-import { loginRequestAction } from "../reducers/user";
+import { loginRequestAction } from '../reducers/user'
 import useInput from "../hooks/useInput";
-import AppLayout from "../components/AppLayout";
+import AppLayout from "../components/layout/AppLayout";
 import Spacer from "../components/CustomizedUI/Spacer";
 
 const wrapperCss = css`

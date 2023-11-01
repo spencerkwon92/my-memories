@@ -4,15 +4,16 @@ import axios from "axios";
 import { END } from "redux-saga";
 import Router, {useRouter} from "next/router";
 import { useDispatch } from "react-redux";
-import {Heading, Center} from '@chakra-ui/react'
+import {Heading, Center, SimpleGrid} from '@chakra-ui/react'
 
 import UserHeader from "./components/UserHeader";
 import {LOAD_USER_POSTS_REQUEST } from "../../reducers/post";
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST} from "../../reducers/user";
 import wrapper from "../../store/configureStore";
-import AppLayout from "../../components/AppLayout";
-import PostCard from '../../components/PostCard'
+import AppLayout from "../../components/layout/AppLayout";
+import PostCard from '../../components/post/PostCard'
 import Spacer from "../../components/CustomizedUI/Spacer";
+import ProfilePostCard from "../../components/userProfile/ProfilePostCard";
 
 export default function UserPage() {
   const { me, userInfo } = useSelector((state) => state.user);
@@ -61,19 +62,20 @@ export default function UserPage() {
 
   return (
     <AppLayout>
-      <UserHeader user={me?.id === parseInt(id,10) ? me : userInfo} />
+      <UserHeader user={me?.id === parseInt(id, 10) ? me : userInfo} />
       <Spacer size={20} />
       {mainPosts.length === 0 ? (
         <Center h="50vh">
           <Heading size="lg">메모리가 없습니다.😭</Heading>
         </Center>
       ) : (
-        mainPosts?.map((post) => (
-          <div key={post.id}>
-            <PostCard post={post} />
-            <Spacer size={20} />
-          </div>
-        ))
+        <SimpleGrid columns={3} spacing={1} >
+          {mainPosts?.map((post) => (
+            <div key={post.id}>
+              <ProfilePostCard post={post} />
+            </div>
+          ))}
+        </SimpleGrid>
       )}
     </AppLayout>
   );

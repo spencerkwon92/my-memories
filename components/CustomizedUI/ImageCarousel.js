@@ -86,9 +86,9 @@ const indexMarkerCss = css`
   border-radius: 50%;
   color: rgba(240, 240, 240, 0.5);
 
-  :hover {
-    color: rgb(240, 240, 240);
-  }
+  // :hover {
+  //   color: rgb(240, 240, 240);
+  // }
 `;
 
 export default function ImageCarousel({images}) {
@@ -160,9 +160,9 @@ export default function ImageCarousel({images}) {
         <Center className="imageMarks">
           <HStack spacing={2}>
             {images.map((image, index) => (
-              <button key={index} css={indexMarkerCss}>
+              <div key={index} css={indexMarkerCss}>
                 {index === currentImageIndex ? "●" : "○"}
-              </button>
+              </div>
             ))}
           </HStack>
         </Center>

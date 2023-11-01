@@ -7,10 +7,10 @@ import { Button, Flex, Heading, Center } from "@chakra-ui/react";
 import Head from "next/head";
 import {pageUrl} from '../../config/config'
 
-import AppLayout from "../../components/AppLayout";
+import AppLayout from "../../components/layout/AppLayout";
 import wrapper from "../../store/configureStore";
 import { LOAD_POST_REQUEST } from "../../reducers/post";
-import PostCard from "../../components/PostCard";
+import PostCard from "../../components/post/PostCard";
 import Spacer from "../../components/CustomizedUI/Spacer";
 
 function UserPost(){
@@ -19,6 +19,7 @@ function UserPost(){
   const onClickToHome = useCallback(()=>{
     router.push('/')
   },[])
+
   return (
     <AppLayout>
       <Head>

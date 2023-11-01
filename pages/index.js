@@ -4,13 +4,13 @@ import { END } from "redux-saga";
 import axios from "axios";
 import { Grid, GridItem, Card, Center, Link } from "@chakra-ui/react";
 
-import PostForm from "../components/PostForm";
-import PostCard from '../components/PostCard'
-import AppLayout from "../components/AppLayout";
+import PostForm from "../components/post/PostForm";
+import PostCard from '../components/post/PostCard'
+import AppLayout from "../components/layout/AppLayout";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
 import { LOAD_MY_INFO_REQUEST, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from "../reducers/user";
 import wrapper from "../store/configureStore";
-import UserProfile from "../components/UserProfile";
+import UserProfile from "../components/homeProfileSection/UserProfile";
 import useContainer from '../hooks/useContainer'
 import Spacer from "../components/CustomizedUI/Spacer";
 

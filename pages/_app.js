@@ -3,7 +3,7 @@ import Head from "next/head";
 import PropTypes from "prop-types";
 import { ChakraProvider, Container } from "@chakra-ui/react";
 import {useRouter} from 'next/router'
-import PageLoadingIndicator from "../components/PageLoadingIndicator";
+import PageLoadingIndicator from "../components/layout/PageLoadingIndicator";
 
 import wrapper from "../store/configureStore";
 

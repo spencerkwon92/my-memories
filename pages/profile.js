@@ -6,9 +6,9 @@ import axios from "axios";
 import { END } from "redux-saga";
 import { SimpleGrid, Divider } from '@chakra-ui/react';
 
-import ProfileEditForm from '../components/ProfileEditForm';
-import AppLayout from '../components/AppLayout';
-import FollowList from '../components/FollowList';
+import ProfileEditForm from '../components/userProfile/ProfileEditForm';
+import AppLayout from '../components/layout/AppLayout';
+import FollowList from '../components/userProfile/FollowList';
 import {LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_MY_INFO_REQUEST} from '../reducers/user';
 import wrapper from '../store/configureStore';
 import useContainer from '../hooks/useContainer';
@@ -38,6 +38,7 @@ function Profile(){
   if (!me) {
     return null;
   }
+  
   return (
     <AppLayout>
       <Head>
