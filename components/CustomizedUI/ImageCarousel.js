@@ -132,6 +132,10 @@ export default function ImageCarousel({images}) {
               className={`carousel-image ${
                 index === currentImageIndex ? "active" : ""
               }`}
+              fallbackSrc={image.src.replace(
+                /\/resizedPostImages\//,
+                "/postImages/"
+              )}
             />
           </div>
         ))}
