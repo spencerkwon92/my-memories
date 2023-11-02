@@ -13,6 +13,10 @@ const StyledBox = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  &[aria-label="userPostImages"] {
+    height: 90vh;
+    width: auto;
+  }
 `;
 
 const buttonWrapperCss = css`
@@ -91,7 +95,7 @@ const indexMarkerCss = css`
   // }
 `;
 
-export default function ImageCarousel({images}) {
+export default function ImageCarousel({images, label}) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const imageListSize = images.length;
   const imageGroupRef = useRef(null);
@@ -117,7 +121,7 @@ export default function ImageCarousel({images}) {
   },[currentImageIndex, imageListSize]);
 
   return (
-    <StyledBox>
+    <StyledBox aria-label={label}>
       <div css={imageGroupCss} ref={imageGroupRef}>
         {images.map((image, index) => (
           <div key={index} css={imageContainerCss}>
@@ -177,4 +181,5 @@ export default function ImageCarousel({images}) {
 
 ImageCarousel.propTypes = {
   images: PropTypes.array.isRequired,
+  label: PropTypes.string,
 };
