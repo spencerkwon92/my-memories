@@ -13,7 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Router from "next/router";
 
-import { loginRequestAction } from '../reducers/user'
+import { logIn } from "../reducers/user";
 import useInput from "../hooks/useInput";
 import AppLayout from "../components/layout/AppLayout";
 import Spacer from "../components/CustomizedUI/Spacer";
@@ -44,7 +44,7 @@ function LoginPage() {
   }, [loginDone, me, loginError]);
 
   const onSubmit = useCallback(() => {
-    dispatch(loginRequestAction({ email, password }));
+    dispatch(logIn({ email, password }));
   }, [email, password]);
 
   return (

@@ -1,27 +1,27 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { END } from "redux-saga";
-import Router, {useRouter} from "next/router";
+import Router, { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
-import {Heading, Center, SimpleGrid} from '@chakra-ui/react'
+import { Heading, Center, SimpleGrid } from "@chakra-ui/react";
 
 import UserHeader from "./components/UserHeader";
-import {LOAD_USER_POSTS_REQUEST } from "../../reducers/post";
-import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST} from "../../reducers/user";
 import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/layout/AppLayout";
-import PostCard from '../../components/post/PostCard'
 import Spacer from "../../components/CustomizedUI/Spacer";
 import ProfilePostCard from "../../components/userProfile/ProfilePostCard";
+import { loadUserPosts } from "../../reducers/post";
+import { loadMyInfo, loadUser } from "../../reducers/user";
 
 export default function UserPage() {
   const { me, userInfo } = useSelector((state) => state.user);
-  const {mainPosts, hasMorePosts, loadPostsLoading,} = useSelector((state) => state.post);
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
+    (state) => state.post
+  );
   const dispatch = useDispatch();
-  const router = useRouter()
-  const {id} = router.query
- 
+  const router = useRouter();
+  const { id } = router.query;
+
   useEffect(() => {
     if (typeof me === "undefined") {
       alert("로그인이 필요합니다!!");
@@ -37,11 +37,7 @@ export default function UserPage() {
       ) {
         if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
-          dispatch({
-            type: LOAD_USER_POSTS_REQUEST,
-            data: id,
-            lastId,
-          });
+          dispatch(loadUserPosts({ userId: id, lastId: lastId }));
         }
       }
     }
@@ -51,14 +47,10 @@ export default function UserPage() {
     };
   }, [mainPosts, hasMorePosts, loadPostsLoading, id]);
 
-  useEffect(()=>{
-    if(me?.id !== id)
-    dispatch({
-      type: LOAD_USER_REQUEST,
-      data: id,
-    })
-  },[id]) 
-
+  useEffect(() => {
+    if (me?.id !== id) dispatch(loadUser(id));
+  }, [id]);
+  console.log("This is mainPosts: ", mainPosts);
 
   return (
     <AppLayout>
@@ -69,7 +61,7 @@ export default function UserPage() {
           <Heading size="lg">메모리가 없습니다.😭</Heading>
         </Center>
       ) : (
-        <SimpleGrid columns={3} spacing={1} >
+        <SimpleGrid columns={3} spacing={1}>
           {mainPosts?.map((post) => (
             <div key={post.id}>
               <ProfilePostCard post={post} />
@@ -80,24 +72,23 @@ export default function UserPage() {
     </AppLayout>
   );
 }
-
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, params }) => {
-      const { id } = params;
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
       req && cookie && (axios.defaults.headers.Cookie = cookie);
 
-      store.dispatch({
-        type: LOAD_MY_INFO_REQUEST,
-      });
+      console.log("userId: ", params.id);
+      await store.dispatch(loadMyInfo());
+      await store.dispatch(loadUserPosts({ userId: params.id }));
 
-      store.dispatch({
-        type: LOAD_USER_POSTS_REQUEST,
-        data: id
-      })
-      store.dispatch(END);
-      await store.sagaTask.toPromise();
+      return {
+        props: {},
+      };
     }
 );
+
+export function reportWebVitals(metric) {
+  console.log(metric);
+}

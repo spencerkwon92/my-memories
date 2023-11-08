@@ -25,16 +25,11 @@ import {
   AddIcon,
   CloseIcon,
 } from "@chakra-ui/icons";
-import {css} from '@emotion/react'
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
-import {
-  UPLOAD_IMAGES_REQUEST,
-  REMOVE_LOADED_IMAGE,
-  REMOVE_ALL_LOADED_IMAGES,
-  ADD_POST_REQUEST,
-} from "../../reducers/post";
-import useContianer from "../../hooks/useContainer";
+import useContainer from "../../hooks/useContainer";
+import postSlice, { uploadImages, createPost } from "../../reducers/post";
 
 const imageGroupCss = css`
   max-height: 50vh;
@@ -42,11 +37,11 @@ const imageGroupCss = css`
   :hover {
     overflow-y: scroll;
   }
-`
+`;
 const imageWrapperCss = css`
   position: relative;
   background-color: black;
-`; 
+`;
 const StyledImage = styled(Image)`
   object-fit: contain;
   width: 100%;
@@ -57,20 +52,17 @@ const StyledRemoveButton = styled(IconButton)`
   top: 0;
   right: 0;
   padding: 5px 10px;
-  margin: 10px
-`
+  margin: 10px;
+`;
 
-
-function PostForm(){
+function PostForm() {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
-  const {
-    imagePaths,
-    addPostLoading,
-    addPostDone,
-  } = useSelector((state) => state.post);
+  const { imagePaths, createPostLoading, createPostDone } = useSelector(
+    (state) => state.post
+  );
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const isMobile = useContianer({default: false, md:true});
+  const isMobile = useContainer({ default: false, md: true });
   const imageInput = useRef();
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
@@ -82,25 +74,21 @@ function PostForm(){
       imageFormData.append("image", file);
     });
 
-    dispatch({
-      type: UPLOAD_IMAGES_REQUEST,
-      data: imageFormData,
-    });
+    dispatch(uploadImages(imageFormData));
   }, []);
 
   const onRemoveImage = useCallback(
     (index) => () => {
-      dispatch({
-        type: REMOVE_LOADED_IMAGE,
-        data: index,
-      });
-    },[]);
+      dispatch(postSlice.actions.removeLoadedImage(index));
+    },
+    []
+  );
 
   useEffect(() => {
-    if (addPostDone) {
+    if (createPostDone) {
       setText("");
     }
-  }, [addPostDone]);
+  }, [createPostDone]);
 
   const onSubmitForm = useCallback(() => {
     if (!text || !text.trim()) {
@@ -115,10 +103,7 @@ function PostForm(){
 
     formData.append("content", text);
 
-    dispatch({
-      type: ADD_POST_REQUEST,
-      data: formData,
-    });
+    dispatch(createPost(formData));
 
     onClose();
   }, [text, imagePaths]);
@@ -128,13 +113,11 @@ function PostForm(){
   }, []);
 
   const modalClosehandler = useCallback(() => {
-    if (imagePaths.length > 0){
-      dispatch({
-        type: REMOVE_ALL_LOADED_IMAGES,
-      });
+    if (imagePaths.length > 0) {
+      dispatch(postSlice.actions.removeAllLoadedImages());
     }
-    onClose()
-  },[imagePaths])
+    onClose();
+  }, [imagePaths]);
 
   return (
     <>
@@ -144,11 +127,7 @@ function PostForm(){
       <Center height="25px">
         <Divider />
       </Center>
-      <Modal
-        isOpen={isOpen}
-        onClose={modalClosehandler}
-        isCentered
-      >
+      <Modal isOpen={isOpen} onClose={modalClosehandler} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>메모리 작성하기</ModalHeader>
@@ -198,7 +177,7 @@ function PostForm(){
                 이미지
                 <PlusSquareIcon />
               </Button>
-              <Button loading={addPostLoading} onClick={onSubmitForm}>
+              <Button loading={createPostLoading} onClick={onSubmitForm}>
                 메모리 올리기
                 <ArrowUpIcon />
               </Button>
@@ -208,6 +187,6 @@ function PostForm(){
       </Modal>
     </>
   );
-};
+}
 
 export default PostForm;

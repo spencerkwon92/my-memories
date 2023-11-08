@@ -1,20 +1,17 @@
 import { HYDRATE } from "next-redux-wrapper";
 import { combineReducers } from "redux";
+import axios from "axios";
 
-import user from './user'
-import post from './post'
+import userSlice from "./user";
+import postSlice from "./post";
+import { backUrl } from "../config/config";
 
-const rootReducer = (state, action)=>{
-  switch(action.type){
-    case HYDRATE:
-      return action.payload;
-    default:{
-      const combinedReducer = combineReducers({
-        user, post
-      })
-      return combinedReducer(state, action)
-    }
-  }
-}
+axios.defaults.baseURL = backUrl;
+axios.defaults.withCredentials = true;
+
+const rootReducer = combineReducers({
+  user: userSlice.reducer,
+  post: postSlice.reducer,
+});
 
 export default rootReducer;

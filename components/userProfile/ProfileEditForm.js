@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Modal,
   ModalOverlay,
@@ -21,38 +21,38 @@ import {
   Image,
   Spinner,
 } from "@chakra-ui/react";
-import {PlusSquareIcon} from '@chakra-ui/icons'
-import PropTypes from 'prop-types';
+import { PlusSquareIcon } from "@chakra-ui/icons";
+import PropTypes from "prop-types";
 
-import useInput from '../../hooks/useInput';
-import { REMOVE_LOADED_IMAGE, CHANGE_NICKNAME_REQUEST, UPLOAD_PROFILE_IMAGE_REQUEST, EDIT_PROFILE_IMAGE_REQUEST } from '../../reducers/user';
-import Spacer from '../CustomizedUI/Spacer'
-import styled from '@emotion/styled';
+import useInput from "../../hooks/useInput";
+import Spacer from "../CustomizedUI/Spacer";
+import styled from "@emotion/styled";
+import userSlice, {
+  changeNickname,
+  uploadProfileImage,
+  editProfileImage,
+} from "../../reducers/user";
 
 const ButtonImage = styled(Image)`
   opacity: 0.5;
   transition: opacity 0.3s ease;
-  :hover{
+  :hover {
     cursor: pointer;
     opacity: 1;
   }
-`
+`;
 
-function ProfileEditForm(){
-  const { me, profileImagePath } = useSelector(
-    (state) => state.user
-  );
-  const [nickname, onChangeNickname] = useInput(me?.nickname || '');
+function ProfileEditForm() {
+  const { me, profileImagePath } = useSelector((state) => state.user);
+  const [nickname, onChangeNickname] = useInput(me?.nickname || "");
   const dispatch = useDispatch();
-  const {isOpen, onOpen, onClose} = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onNicknameEditButton = useCallback(() => {
-    dispatch({
-      type: CHANGE_NICKNAME_REQUEST,
-      data: nickname,
-    });
-    alert('닉네임이 변경되었습니다.');
+    dispatch(changeNickname(nickname));
+    alert("닉네임이 변경되었습니다.");
   }, [nickname]);
+
   return (
     <>
       <Container centerContent>
@@ -92,9 +92,9 @@ function ProfileEditForm(){
       />
     </>
   );
-};
+}
 
-function ProfileImageEditModal({isOpen, onClose, imagePath}){
+function ProfileImageEditModal({ isOpen, onClose, imagePath }) {
   const dispatch = useDispatch();
   const profileImageInput = useRef();
   const { me, profileImagePath, uploadProfileImageLoading } = useSelector(
@@ -103,33 +103,27 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
 
   const onChangeProfileImage = useCallback((e) => {
     const profileImageFormData = new FormData();
-    profileImageFormData.append('profileImage', e.target.files[0]);
+    profileImageFormData.append("profileImage", e.target.files[0]);
 
-    dispatch({
-      type: UPLOAD_PROFILE_IMAGE_REQUEST,
-      data: profileImageFormData,
-    });
+    dispatch(uploadProfileImage(profileImageFormData));
   }, []);
 
   const onProfileImageUpload = useCallback(() => {
     profileImageInput.current.click();
-  }, [profileImageInput.current]); 
+  }, [profileImageInput.current]);
 
-  const onClick = useCallback(()=>{
+  const onClick = useCallback(() => {
     const formData = new FormData();
-    formData.append('profileImage', imagePath)
-    dispatch({
-      type: EDIT_PROFILE_IMAGE_REQUEST,
-      data: formData,
-    })
-    onClose()
-  },[imagePath])
+    formData.append("profileImage", imagePath);
+
+    dispatch(editProfileImage(formData));
+
+    onClose();
+  }, [imagePath]);
 
   const onCloseModalHandler = useCallback(() => {
     if (profileImagePath) {
-      dispatch({
-        type: REMOVE_LOADED_IMAGE,
-      });
+      dispatch(userSlice.actions.removeLoadedImage());
     }
     onClose();
   }, [profileImagePath]);
@@ -144,9 +138,9 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
         minH="100%"
         onClick={onProfileImageUpload}
       />
-    )
-  }else{
-    if(imagePath){
+    );
+  } else {
+    if (imagePath) {
       ConditionalImageButton = (
         <ButtonImage
           src={imagePath.replace(
@@ -160,7 +154,7 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
           onClick={onProfileImageUpload}
         />
       );
-    }else{
+    } else {
       ConditionalImageButton = (
         <ButtonImage
           src={me.ProfileImage.src.replace(
@@ -176,43 +170,43 @@ function ProfileImageEditModal({isOpen, onClose, imagePath}){
       );
     }
   }
-    return (
-      <Modal isOpen={isOpen} onClose={onCloseModalHandler} size="lg" isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>프로필 이미지 편집</ModalHeader>
-          <ModalCloseButton onClick={onCloseModalHandler} />
-          <ModalBody>
-            {uploadProfileImageLoading && (
-              <Center>
-                <Text fontWeight='bold'>
-                  이미지를 바꾸고 있어요.
-                  <Spinner />
-                </Text>
-              </Center>
-            )}
-            <Center height={"20vh"}>
-              <input
-                type="file"
-                name="image"
-                hidden
-                ref={profileImageInput}
-                onChange={onChangeProfileImage}
-              />
-              {ConditionalImageButton}
-            </Center>
-            <Spacer />
-            <VStack>
-              <Text margin="0" color="red" fontWeight="bold">
-                아직은 20MB 이하 이미지만 업로드가 가능합니다.😰
+  return (
+    <Modal isOpen={isOpen} onClose={onCloseModalHandler} size="lg" isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>프로필 이미지 편집</ModalHeader>
+        <ModalCloseButton onClick={onCloseModalHandler} />
+        <ModalBody>
+          {uploadProfileImageLoading && (
+            <Center>
+              <Text fontWeight="bold">
+                이미지를 바꾸고 있어요.
+                <Spinner />
               </Text>
-              <Text margin="0">클릭해서 이미지를 선택하세요!</Text>
-              <Button onClick={onClick}> 프로필 이미지로 변경하기</Button>
-            </VStack>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    );
+            </Center>
+          )}
+          <Center height={"20vh"}>
+            <input
+              type="file"
+              name="image"
+              hidden
+              ref={profileImageInput}
+              onChange={onChangeProfileImage}
+            />
+            {ConditionalImageButton}
+          </Center>
+          <Spacer />
+          <VStack>
+            <Text margin="0" color="red" fontWeight="bold">
+              아직은 20MB 이하 이미지만 업로드가 가능합니다.😰
+            </Text>
+            <Text margin="0">클릭해서 이미지를 선택하세요!</Text>
+            <Button onClick={onClick}> 프로필 이미지로 변경하기</Button>
+          </VStack>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
 }
 
 ProfileImageEditModal.propTypes = {

@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {css} from '@emotion/react'
+import { css } from "@emotion/react";
 import Router from "next/router";
 import Head from "next/head";
 import {
@@ -13,10 +13,10 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
-import { SIGN_UP_REQUEST } from "../reducers/user";
+import { signUp } from "../reducers/user";
 import AppLayout from "../components/layout/AppLayout";
 import useInput from "../hooks/useInput";
-import Spacer from '../components/CustomizedUI/Spacer'
+import Spacer from "../components/CustomizedUI/Spacer";
 
 const wrapperCss = css`
   display: flex;
@@ -24,9 +24,9 @@ const wrapperCss = css`
   justify-content: center;
   align-items: center;
   min-height: 80vh;
-`
+`;
 
-function Signup(){
+function Signup() {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
@@ -53,8 +53,7 @@ function Signup(){
   }, [me && me.id]);
 
   useEffect(() => {
-
-    if (signupDone){
+    if (signupDone) {
       alert("환영합니다! 로그인 페이지로 이동합니다.");
       Router.push("/login");
     }
@@ -69,18 +68,10 @@ function Signup(){
       setPasswordError(true);
     }
     if (!hasNullText) {
-      dispatch({
-        type: SIGN_UP_REQUEST,
-        data: {
-          email,
-          password,
-          nickname,
-        },
-      });
-    }else{
-      alert('회원 정보를 모두 넣어 주세요!.')
+      dispatch(signUp({ email, password, nickname }));
+    } else {
+      alert("회원 정보를 모두 넣어 주세요!.");
     }
-
   }, [email, password, nickname, passwordCheck]);
 
   const onChangePasswordCheck = useCallback(
@@ -90,7 +81,6 @@ function Signup(){
     },
     [password]
   );
-
 
   return (
     <AppLayout>
@@ -102,7 +92,7 @@ function Signup(){
           <Center>
             <Heading size="2xl">Sign Up</Heading>
           </Center>
-          <Spacer size={20}/>
+          <Spacer size={20} />
           <FormControl>
             <VStack spacing={5} align="center">
               <Input
@@ -135,11 +125,7 @@ function Signup(){
                 </div>
               )}
 
-              <Button
-                width="100%"
-                isLoading={signupLoading}
-                onClick={onSubmit}
-              >
+              <Button width="100%" isLoading={signupLoading} onClick={onSubmit}>
                 회원가입
               </Button>
             </VStack>
@@ -148,6 +134,6 @@ function Signup(){
       </div>
     </AppLayout>
   );
-};
+}
 
 export default Signup;

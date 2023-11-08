@@ -5,12 +5,12 @@ import axios from "axios";
 import { END } from "redux-saga";
 import { Heading, Center } from "@chakra-ui/react";
 
-import { LOAD_HASHTAG_POSTS_REQUEST } from "../../reducers/post";
-import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import PostCard from "../../components/post/PostCard";
 import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/layout/AppLayout";
 import Spacer from "../../components/CustomizedUI/Spacer";
+import { loadMyInfo } from "../../reducers/user";
+import { loadHashtagPosts } from "../../reducers/post";
 
 export default function TagPage() {
   const router = useRouter();
@@ -28,11 +28,7 @@ export default function TagPage() {
       ) {
         if (hasMorePosts && !loadPostsLoading) {
           const lastId = mainPosts[mainPosts.length - 1]?.id;
-          dispatch({
-            type: LOAD_HASHTAG_POSTS_REQUEST,
-            data: tag,
-            lastId,
-          });
+          dispatch(loadHashtagPosts({ data: tag, lastId: lastId }));
         }
       }
     }
@@ -72,15 +68,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
       axios.defaults.headers.Cookie = "";
       req && cookie && (axios.defaults.headers.Cookie = cookie);
 
-      store.dispatch({
-        type: LOAD_MY_INFO_REQUEST,
-      });
+      await store.dispatch(loadMyInfo());
+      await store.dispatch(loadHashtagPosts({ data: tag }));
 
-      store.dispatch({
-        type: LOAD_HASHTAG_POSTS_REQUEST,
-        data: tag,
-      });
-      store.dispatch(END);
-      await store.sagaTask.toPromise();
+      return { props: {} };
     }
 );

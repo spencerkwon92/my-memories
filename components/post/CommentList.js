@@ -1,18 +1,25 @@
-import React, {useCallback} from 'react'
-import PropTypes from 'prop-types'
-import {List, ListItem, Avatar, IconButton, Spacer, Text } from '@chakra-ui/react'
-import styled from '@emotion/styled'
-import {DeleteIcon} from '@chakra-ui/icons'
-import { useDispatch,useSelector } from 'react-redux'
-import Link from 'next/link'
+import React, { useCallback } from "react";
+import PropTypes from "prop-types";
+import {
+  List,
+  ListItem,
+  Avatar,
+  IconButton,
+  Spacer,
+  Text,
+} from "@chakra-ui/react";
+import styled from "@emotion/styled";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
+import Link from "next/link";
 
-import {REMOVE_POST_COMMENT_REQUEST} from '../../reducers/post'
+import { removePostComment } from "../../reducers/post";
 
 const StyledList = styled(List)`
   max-height: 500px;
   overflow-y: hidden;
 
-  :hover{
+  :hover {
     overflow-y: auto;
   }
 
@@ -23,46 +30,41 @@ const StyledList = styled(List)`
 const StyledListItem = styled(ListItem)`
   display: flex;
   align-items: center;
-  
-  & > :nth-child(2){
+
+  & > :nth-child(2) {
     margin: 0px 10px 0px 10px;
   }
-  > a{
+  > a {
     font-weight: bold;
   }
-`
+`;
 
-function CommentList({comments, postUserId}){
-  console.log(comments)
-
+function CommentList({ comments, postUserId }) {
   return (
     <StyledList>
       {comments.length === 0 && (
-        <Text textAlign='center' fontWeight='bold'>댓글이 없습니다. 😳</Text>
+        <Text textAlign="center" fontWeight="bold">
+          댓글이 없습니다. 😳
+        </Text>
       )}
       {comments.map((comment) => (
-          <Comment key={comment.id} comment={comment} postUserId={postUserId}/>
+        <Comment key={comment.id} comment={comment} postUserId={postUserId} />
       ))}
     </StyledList>
   );
 }
 
-
-function Comment({comment, postUserId}){
-  const dispatch = useDispatch()
-  const { me } = useSelector(
-    (state) => state.user
-  );
+function Comment({ comment, postUserId }) {
+  const dispatch = useDispatch();
+  const { me } = useSelector((state) => state.user);
   const onDeleteButtonClick = useCallback(() => {
-    dispatch({
-      type: REMOVE_POST_COMMENT_REQUEST,
-      data: comment?.id,
-      postId: comment?.PostId,
-    });
-    alert('댓글이 삭제되었습니다.')
+    dispatch(
+      removePostComment({ commentId: comment?.id, postId: comment?.PostId })
+    );
+    alert("댓글이 삭제되었습니다.");
   }, [comment?.id, comment?.PostId]);
 
-  const isRemoveable = me?.id === postUserId || me?.id === comment?.UserId
+  const isRemoveable = me?.id === postUserId || me?.id === comment?.UserId;
 
   return (
     <StyledListItem>
@@ -72,9 +74,7 @@ function Comment({comment, postUserId}){
         src={comment.User.ProfileImage ? comment.User.ProfileImage?.src : null}
       />
       <Link href={`/user/${comment.UserId}`}>
-        <a>
-          {comment.User.nickname}
-        </a>
+        <a>{comment.User.nickname}</a>
       </Link>
 
       <div>{comment.content}</div>
@@ -95,5 +95,5 @@ function Comment({comment, postUserId}){
 
 CommentList.propTypes = {
   comments: PropTypes.array.isRequired,
-}
-export default CommentList
+};
+export default CommentList;

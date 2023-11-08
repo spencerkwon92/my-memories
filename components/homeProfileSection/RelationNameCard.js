@@ -1,10 +1,11 @@
-import React, {useCallback} from "react";
-import {Avatar,Button} from "@chakra-ui/react";
-import {useDispatch, useSelector } from "react-redux";
-import { FOLLOW_REQUEST, UNFOLLOW_REQUEST } from "../../reducers/user";
-import {css} from '@emotion/react'
-import PropTypes from 'prop-types'
-import Link from 'next/link'
+import React, { useCallback } from "react";
+import { Avatar, Button } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
+import { css } from "@emotion/react";
+import PropTypes from "prop-types";
+import Link from "next/link";
+
+import { follow, unfollow } from "../../reducers/user";
 
 const mainCss = css`
   display: flex;
@@ -23,24 +24,17 @@ const mainCss = css`
 
 function RelationNameCard({ user }) {
   const dispatch = useDispatch();
-  const {me} = useSelector((state)=>state.user)
-  const id = user?.id
-  const isFollowing = me?.Followings.find((following)=>following.id === id)
+  const { me } = useSelector((state) => state.user);
+  const id = user?.id;
+  const isFollowing = me?.Followings.find((following) => following.id === id);
 
   const onFollowingHandle = useCallback(() => {
     if (isFollowing) {
-      dispatch({
-        type: UNFOLLOW_REQUEST,
-        data: id,
-      });
+      dispatch(unfollow(id));
     } else {
-      dispatch({
-        type: FOLLOW_REQUEST,
-        data: id,
-      });
+      dispatch(follow(id));
     }
   }, [isFollowing]);
-  
 
   return (
     <div css={mainCss}>
@@ -55,7 +49,7 @@ function RelationNameCard({ user }) {
           <a>{user?.nickname}</a>
         </Link>
       </div>
-      <Button color="blue" onClick={onFollowingHandle} variant='link' >
+      <Button color="blue" onClick={onFollowingHandle} variant="link">
         {isFollowing ? "Unfollow" : "Follow"}
       </Button>
     </div>

@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import {css} from '@emotion/react'
+import { css } from "@emotion/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Avatar,
@@ -16,11 +16,12 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import Link from 'next/link'
+import Link from "next/link";
 
-import { logoutRequestAction } from "../../reducers/user"
+import { logoutRequestAction } from "../../reducers/user";
 import RelationNameCard from "./RelationNameCard";
-import {default as CustomSpacer} from "../CustomizedUI/Spacer"
+import { default as CustomSpacer } from "../CustomizedUI/Spacer";
+import { logOut } from "../../reducers/user";
 
 const flexCss = css`
   display: flex;
@@ -40,12 +41,12 @@ const lineMesCss = css`
   color: rgb(130, 129, 129);
 `;
 
-function UserProfile(){
-  const { me, logoutLoading } = useSelector((state) => state.user);
+function UserProfile() {
+  const { me } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const onLogOut = useCallback(() => {
-    dispatch(logoutRequestAction());
+    dispatch(logOut());
   }, []);
 
   return (
@@ -72,12 +73,10 @@ function UserProfile(){
             variant="outline"
           />
           <MenuList>
-            <Link href='/profile'>
-              <MenuItem as='a'>프로필 관리</MenuItem>
+            <Link href="/profile">
+              <MenuItem as="a">프로필 관리</MenuItem>
             </Link>
-            <MenuItem onClick={onLogOut}>
-              로그아웃
-            </MenuItem>
+            <MenuItem onClick={onLogOut}>로그아웃</MenuItem>
           </MenuList>
         </Menu>
       </div>
@@ -94,13 +93,13 @@ function UserProfile(){
           return (
             <div key={follower.id}>
               <RelationNameCard user={follower} />
-              <CustomSpacer/>
+              <CustomSpacer />
             </div>
           );
         })}
       </Container>
     </>
   );
-};
+}
 
 export default UserProfile;

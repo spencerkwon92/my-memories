@@ -1,6 +1,6 @@
-import React, {useCallback, useRef} from 'react';
-import {useSelector, useDispatch} from 'react-redux'
-import {BiDotsHorizontalRounded} from 'react-icons/bi'
+import React, { useCallback, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
 import {
   MenuList,
   MenuItem,
@@ -28,19 +28,22 @@ import {
 import { ArrowUpIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
 
-import { REMOVE_POST_REQUEST } from '../../reducers/post';
-import useInput from '../../hooks/useInput'
-import { UPDATE_POST_CONTENT_REQUEST } from '../../reducers/post';
+import useInput from "../../hooks/useInput";
+import { removePost } from "../../reducers/post";
+import { updatePostContent } from "../../reducers/post";
 
-function PostMenuButton({post}) {
-
+function PostMenuButton({ post }) {
   const {
     isOpen: isDeleteAlertOpen,
     onOpen: onDeleteAlertOpen,
     onClose: onDeleteAlertClose,
   } = useDisclosure();
-  const {isOpen:isUpdateAlertOpen, onOpen: onUpdateAlertOpen, onClose: onUpdateAlertClose} = useDisclosure();
-  
+  const {
+    isOpen: isUpdateAlertOpen,
+    onOpen: onUpdateAlertOpen,
+    onClose: onUpdateAlertClose,
+  } = useDisclosure();
+
   return (
     <>
       <Menu>
@@ -60,19 +63,20 @@ function PostMenuButton({post}) {
         onClose={onDeleteAlertClose}
         post={post}
       />
-      <UpdateModal isOpen={isUpdateAlertOpen} onClose={onUpdateAlertClose} post={post}/>
+      <UpdateModal
+        isOpen={isUpdateAlertOpen}
+        onClose={onUpdateAlertClose}
+        post={post}
+      />
     </>
   );
 }
 
-function AlertModal({isOpen, onClose, post}){
+function AlertModal({ isOpen, onClose, post }) {
   const cancelRef = useRef();
   const dispatch = useDispatch();
   const postDeleteHandler = useCallback(() => {
-    dispatch({
-      type: REMOVE_POST_REQUEST,
-      data: post.id,
-    });
+    dispatch(removePost(post?.id));
   }, []);
 
   return (
@@ -100,20 +104,16 @@ function AlertModal({isOpen, onClose, post}){
   );
 }
 
-function UpdateModal({isOpen, onClose, post}){
+function UpdateModal({ isOpen, onClose, post }) {
   const dispatch = useDispatch();
-  const [text, onChangeText] = useInput(post?.content||'')
+  const [text, onChangeText] = useInput(post?.content || "");
 
-  const onUpdateContentClickHandler = useCallback(()=>{
-    dispatch({
-      type: UPDATE_POST_CONTENT_REQUEST,
-      data: text,
-      postId: post.id,
-    })
+  const onUpdateContentClickHandler = useCallback(() => {
+    dispatch(updatePostContent({ content: text, postId: post.id }));
 
-    alert('메모리 내용이 수정되었습니다.')
-    onClose()
-  },[text])
+    alert("메모리 내용이 수정되었습니다.");
+    onClose();
+  }, [text]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>

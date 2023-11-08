@@ -1,29 +1,42 @@
-import {applyMiddleware, createStore, compose} from 'redux'
-import createSagaMiddleware from 'redux-saga'
+import { applyMiddleware, createStore, compose } from "redux";
+import createSagaMiddleware from "redux-saga";
 import { createWrapper } from "next-redux-wrapper";
-import {composeWithDevTools} from 'redux-devtools-extension'
+import { composeWithDevTools } from "redux-devtools-extension";
+import { configureStore } from "@reduxjs/toolkit";
 
-import rootReducer from "../reducers";
-import rootSags from'../sagas'
+import reducer from "../reducers";
 
-const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
-  console.log(action);
-  return next(action);
-};
+function getServerState() {
+  return typeof document !== "undefined"
+    ? JSON.parse(document.querySelector("#__NEXT_DATA__").textContent)?.props
+        .pageProps.initialState
+    : undefined;
+}
 
-export const configureStore = () => {
-  const sagaMiddleware = createSagaMiddleware();
-  const middlewares = [sagaMiddleware, loggerMiddleware]
-  const enhancer = process.env.NODE_ENV === 'production'
-    ? compose(applyMiddleware(...middlewares))
-    :composeWithDevTools(applyMiddleware(...middlewares))
-  const store = createStore(rootReducer, enhancer);
-  store.sagaTask = sagaMiddleware.run(rootSags);
-  return store;
-};
+const serverState = getServerState();
 
-const wrapper = createWrapper(configureStore, {
-  debug: process.env.NODE_ENV === "development",
+const makeStore = () =>
+  configureStore({
+    reducer,
+    devTools: true,
+    middlewares: (getDefaultMiddleware) => getDefaultMiddleware(),
+    preloadedState: serverState,
+  });
+
+// export const configureStore = () => {
+//   const sagaMiddleware = createSagaMiddleware();
+//   const middlewares = [sagaMiddleware, loggerMiddleware];
+//   const enhancer =
+//     process.env.NODE_ENV === "production"
+//       ? compose(applyMiddleware(...middlewares))
+//       : composeWithDevTools(applyMiddleware(...middlewares));
+//   const store = createStore(rootReducer, enhancer);
+//   store.sagaTask = sagaMiddleware.run(rootSags);
+//   return store;
+// };
+
+const wrapper = createWrapper(makeStore, {
+  debug: process.env.NODE_ENV !== "production",
 });
 
 export default wrapper;

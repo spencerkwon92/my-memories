@@ -1,17 +1,21 @@
-import React,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import PropTypes from "prop-types";
 import { ChakraProvider, Container } from "@chakra-ui/react";
-import {useRouter} from 'next/router'
-import PageLoadingIndicator from "../components/layout/PageLoadingIndicator";
+import { useRouter } from "next/router";
+import { Provider } from "react-redux";
 
+import PageLoadingIndicator from "../components/layout/PageLoadingIndicator";
 import wrapper from "../store/configureStore";
 
-function MyApp({ Component }) {
-  const [isPageLoading, setIsPageLoading] = useState(false);
-  const router = useRouter()
+function MyApp({ Component, ...rest }) {
+  const { store, props } = wrapper.useWrappedStore(rest);
+  const { pageProps } = props;
 
-  useEffect(()=>{
+  const [isPageLoading, setIsPageLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
     router.events.on("routeChangeStart", () => {
       setIsPageLoading(true);
     });
@@ -20,11 +24,7 @@ function MyApp({ Component }) {
       setIsPageLoading(false);
     });
 
-    router.events.on("routeChangeError", () => {
-      setIsPageLoading(false);
-    });
-
-    return()=>{
+    return () => {
       router.events.off("routeChangeStart", () => {
         setIsPageLoading(true);
       });
@@ -32,35 +32,37 @@ function MyApp({ Component }) {
       router.events.off("routeChangeComplete", () => {
         setIsPageLoading(false);
       });
-
-      router.events.off("routeChangeError", () => {
-        setIsPageLoading(false);
-      });
-    }
-  },[])
-
-
+    };
+  }, []);
 
   return (
     <ChakraProvider>
-      <Head>
-        <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
-        <title>My Memories</title>
-      </Head>
-      <Container maxW="container.lg">
-        {isPageLoading ? <PageLoadingIndicator /> : <Component />}
-      </Container>
+      <Provider store={store}>
+        <Head>
+          <meta charSet="utf-8" />
+          <link rel="icon" href="/favicon.ico" />
+          <title>My Memories</title>
+        </Head>
+        <Container maxW="container.lg">
+          {isPageLoading ? (
+            <PageLoadingIndicator />
+          ) : (
+            <Component {...pageProps} />
+          )}
+        </Container>
+      </Provider>
     </ChakraProvider>
   );
 }
 
 MyApp.propTypes = {
   Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.any.isRequired,
 };
 
 export function reportWebVitals(metric) {
   console.log(metric);
 }
 
-export default wrapper.withRedux(MyApp);
+export default MyApp;
+// export default wrapper.withRedux(MyApp);

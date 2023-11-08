@@ -1,24 +1,23 @@
-import React, {useCallback} from "react";
-import {useSelector } from "react-redux";
-import {useRouter} from 'next/router'
+import React, { useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 import axios from "axios";
-import { END } from "redux-saga";
 import { Button, Flex, Heading, Center } from "@chakra-ui/react";
 import Head from "next/head";
-import {pageUrl} from '../../config/config'
 
+import { pageUrl } from "../../config/config";
 import AppLayout from "../../components/layout/AppLayout";
 import wrapper from "../../store/configureStore";
-import { LOAD_POST_REQUEST } from "../../reducers/post";
 import PostCard from "../../components/post/PostCard";
 import Spacer from "../../components/CustomizedUI/Spacer";
+import { loadPost } from "../../reducers/post";
 
-function UserPost(){
-  const {singlePost} = useSelector(state => state.post);
+function UserPost() {
+  const { singlePost } = useSelector((state) => state.post);
   const router = useRouter();
-  const onClickToHome = useCallback(()=>{
-    router.push('/')
-  },[])
+  const onClickToHome = useCallback(() => {
+    router.push("/");
+  }, []);
 
   return (
     <AppLayout>
@@ -67,17 +66,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, params }) => {
       const cookie = req ? req.headers.cookie : "";
-      const {postId} = params;
+      const { postId } = params;
       axios.defaults.headers.Cookie = "";
       if (req && cookie) {
         axios.defaults.headers.Cookie = cookie;
       }
-      store.dispatch({
-        type: LOAD_POST_REQUEST,
-        data: postId,
-      });
-      store.dispatch(END);
-      await store.sagaTask.toPromise();
+
+      await store.dispatch(loadPost(postId));
+
+      return { props: {} };
     }
 );
 

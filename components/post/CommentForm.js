@@ -1,34 +1,34 @@
-import React, { useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import {FormControl, Input, Button, Center} from '@chakra-ui/react'
+import React, { useCallback, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { FormControl, Input, Button, Center } from "@chakra-ui/react";
 
-import useInput from '../../hooks/useInput';
-import { ADD_COMMENT_REQUEST } from '../../reducers/post';
-import Spacer from '../CustomizedUI/Spacer';
+import useInput from "../../hooks/useInput";
+import { createComment } from "../../reducers/post";
+import Spacer from "../CustomizedUI/Spacer";
 
-function CommentForm({ post }){
+function CommentForm({ post }) {
   const dispatch = useDispatch();
-  const { addCommentDone, addCommentLoading } = useSelector((state) => state.post);
-  const {me} = useSelector((state) => state.user);
-  const [commentText, onChangeCommentText, setCommentText] = useInput('');
-  
+  const { createCommentDone, createCommentLoading } = useSelector(
+    (state) => state.post
+  );
+  const { me } = useSelector((state) => state.user);
+  const [commentText, onChangeCommentText, setCommentText] = useInput("");
+
   useEffect(() => {
-    if (addCommentDone) {
-      setCommentText('');
+    if (createCommentDone) {
+      setCommentText("");
     }
-  }, [addCommentDone]);
+  }, [createCommentDone]);
 
   const onSubmitComment = useCallback(() => {
-    if(!me){
-      alert('댓글을 달려면 로그인이 필요합니다.')
-    }else{
-      dispatch({
-        type: ADD_COMMENT_REQUEST,
-        data: { content: commentText, userId: me?.id, postId: post.id },
-    });
+    if (!me) {
+      alert("댓글을 달려면 로그인이 필요합니다.");
+    } else {
+      dispatch(
+        createComment({ content: commentText, userId: me?.id, postId: post.id })
+      );
     }
-
   }, [commentText, me?.id]);
 
   return (
@@ -41,14 +41,14 @@ function CommentForm({ post }){
       />
       <Spacer />
       <Center>
-        <Button onClick={onSubmitComment} isLoading={addCommentLoading}>
+        <Button onClick={onSubmitComment} isLoading={createCommentLoading}>
           댓글달기
         </Button>
       </Center>
-      <Spacer/>
+      <Spacer />
     </FormControl>
   );
-};
+}
 
 CommentForm.propTypes = {
   post: PropTypes.object.isRequired,

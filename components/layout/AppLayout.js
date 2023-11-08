@@ -1,14 +1,22 @@
-import React,{useEffect,useRef, useCallback} from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
-import Router, {useRouter} from "next/router";
-import { Menu, MenuButton, Divider, Container, IconButton, Button, Avatar } from "@chakra-ui/react";
+import Router, { useRouter } from "next/router";
+import {
+  Menu,
+  MenuButton,
+  Divider,
+  Container,
+  IconButton,
+  Button,
+  Avatar,
+} from "@chakra-ui/react";
 import { css } from "@emotion/react";
-import {useSelector} from 'react-redux'
-import { BiHome,BiUserCircle } from "react-icons/bi";
-import Link from 'next/link'
+import { useSelector } from "react-redux";
+import { BiHome, BiUserCircle } from "react-icons/bi";
+import Link from "next/link";
 
 import Spacer from "../CustomizedUI/Spacer";
-import useContainer from "../../hooks/useContainer"
+import useContainer from "../../hooks/useContainer";
 import SearchButton from "./SearchButton";
 
 const buttonCss = css`
@@ -23,7 +31,7 @@ const buttonCss = css`
 const linkCss = css`
   font-size: 25px;
   font-weight: bold;
-`
+`;
 const wrapperCss = css`
   display: flex;
   justify-content: space-between;
@@ -43,42 +51,41 @@ const mobileMenuListCss = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`
+`;
 
-function AppLayout({ children }){
+function AppLayout({ children }) {
   const isMobile = useContainer({ default: false, md: true });
-  const {me} = useSelector((state)=>state.user) 
+  const { me } = useSelector((state) => state.user);
   const footerMenuRef = useRef(null);
   const router = useRouter();
 
   const onLoginButtonHandler = useCallback(() => {
-    Router.push(me?`/user/${me?.id}`:"/login");
-  },[me?.id])
+    Router.push(me ? `/user/${me?.id}` : "/login");
+  }, [me?.id]);
 
   const onHomeButtonHandler = useCallback(() => {
-    router.push('/')
-  },[])
+    router.push("/");
+  }, []);
 
-useEffect(() => {
-  function onScroll() {
-    if (
-      window.scrollY + document.documentElement.clientHeight >
-      document.documentElement.scrollHeight - 300
-    ) {
-      if(footerMenuRef.current !==null)footerMenuRef.current.style.opacity=0;
-    }else{
-    if (footerMenuRef.current !== null)
-      footerMenuRef.current.style.opacity = 1;
-
+  useEffect(() => {
+    function onScroll() {
+      if (
+        window.scrollY + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
+      ) {
+        if (footerMenuRef.current !== null)
+          footerMenuRef.current.style.opacity = 0;
+      } else {
+        if (footerMenuRef.current !== null)
+          footerMenuRef.current.style.opacity = 1;
+      }
     }
-  }
-  window.addEventListener("scroll", onScroll);
-  return () => {
-    window.removeEventListener("scroll", onScroll);
-  };
-}, []);
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
-  
   return (
     <Container maxW="container.lg">
       <Menu>
@@ -143,7 +150,7 @@ useEffect(() => {
       )}
     </Container>
   );
-};
+}
 
 AppLayout.propTypes = {
   children: PropTypes.node.isRequired,

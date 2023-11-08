@@ -1,33 +1,32 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import { css } from "@emotion/react";
-import {Spacer as ChakraSpacer,
-        Center,
-        Card,
-        CardHeader,
-        Avatar,
-        CardBody,
-        Button,
-        Flex,
-        CardFooter,
-        Divider,
-        IconButton} from '@chakra-ui/react'
-import {useSelector, useDispatch} from 'react-redux'
-import {BiLike, BiChat, BiShare, BiSolidLike  } from 'react-icons/bi'
-import PropTypes from 'prop-types'
-import Link from 'next/link'
+import {
+  Spacer as ChakraSpacer,
+  Center,
+  Card,
+  CardHeader,
+  Avatar,
+  CardBody,
+  Button,
+  Flex,
+  CardFooter,
+  Divider,
+  IconButton,
+} from "@chakra-ui/react";
+import { useSelector, useDispatch } from "react-redux";
+import { BiLike, BiChat, BiShare, BiSolidLike } from "react-icons/bi";
+import PropTypes from "prop-types";
+import Link from "next/link";
 
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
-import PostImages from './PostImages'
-import {
-  LIKE_POST_REQUEST,
-  UNLIKE_POST_REQUEST,
-} from "../../reducers/post";
+import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import CommentList from "./CommentList";
-import useContainer from '../../hooks/useContainer'
-import Spacer from "../CustomizedUI/Spacer"
-import PostMenuButton from "../CustomizedUI/PostMenuButton";
+import useContainer from "../../hooks/useContainer";
+import Spacer from "../CustomizedUI/Spacer";
+import PostMenuButton from "../post/PostMenuButton";
+import { likePost, unLikePost } from "../../reducers/post";
 
 const commentListCss = css`
   margin: 0px 10px;
@@ -48,47 +47,40 @@ const commentListCss = css`
 const ankerCss = css`
   font-weight: bold;
   font-size: 15px;
-`
+`;
 
 const imageCss = css`
-   :hover{
+  :hover {
     cursor: pointer;
-   }
-`
+  }
+`;
 
-function PostCard({post}) {
-  const [shewCommentForm, setShowCommentForm] = useState(false)
-  const dispatch = useDispatch()
-  const {me} = useSelector((state)=>state.user)
-  const id = me?.id
-  const isMobile = useContainer({default: false, md:true})
-  const liked = post?.Likers.find((liker)=>liker.id === id)
+function PostCard({ post }) {
+  const [shewCommentForm, setShowCommentForm] = useState(false);
+  const dispatch = useDispatch();
+  const { me } = useSelector((state) => state.user);
+  const id = me?.id;
+  const isMobile = useContainer({ default: false, md: true });
+  const liked = post?.Likers.find((liker) => liker.id === id);
 
-  const likedHandle = useCallback(()=>{
-    if(!me){
-      alert('좋아요를 누르시려면 로그인이 필요합니다.')
-    }else{
-      dispatch({
-        type: LIKE_POST_REQUEST,
-        data: post.id,
-      });
+  const likedHandle = useCallback(() => {
+    if (!me) {
+      alert("좋아요를 누르시려면 로그인이 필요합니다.");
+    } else {
+      dispatch(likePost(post.id));
     }
+  }, []);
 
-  },[])
+  const unlikedHandle = useCallback(() => {
+    dispatch(unLikePost(post.id));
+  }, []);
 
-  const unlikedHandle = useCallback(()=>{
-    dispatch({
-      type: UNLIKE_POST_REQUEST,
-      data: post.id,
-    })
-  },[])
+  const onToggleComment = useCallback(() => {
+    setShowCommentForm((prev) => !prev);
+  }, []);
 
-  const onToggleComment = useCallback(()=>{
-    setShowCommentForm((prev)=>!prev)
-  },[])
-
-  const onShareClick = useCallback(()=>{
-    alert('열심히 만들고 있습니다!🖥️')
+  const onShareClick = useCallback(() => {
+    alert("열심히 만들고 있습니다!🖥️");
     // const urlForCopy = `https://mymemories/post/${post.id}`;
     // if (navigator.share) {
     //   navigator
@@ -100,7 +92,7 @@ function PostCard({post}) {
     //     .then(() => console.log("공유 성공"))
     //     .catch((error) => console.log("공유 실패", error));
     // }
-  },[])
+  }, []);
 
   return (
     <>
@@ -130,12 +122,7 @@ function PostCard({post}) {
         <CardBody>
           <PostCardContent postContent={post.content} />
         </CardBody>
-        {post.Images[0] && (
-          <PostImages
-            images={post.Images}
-            css={imageCss}
-          />
-        )}
+        {post.Images[0] && <PostImages images={post.Images} css={imageCss} />}
 
         <CardFooter justify="space-between" flexWrap="wrap">
           {!isMobile ? (
@@ -194,13 +181,11 @@ function PostCard({post}) {
           </div>
         )}
       </Card>
-      {/* <ImageZoomModal disclosure={zoomModalDisclosure} data={post?.Images} /> */}
     </>
-    
   );
 }
 PostCard.propTypes = {
   post: PropTypes.object,
-}
+};
 
 export default PostCard;
