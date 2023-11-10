@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { END } from "redux-saga";
 import axios from "axios";
 import { Grid, GridItem, Card, Center, Link } from "@chakra-ui/react";
+import { useInView } from "react-intersection-observer";
 
 import PostForm from "../components/post/PostForm";
 import PostCard from "../components/post/PostCard";
@@ -20,24 +21,14 @@ function Home() {
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post
   );
+  const [ref, inView] = useInView();
 
   useEffect(() => {
-    function onScroll() {
-      if (
-        window.scrollY + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
-      ) {
-        if (hasMorePosts && !loadPostsLoading) {
-          const lastId = mainPosts[mainPosts.length - 1]?.id;
-          dispatch(loadPosts(lastId));
-        }
-      }
+    if (inView && hasMorePosts && !loadPostsLoading) {
+      const lastId = mainPosts[mainPosts.length - 1]?.id;
+      dispatch(loadPosts(lastId));
     }
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [mainPosts, hasMorePosts, loadPostsLoading]);
+  }, [inView, mainPosts, hasMorePosts, loadPostsLoading]);
 
   const isMobile = useContainer({ default: false, md: true });
 
@@ -52,6 +43,10 @@ function Home() {
               <Spacer size={20} />
             </div>
           ))}
+          <div
+            ref={hasMorePosts && !loadPostsLoading ? ref : undefined}
+            style={{ height: 2 }}
+          />
         </GridItem>
         {!isMobile && (
           <GridItem colSpan={2}>

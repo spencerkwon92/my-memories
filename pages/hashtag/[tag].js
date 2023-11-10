@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { END } from "redux-saga";
 import { Heading, Center } from "@chakra-ui/react";
+import { useInView } from "react-intersection-observer";
 
 import PostCard from "../../components/post/PostCard";
 import wrapper from "../../store/configureStore";
@@ -19,23 +19,13 @@ export default function TagPage() {
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
     (state) => state.post
   );
+  const [ref, inView] = useInView();
 
   useEffect(() => {
-    function onScroll() {
-      if (
-        window.scrollY + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
-      ) {
-        if (hasMorePosts && !loadPostsLoading) {
-          const lastId = mainPosts[mainPosts.length - 1]?.id;
-          dispatch(loadHashtagPosts({ data: tag, lastId: lastId }));
-        }
-      }
+    if (inView && hasMorePosts && !loadPostsLoading) {
+      const lastId = mainPosts[mainPosts.length - 1]?.id;
+      dispatch(loadHashtagPosts({ data: tag, lastId: lastId }));
     }
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
   }, [mainPosts, hasMorePosts, loadPostsLoading, tag]);
 
   if (mainPosts.length === 0) {
@@ -56,6 +46,10 @@ export default function TagPage() {
           <Spacer />
         </div>
       ))}
+      <div
+        ref={hasMorePosts && !loadPostsLoading ? ref : undefined}
+        style={{ height: 2 }}
+      />
     </AppLayout>
   );
 }

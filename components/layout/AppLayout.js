@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import {
   Menu,
   MenuButton,
@@ -14,6 +14,7 @@ import { css } from "@emotion/react";
 import { useSelector } from "react-redux";
 import { BiHome, BiUserCircle } from "react-icons/bi";
 import Link from "next/link";
+import { useInView } from "react-intersection-observer";
 
 import Spacer from "../CustomizedUI/Spacer";
 import useContainer from "../../hooks/useContainer";
@@ -58,9 +59,10 @@ function AppLayout({ children }) {
   const { me } = useSelector((state) => state.user);
   const footerMenuRef = useRef(null);
   const router = useRouter();
+  const [ref, inView] = useInView();
 
   const onLoginButtonHandler = useCallback(() => {
-    Router.push(me ? `/user/${me?.id}` : "/login");
+    router.push(me ? `/user/${me?.id}` : "/login");
   }, [me?.id]);
 
   const onHomeButtonHandler = useCallback(() => {
@@ -68,23 +70,11 @@ function AppLayout({ children }) {
   }, []);
 
   useEffect(() => {
-    function onScroll() {
-      if (
-        window.scrollY + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
-      ) {
-        if (footerMenuRef.current !== null)
-          footerMenuRef.current.style.opacity = 0;
-      } else {
-        if (footerMenuRef.current !== null)
-          footerMenuRef.current.style.opacity = 1;
-      }
+    const footerMenu = footerMenuRef.current;
+    if (footerMenu) {
+      footerMenu.style.opacity = inView ? 0 : 1;
     }
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
+  }, [inView]);
 
   return (
     <Container maxW="container.lg">
@@ -148,6 +138,7 @@ function AppLayout({ children }) {
           </div>
         </>
       )}
+      <div ref={ref} style={{ height: 2 }} />
     </Container>
   );
 }
