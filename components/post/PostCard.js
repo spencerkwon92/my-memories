@@ -12,11 +12,14 @@ import {
   CardFooter,
   Divider,
   IconButton,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
 import { BiLike, BiChat, BiShare, BiSolidLike } from "react-icons/bi";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { useSpring, animated } from "react-spring";
 
 import FollowButton from "./FollowButton";
 import PostCardContent from "./PostCardContent";
@@ -28,22 +31,6 @@ import Spacer from "../CustomizedUI/Spacer";
 import PostMenuButton from "../post/PostMenuButton";
 import { likePost, unLikePost } from "../../reducers/post";
 
-const commentListCss = css`
-  margin: 0px 10px;
-
-  animation: fade-in-ani 0.2s linear;
-
-  @keyframes fade-in-ani {
-    from {
-      transform: translateY(-30%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0%);
-      opacity: 1;
-    }
-  }
-`;
 const ankerCss = css`
   font-weight: bold;
   font-size: 15px;
@@ -62,6 +49,7 @@ function PostCard({ post }) {
   const id = me?.id;
   const isMobile = useContainer({ default: false, md: true });
   const liked = post?.Likers.find((liker) => liker.id === id);
+  const [copyAlert, setCopyAlert] = useState(false);
 
   const likedHandle = useCallback(() => {
     if (!me) {
@@ -79,23 +67,42 @@ function PostCard({ post }) {
     setShowCommentForm((prev) => !prev);
   }, []);
 
+  const fadeInOut = useSpring({
+    opacity: copyAlert ? 1 : 0,
+    config: { duration: 500 },
+  });
+  const fadeInUpForComment = useSpring({
+    margin: "0px 10px",
+    opacity: shewCommentForm ? 1 : 0,
+    transform: shewCommentForm ? "translateY(0%)" : "translateY(-30%)",
+    config: { duration: 150 },
+  });
+
   const onShareClick = useCallback(() => {
-    alert("열심히 만들고 있습니다!🖥️");
-    // const urlForCopy = `https://mymemories/post/${post.id}`;
-    // if (navigator.share) {
-    //   navigator
-    //     .share({
-    //       title: "기록하며 성장하기",
-    //       text: "Hello World",
-    //       url: urlForCopy,
-    //     })
-    //     .then(() => console.log("공유 성공"))
-    //     .catch((error) => console.log("공유 실패", error));
-    // }
+    const url = window.location.href + `post/${post.id}`;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        setCopyAlert(true);
+        setTimeout(() => {
+          setCopyAlert(false);
+        }, 1000);
+      })
+      .catch((err) => {
+        console.error("Could not copy Text:", err);
+      });
   }, []);
 
   return (
     <>
+      {copyAlert && (
+        <animated.div style={fadeInOut}>
+          <Alert status="success">
+            <AlertIcon />
+            포스트가 링크가 복사되었어요!!
+          </Alert>
+        </animated.div>
+      )}
       <Card>
         <CardHeader>
           <Flex spacing="4">
@@ -173,12 +180,12 @@ function PostCard({ post }) {
           )}
         </CardFooter>
         {shewCommentForm && (
-          <div css={commentListCss}>
+          <animated.div style={fadeInUpForComment}>
             <Divider />
             <Spacer />
             <CommentList comments={post?.Comments} postUserId={post?.UserId} />
             <CommentForm post={post} />
-          </div>
+          </animated.div>
         )}
       </Card>
     </>

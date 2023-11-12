@@ -15,6 +15,7 @@ import { loadPost } from "../../reducers/post";
 function UserPost() {
   const { singlePost } = useSelector((state) => state.post);
   const router = useRouter();
+  const { postId } = router.query;
   const onClickToHome = useCallback(() => {
     router.push("/");
   }, []);
@@ -40,7 +41,10 @@ function UserPost() {
               : `${pageUrl}/favicon.ico`
           }
         />
-        <meta property="og:url" content={`https://mymemories.kr/post/${id}`} />
+        <meta
+          property="og:url"
+          content={`https://mymemories.kr/post/${postId}`}
+        />
       </Head>
       <Flex
         flexDirection="column"
