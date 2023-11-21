@@ -11,14 +11,15 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 import { css } from "@emotion/react";
-import { useSelector } from "react-redux";
 import { BiHome, BiUserCircle } from "react-icons/bi";
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
+import { useRecoilValue } from "recoil";
 
 import Spacer from "../CustomizedUI/Spacer";
 import useContainer from "../../hooks/useContainer";
 import SearchButton from "./SearchButton";
+import { userState } from "../../recoil";
 
 const buttonCss = css`
   &:hover {
@@ -56,7 +57,8 @@ const mobileMenuListCss = css`
 
 function AppLayout({ children }) {
   const isMobile = useContainer({ default: false, md: true });
-  const { me } = useSelector((state) => state.user);
+
+  const { me } = useRecoilValue(userState);
   const footerMenuRef = useRef(null);
   const router = useRouter();
   const [ref, inView] = useInView();
@@ -75,7 +77,6 @@ function AppLayout({ children }) {
       footerMenu.style.opacity = inView ? 0 : 1;
     }
   }, [inView]);
-
   return (
     <Container maxW="container.lg">
       <Menu>

@@ -10,10 +10,13 @@ import {
 } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useMutation } from "react-query";
 
-import { removePostComment } from "../../reducers/post";
+import { userState, postState } from "../../recoil";
+import { removePostCommentAPI } from "../../apis/post";
+import produce from "../../util/produce";
 
 const StyledList = styled(List)`
   max-height: 500px;
@@ -55,14 +58,35 @@ function CommentList({ comments, postUserId }) {
 }
 
 function Comment({ comment, postUserId }) {
-  const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  const { me } = useRecoilValue(userState);
+  const setPostState = useSetRecoilState(postState);
+
+  const removePostCommentMutation = useMutation(
+    "removePostComment",
+    removePostCommentAPI,
+    {
+      onSuccess(data) {
+        setPostState((prev) =>
+          produce(prev, (draft) => {
+            const post = draft.mainPosts.find(
+              (post) => post.id === data.PostId
+            );
+            post.Comments = post.Comments.filter(
+              (comment) => comment.id !== data.CommentId
+            );
+          })
+        );
+      },
+    }
+  );
+
   const onDeleteButtonClick = useCallback(() => {
-    dispatch(
-      removePostComment({ commentId: comment?.id, postId: comment?.PostId })
-    );
+    removePostCommentMutation.mutate({
+      commentId: comment.id,
+      postId: comment.PostId,
+    });
     alert("댓글이 삭제되었습니다.");
-  }, [comment?.id, comment?.PostId]);
+  }, [comment?.id, comment?.PostId, removePostCommentMutation]);
 
   const isRemoveable = me?.id === postUserId || me?.id === comment?.UserId;
 

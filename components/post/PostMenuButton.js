@@ -31,6 +31,10 @@ import PropTypes from "prop-types";
 import useInput from "../../hooks/useInput";
 import { removePost } from "../../reducers/post";
 import { updatePostContent } from "../../reducers/post";
+import { removePostAPI } from "../../apis/post";
+import { useMutation, useQueryClient } from "react-query";
+import { postState } from "../../recoil";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 
 function PostMenuButton({ post }) {
   const {
@@ -74,10 +78,27 @@ function PostMenuButton({ post }) {
 
 function AlertModal({ isOpen, onClose, post }) {
   const cancelRef = useRef();
-  const dispatch = useDispatch();
+  const setPostState = useSetRecoilState(postState);
+  const { mainPosts } = useRecoilValue(postState);
+
+  const removePostMutation = useMutation("posts", removePostAPI, {
+    onMutate() {
+      console.log("load Start!");
+    },
+    onSuccess(data) {
+      setPostState((prev) => ({
+        ...prev,
+        mainPosts: prev.mainPosts.filter((post) => post.id !== data.PostId),
+      }));
+    },
+    onSettled() {
+      console.log("load End!");
+    },
+  });
   const postDeleteHandler = useCallback(() => {
-    dispatch(removePost(post?.id));
-  }, []);
+    removePostMutation.mutate(post?.id);
+    onClose();
+  }, [removePostMutation]);
 
   return (
     <AlertDialog
@@ -105,11 +126,11 @@ function AlertModal({ isOpen, onClose, post }) {
 }
 
 function UpdateModal({ isOpen, onClose, post }) {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [text, onChangeText] = useInput(post?.content || "");
 
   const onUpdateContentClickHandler = useCallback(() => {
-    dispatch(updatePostContent({ content: text, postId: post.id }));
+    // dispatch(updatePostContent({ content: text, postId: post.id }));
 
     alert("메모리 내용이 수정되었습니다.");
     onClose();

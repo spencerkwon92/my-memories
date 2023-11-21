@@ -1,35 +1,39 @@
 import React, { useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
 import { FormControl, Input, Button, Center } from "@chakra-ui/react";
+import { useMutation } from "react-query";
+import { useSetRecoilState, useRecoilValue } from "recoil";
 
 import useInput from "../../hooks/useInput";
-import { createComment } from "../../reducers/post";
 import Spacer from "../CustomizedUI/Spacer";
+import { addCommentAPI } from "../../apis/post";
+import { postState, userState } from "../../recoil";
+import produce from "../../util/produce";
 
 function CommentForm({ post }) {
-  const dispatch = useDispatch();
-  const { createCommentDone, createCommentLoading } = useSelector(
-    (state) => state.post
-  );
-  const { me } = useSelector((state) => state.user);
+  const { me } = useRecoilValue(userState);
   const [commentText, onChangeCommentText, setCommentText] = useInput("");
+  const setPostState = useSetRecoilState(postState);
 
-  useEffect(() => {
-    if (createCommentDone) {
+  const addCommentMutation = useMutation("addComment", addCommentAPI, {
+    onSuccess(data) {
+      setPostState((prev) =>
+        produce(prev, (draft) => {
+          const post = draft.mainPosts.find((post) => post.id === data.PostId);
+          post.Comments.unshift(data);
+        })
+      );
       setCommentText("");
-    }
-  }, [createCommentDone]);
+    },
+  });
 
   const onSubmitComment = useCallback(() => {
     if (!me) {
       alert("댓글을 달려면 로그인이 필요합니다.");
     } else {
-      dispatch(
-        createComment({ content: commentText, userId: me?.id, postId: post.id })
-      );
+      addCommentMutation.mutate({ content: commentText, postId: post.id });
     }
-  }, [commentText, me?.id]);
+  }, [me, addCommentMutation]);
 
   return (
     <FormControl>
@@ -41,9 +45,7 @@ function CommentForm({ post }) {
       />
       <Spacer />
       <Center>
-        <Button onClick={onSubmitComment} isLoading={createCommentLoading}>
-          댓글달기
-        </Button>
+        <Button onClick={onSubmitComment}>댓글달기</Button>
       </Center>
       <Spacer />
     </FormControl>

@@ -22,6 +22,8 @@ import { logoutRequestAction } from "../../reducers/user";
 import RelationNameCard from "./RelationNameCard";
 import { default as CustomSpacer } from "../CustomizedUI/Spacer";
 import { logOut } from "../../reducers/user";
+import { userState } from "../../recoil";
+import { useRecoilValue } from "recoil";
 
 const flexCss = css`
   display: flex;
@@ -42,18 +44,20 @@ const lineMesCss = css`
 `;
 
 function UserProfile() {
-  const { me } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-
+  // const { me } = useSelector((state) => state.user);
+  // const dispatch = useDispatch();
   const onLogOut = useCallback(() => {
-    dispatch(logOut());
+    // dispatch(logOut());
+    console.log("test!!");
   }, []);
+
+  const { me } = useRecoilValue(userState);
 
   return (
     <>
       <div css={flexCss}>
         <Avatar
-          name={me.nickname}
+          name={me?.nickname}
           bgColor="gray"
           size="lg"
           src={me.ProfileImage ? me.ProfileImage?.src : null}
@@ -89,7 +93,7 @@ function UserProfile() {
           css={lineMesCss}
         >{`${me?.nickname}님을 팔로우 하는 사용자들입니다.`}</div>
         <CustomSpacer />
-        {me?.Followers.map((follower) => {
+        {me?.Followers?.map((follower) => {
           return (
             <div key={follower.id}>
               <RelationNameCard user={follower} />

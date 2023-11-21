@@ -64,7 +64,7 @@ export const logIn = createAsyncThunk("user/logIn", async (data) => {
 });
 
 export const logOut = createAsyncThunk("user/logOut", async () => {
-  const res = await axios.post("user/logout");
+  const res = await axios.post("/user/logout");
   return res.data;
 });
 

@@ -1,24 +1,26 @@
-import React from 'react';
-import { Heading,VStack,Center,Text, Box, Divider} from '@chakra-ui/react';
-import PropTypes from 'prop-types';
-import {useSelector} from 'react-redux'
+import React from "react";
+import { Heading, VStack, Center, Text, Box, Divider } from "@chakra-ui/react";
+import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
+import { useRecoilValue } from "recoil";
 
-import useContainer from '../../hooks/useContainer';
-import RelationNameCard from '../homeProfileSection/RelationNameCard';
-import {css} from '@emotion/react';
-import Spacer from '../CustomizedUI/Spacer';
+import useContainer from "../../hooks/useContainer";
+import RelationNameCard from "../homeProfileSection/RelationNameCard";
+import { css } from "@emotion/react";
+import Spacer from "../CustomizedUI/Spacer";
+import { userState } from "../../recoil";
 
 const listCss = css`
   height: 100vh;
   overflow-y: hidden;
-  :hover{
+  :hover {
     overflow-y: auto;
   }
-`
+`;
 
-function FollowList({as, header, data }){
+function FollowList({ as, header, data }) {
   const isMobile = useContainer({ default: false, md: true });
-  const {me} = useSelector((state)=>state.user)
+  const { me } = useRecoilValue(userState);
 
   return (
     <Box shadow="md" borderWidth="1px" p="20px">

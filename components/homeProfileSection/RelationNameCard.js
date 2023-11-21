@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/react";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { userState } from "../../recoil";
+import { useRecoilValue } from "recoil";
 
 import { follow, unfollow } from "../../reducers/user";
 
@@ -23,17 +25,20 @@ const mainCss = css`
 `;
 
 function RelationNameCard({ user }) {
-  const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  // const dispatch = useDispatch();
+  // const { me } = useSelector((state) => state.user);
+  const { me } = useRecoilValue(userState);
   const id = user?.id;
   const isFollowing = me?.Followings.find((following) => following.id === id);
 
   const onFollowingHandle = useCallback(() => {
-    if (isFollowing) {
-      dispatch(unfollow(id));
-    } else {
-      dispatch(follow(id));
-    }
+    // if (isFollowing) {
+    //   dispatch(unfollow(id));
+    // } else {
+    //   dispatch(follow(id));
+    // }
+
+    console.log("test!!");
   }, [isFollowing]);
 
   return (

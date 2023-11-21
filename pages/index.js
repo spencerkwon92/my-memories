@@ -1,44 +1,40 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { END } from "redux-saga";
-import axios from "axios";
 import { Grid, GridItem, Card, Center, Link } from "@chakra-ui/react";
 import { useInView } from "react-intersection-observer";
 
 import PostForm from "../components/post/PostForm";
 import PostCard from "../components/post/PostCard";
 import AppLayout from "../components/layout/AppLayout";
-import wrapper from "../store/configureStore";
 import UserProfile from "../components/homeProfileSection/UserProfile";
 import useContainer from "../hooks/useContainer";
 import Spacer from "../components/CustomizedUI/Spacer";
-import { loadMyInfo, loadFollowers, loadFollowings } from "../reducers/user";
-import { loadPosts } from "../reducers/post";
+import { useLoadPosts } from "../hooks/postAction";
+import { useLoadMyInfo } from "../hooks/userAction";
 
 function Home() {
-  const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post
-  );
+  const isMobile = useContainer({ default: false, md: true });
+  const [userStateBlock, loadMyInfoLoading] = useLoadMyInfo();
+  const [postStateBlock, loadNextPosts, hasMorePosts, loadPostsLoading] =
+    useLoadPosts();
   const [ref, inView] = useInView();
+
+  const { mainPosts } = postStateBlock;
+  const { me } = userStateBlock;
 
   useEffect(() => {
     if (inView && hasMorePosts && !loadPostsLoading) {
-      const lastId = mainPosts[mainPosts.length - 1]?.id;
-      dispatch(loadPosts(lastId));
+      loadNextPosts();
     }
-  }, [inView, mainPosts, hasMorePosts, loadPostsLoading]);
+  }, [inView, hasMorePosts, loadPostsLoading]);
 
-  const isMobile = useContainer({ default: false, md: true });
-
+  if (loadMyInfoLoading) return null;
   return (
     <AppLayout>
       <Grid templateColumns="repeat(6, 1fr)" gap={5}>
         <GridItem colSpan={isMobile ? 6 : 4}>
           {me && <PostForm />}
-          {mainPosts.map((post) => (
-            <div key={post.id}>
+          {mainPosts?.map((post) => (
+            <div key={post?.id}>
               <PostCard post={post} />
               <Spacer size={20} />
             </div>
@@ -66,24 +62,33 @@ function Home() {
   );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req }) => {
-      const cookie = req ? req.headers.cookie : "";
-      axios.defaults.headers.Cookie = "";
-      if (req && cookie) {
-        axios.defaults.headers.Cookie = cookie;
-      }
-      await store.dispatch(loadMyInfo());
-      await store.dispatch(loadPosts());
-      await store.dispatch(loadFollowers());
-      await store.dispatch(loadFollowings());
-      console.log(store.getState());
-    }
-);
+// export const getServerSideProps = async (context) => {
+//   const cookie = context.req ? context.req.headers.cookie : "";
+//   axios.defaults.headers.Cookie = "";
+//   if (context.req && cookie) {
+//     axios.defaults.headers.Cookie = cookie;
+//   }
 
-export function reportWebVitals(metric) {
-  console.log(metric);
-}
+//   return {
+//     props: {},
+//   };
+// };
+
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   (store) =>
+//     async ({ req }) => {
+//       const cookie = req ? req.headers.cookie : "";
+//       axios.defaults.headers.Cookie = "";
+//       if (req && cookie) {
+//         axios.defaults.headers.Cookie = cookie;
+//       }
+//       await Promise.all([
+//         store.dispatch(loadPosts()),
+//         store.dispatch(loadFollowers()),
+//         store.dispatch(loadFollowings()),
+//       ]);
+//       console.log(store.getState());
+//     }
+// );
 
 export default Home;

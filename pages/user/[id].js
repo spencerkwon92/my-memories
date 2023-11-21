@@ -73,8 +73,10 @@ export const getServerSideProps = wrapper.getServerSideProps(
       axios.defaults.headers.Cookie = "";
       req && cookie && (axios.defaults.headers.Cookie = cookie);
 
-      await store.dispatch(loadMyInfo());
-      await store.dispatch(loadUserPosts({ userId: params.id }));
+      await Promise.all([
+        store.dispatch(loadMyInfo()),
+        store.dispatch(loadUserPosts({ userId: params.id })),
+      ]);
 
       return {
         props: {},

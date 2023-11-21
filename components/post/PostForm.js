@@ -31,6 +31,12 @@ import styled from "@emotion/styled";
 import useContainer from "../../hooks/useContainer";
 import postSlice, { uploadImages, createPost } from "../../reducers/post";
 
+import { uploadImagesAPI, addPostAPI } from "../../apis/post";
+import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
+import { postState, userState } from "../../recoil";
+import { useMutation, useQueryClient } from "react-query";
+import produce from "../../util/produce";
+
 const imageGroupCss = css`
   max-height: 50vh;
   overflow-y: hidden;
@@ -39,8 +45,7 @@ const imageGroupCss = css`
   }
 `;
 const imageWrapperCss = css`
-  position: relative;
-  background-color: black;
+  position: relative;c
 `;
 const StyledImage = styled(Image)`
   object-fit: contain;
@@ -56,17 +61,40 @@ const StyledRemoveButton = styled(IconButton)`
 `;
 
 function PostForm() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [text, setText] = useState("");
-  const { imagePaths, createPostLoading, createPostDone } = useSelector(
-    (state) => state.post
-  );
+  const [addPostLoading, setAddPostLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [imagePaths, setImagePaths] = useState([]);
+
+  const setPostState = useSetRecoilState(postState);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isMobile = useContainer({ default: false, md: true });
   const imageInput = useRef();
+
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
+
+  const addPostMutation = useMutation("posts", addPostAPI, {
+    onMutate() {
+      setAddPostLoading(true);
+    },
+    onSuccess(data) {
+      setPostState((prev) =>
+        produce(prev, (draft) => {
+          draft.mainPosts.unshift(data);
+        })
+      );
+
+      setText("");
+      setImagePaths([]);
+    },
+    onSettled() {
+      setAddPostLoading(false);
+    },
+  });
 
   const onChangeImages = useCallback((e) => {
     const imageFormData = new FormData();
@@ -74,21 +102,19 @@ function PostForm() {
       imageFormData.append("image", file);
     });
 
-    dispatch(uploadImages(imageFormData));
+    uploadImagesAPI(imageFormData).then((data) =>
+      setImagePaths((prev) => [...prev, ...data])
+    );
   }, []);
 
   const onRemoveImage = useCallback(
     (index) => () => {
-      dispatch(postSlice.actions.removeLoadedImage(index));
+      setImagePaths((prev) => {
+        return prev.filter((path, i) => i !== index);
+      });
     },
     []
   );
-
-  useEffect(() => {
-    if (createPostDone) {
-      setText("");
-    }
-  }, [createPostDone]);
 
   const onSubmitForm = useCallback(() => {
     if (!text || !text.trim()) {
@@ -96,17 +122,13 @@ function PostForm() {
     }
 
     const formData = new FormData();
-
     imagePaths.forEach((path) => {
       formData.append("image", path);
     });
-
     formData.append("content", text);
-
-    dispatch(createPost(formData));
-
+    addPostMutation.mutate(formData);
     onClose();
-  }, [text, imagePaths]);
+  }, [text, imagePaths, addPostMutation]);
 
   const onChangeText = useCallback((e) => {
     setText(e.target.value);
@@ -114,7 +136,7 @@ function PostForm() {
 
   const modalClosehandler = useCallback(() => {
     if (imagePaths.length > 0) {
-      dispatch(postSlice.actions.removeAllLoadedImages());
+      setImagePaths([]);
     }
     onClose();
   }, [imagePaths]);
@@ -177,7 +199,7 @@ function PostForm() {
                 이미지
                 <PlusSquareIcon />
               </Button>
-              <Button loading={createPostLoading} onClick={onSubmitForm}>
+              <Button onClick={onSubmitForm}>
                 메모리 올리기
                 <ArrowUpIcon />
               </Button>

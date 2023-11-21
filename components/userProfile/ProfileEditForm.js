@@ -23,6 +23,8 @@ import {
 } from "@chakra-ui/react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
+import { useRecoilState } from "recoil";
+import { useMutation } from "react-query";
 
 import useInput from "../../hooks/useInput";
 import Spacer from "../CustomizedUI/Spacer";
@@ -32,6 +34,7 @@ import userSlice, {
   uploadProfileImage,
   editProfileImage,
 } from "../../reducers/user";
+import { userState } from "../../recoil";
 
 const ButtonImage = styled(Image)`
   opacity: 0.5;

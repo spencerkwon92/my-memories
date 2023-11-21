@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import {
   Container,
@@ -10,13 +10,14 @@ import {
   Center,
   Heading,
 } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
 import Router from "next/router";
+import { useMutation } from "react-query";
 
-import { logIn } from "../reducers/user";
 import useInput from "../hooks/useInput";
 import AppLayout from "../components/layout/AppLayout";
 import Spacer from "../components/CustomizedUI/Spacer";
+import { useLoadMyInfo } from "../hooks/userAction";
+import { logInAPI } from "../apis/user";
 
 const wrapperCss = css`
   display: flex;
@@ -31,21 +32,42 @@ const wrapperCss = css`
 `;
 
 function LoginPage() {
-  const dispatch = useDispatch();
-  const { loginLoading, loginError, loginDone, me } = useSelector(
-    (state) => state.user
-  );
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const { me } = useLoadMyInfo();
+
   const [email, onChangeEmail] = useInput("");
   const [password, onChangePassword] = useInput("");
+  const emptyTextError = !email || !password;
+
+  const loginMutation = useMutation("login", logInAPI, {
+    onMutate: () => {
+      setLoginLoading(true);
+    },
+    onSuccess: () => {
+      Router.push("/");
+    },
+    onError: (err) => {
+      console.lo(err);
+      setLoginError(err.res?.data);
+    },
+    onSettled: () => {
+      setLoginLoading(false);
+    },
+  });
 
   useEffect(() => {
     if (loginError) alert(loginError);
-    if (loginDone || me) Router.push("/");
-  }, [loginDone, me, loginError]);
+    if (me) Router.push("/");
+  }, [me, loginError]);
 
   const onSubmit = useCallback(() => {
-    dispatch(logIn({ email, password }));
-  }, [email, password]);
+    if (!emptyTextError) {
+      loginMutation.mutate({ email, password });
+    } else {
+      alert("이메일과 비밀번호를 모두 입력해주세요.");
+    }
+  }, [email, password, loginMutation]);
 
   return (
     <AppLayout>

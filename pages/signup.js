@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/react";
 import Router from "next/router";
 import Head from "next/head";
@@ -12,11 +11,13 @@ import {
   Center,
   Heading,
 } from "@chakra-ui/react";
+import { useMutation } from "react-query";
 
-import { signUp } from "../reducers/user";
+import { signUpAPI } from "../apis/user";
 import AppLayout from "../components/layout/AppLayout";
 import useInput from "../hooks/useInput";
 import Spacer from "../components/CustomizedUI/Spacer";
+import useLoadMyInfo from "../hooks/useLoadMyInfo";
 
 const wrapperCss = css`
   display: flex;
@@ -27,52 +28,47 @@ const wrapperCss = css`
 `;
 
 function Signup() {
+  const [signupLoading, setSignupLoading] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState("");
   const [passwordError, setPasswordError] = useState(false);
 
   const [email, onChangeEmail] = useInput("");
   const [nickname, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
-  const dispatch = useDispatch();
   const hasNullText = !email || !nickname || !password || !passwordCheck;
-  const { signupLoading, signupDone, signupError, me } = useSelector(
-    (state) => state.user
-  );
+  const { me } = useLoadMyInfo();
 
+  const signUpMutation = useMutation("signUp", signUpAPI, {
+    onMutate: () => {
+      setSignupLoading(true);
+    },
+    onSuccess: () => {
+      alert("환영합니다! 로그인 페이지로 이동합니다.");
+      Router.push("/");
+    },
+    onError: (error) => {
+      alert(error);
+    },
+    onSettled: () => {
+      setSignupLoading(false);
+    },
+  });
   useEffect(() => {
     if (me?.id) {
       Router.replace("/");
     }
   }, [me?.id]);
 
-  useEffect(() => {
-    if (me) {
-      alert("로그인했으니 메인페이지로 이동합니다.");
-      Router.replace("/");
-    }
-  }, [me && me.id]);
-
-  useEffect(() => {
-    if (signupDone) {
-      alert("환영합니다! 로그인 페이지로 이동합니다.");
-      Router.push("/login");
-    }
-  }, [signupDone]);
-
-  useEffect(() => {
-    if (signupError) alert(signupError);
-  });
-
   const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
       setPasswordError(true);
     }
     if (!hasNullText) {
-      dispatch(signUp({ email, password, nickname }));
+      signUpMutation.mutate({ email, nickname, password });
     } else {
       alert("회원 정보를 모두 넣어 주세요!.");
     }
-  }, [email, password, nickname, passwordCheck]);
+  }, [email, password, nickname, passwordCheck, signUpMutation]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
