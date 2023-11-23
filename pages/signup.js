@@ -18,6 +18,7 @@ import AppLayout from "../components/layout/AppLayout";
 import useInput from "../hooks/useInput";
 import Spacer from "../components/CustomizedUI/Spacer";
 import { useLoadMyInfo } from "../hooks/userAction";
+import { a } from "react-spring";
 
 const wrapperCss = css`
   display: flex;
@@ -46,8 +47,10 @@ function Signup() {
       alert("환영합니다! 로그인 페이지로 이동합니다.");
       Router.push("/");
     },
-    onError: (error) => {
-      alert(error);
+    onError: (err) => {
+      setSignupLoading(false);
+      console.error(err.response.data);
+      alert(err.response.data);
     },
     onSettled: () => {
       setSignupLoading(false);
@@ -55,6 +58,7 @@ function Signup() {
   });
   useEffect(() => {
     if (me?.id) {
+      alert("로그인 상태입니다. 홈 화면으로 이동합니다.");
       Router.replace("/");
     }
   }, [me?.id]);

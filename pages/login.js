@@ -33,7 +33,6 @@ const wrapperCss = css`
 
 function LoginPage() {
   const [loginLoading, setLoginLoading] = useState(false);
-  const [loginError, setLoginError] = useState("");
   const { me } = useLoadMyInfo();
 
   const [email, onChangeEmail] = useInput("");
@@ -48,8 +47,10 @@ function LoginPage() {
       Router.push("/");
     },
     onError: (err) => {
-      console.lo(err);
-      setLoginError(err.res?.data);
+      setLoginLoading(false);
+
+      console.error(err.response.data);
+      alert(err.response.data);
     },
     onSettled: () => {
       setLoginLoading(false);
@@ -57,9 +58,11 @@ function LoginPage() {
   });
 
   useEffect(() => {
-    if (loginError) alert(loginError);
-    if (me) Router.push("/");
-  }, [me, loginError]);
+    if (me) {
+      alert("이미 로그인 되어있습니다. 홈 화면으로 이동합니다.");
+      Router.push("/");
+    }
+  }, [me]);
 
   const onSubmit = useCallback(() => {
     if (!emptyTextError) {

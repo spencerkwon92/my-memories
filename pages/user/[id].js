@@ -3,20 +3,24 @@ import Router, { useRouter } from "next/router";
 import { Heading, Center, SimpleGrid } from "@chakra-ui/react";
 import { useInView } from "react-intersection-observer";
 
-import UserHeader from "./components/UserHeader";
+import UserHeader from "../../components/userProfile/UserHeader";
 import AppLayout from "../../components/layout/AppLayout";
 import Spacer from "../../components/CustomizedUI/Spacer";
 import ProfilePostCard from "../../components/userProfile/ProfilePostCard";
+import {
+  UserPostsLoadingIndicator,
+  UserHeaderIndicator,
+} from "../../components/layout/PageLoadingIndicator";
 
 import { useLoadUserPosts } from "../../hooks/postAction";
 import { useLoadMyInfo, useLoadUser } from "../../hooks/userAction";
 
 export default function UserPage() {
-  const [{ me }] = useLoadMyInfo();
+  const [{ me }, loadMyInfoLoading] = useLoadMyInfo();
   const router = useRouter();
   const { id } = router.query;
   const isSameUser = me?.id === id;
-  const { userInfo } = useLoadUser(id, isSameUser);
+  const [{ userInfo }, loadUserInfoLoading] = useLoadUser(id, isSameUser);
 
   const [
     postStateBlock,
@@ -43,9 +47,15 @@ export default function UserPage() {
 
   return (
     <AppLayout>
-      <UserHeader user={me?.id === parseInt(id, 10) ? me : userInfo} />
+      {loadMyInfoLoading || loadUserInfoLoading ? (
+        <UserHeaderIndicator />
+      ) : (
+        <UserHeader user={me?.id === parseInt(id, 10) ? me : userInfo} />
+      )}
       <Spacer size={20} />
-      {mainPosts.length === 0 ? (
+      {loadUserPostsLoading ? (
+        <UserPostsLoadingIndicator />
+      ) : mainPosts.length === 0 ? (
         <Center h="50vh">
           <Heading size="lg">메모리가 없습니다.😭</Heading>
         </Center>
@@ -58,6 +68,7 @@ export default function UserPage() {
           ))}
         </SimpleGrid>
       )}
+
       <div
         ref={hasMorePosts && !loadUserPostsLoading ? ref : undefined}
         style={{ height: 2 }}

@@ -37,3 +37,6 @@ next-env.d.ts
 
 .next
 .env
+
+#testing page.
+./pages/testing.js

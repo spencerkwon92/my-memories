@@ -228,6 +228,7 @@ function PostCard({ post }) {
           </animated.div>
         )}
       </Card>
+      <Spacer size={20} />
     </>
   );
 }

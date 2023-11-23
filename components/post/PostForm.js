@@ -139,7 +139,12 @@ function PostForm() {
 
   return (
     <>
-      <IconButton onClick={onOpen} width="full" icon={<AddIcon />}>
+      <IconButton
+        onClick={onOpen}
+        width="full"
+        height="50px"
+        icon={<AddIcon />}
+      >
         +
       </IconButton>
       <Center height="25px">

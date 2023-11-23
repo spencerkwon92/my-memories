@@ -16,8 +16,6 @@ import {
 import ProfileEditForm from "../components/userProfile/ProfileEditForm";
 import AppLayout from "../components/layout/AppLayout";
 import FollowList from "../components/userProfile/FollowList";
-import wrapper from "../store/configureStore";
-import useContainer from "../hooks/useContainer";
 import Spacer from "../components/CustomizedUI/Spacer";
 
 import { useLoadFullMyInfo } from "../hooks/userAction";

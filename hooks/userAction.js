@@ -34,7 +34,11 @@ export function useLoadMyInfo() {
 
 export function useLoadUser(userId, isSameUser) {
   const [userStateBlock, setUserState] = useRecoilState(userState);
-  const { data } = useQuery(["userInfo", userId], () => loadUserAPI(userId), {
+  const {
+    data,
+    error,
+    isLoading: loadUserInfoLoading,
+  } = useQuery(["userInfo", userId], () => loadUserAPI(userId), {
     enabled: !isSameUser,
   });
 
@@ -48,7 +52,7 @@ export function useLoadUser(userId, isSameUser) {
     }
   }, [data]);
 
-  return userStateBlock;
+  return [userStateBlock, loadUserInfoLoading, error];
 }
 //TODO: 이거 다시 만들기..
 export function useLoadFullMyInfo() {

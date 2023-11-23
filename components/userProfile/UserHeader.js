@@ -13,9 +13,9 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
 
-import useContainer from "../../../hooks/useContainer";
-import Spacer from "../../../components/CustomizedUI/Spacer";
-import { userState } from "../../../recoil";
+import useContainer from "../../hooks/useContainer";
+import Spacer from "../CustomizedUI/Spacer";
+import { userState } from "../../recoil";
 
 function UserHeader({ user }) {
   const isMobile = useContainer({ default: false, md: true });
