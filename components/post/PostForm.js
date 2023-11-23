@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
   Modal,
@@ -29,7 +28,6 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 import useContainer from "../../hooks/useContainer";
-import postSlice, { uploadImages, createPost } from "../../reducers/post";
 
 import { uploadImagesAPI, addPostAPI } from "../../apis/post";
 import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
@@ -61,7 +59,6 @@ const StyledRemoveButton = styled(IconButton)`
 `;
 
 function PostForm() {
-  // const dispatch = useDispatch();
   const [text, setText] = useState("");
   const [addPostLoading, setAddPostLoading] = useState(false);
   const [error, setError] = useState("");
@@ -101,7 +98,6 @@ function PostForm() {
     [].forEach.call(e.target.files, (file) => {
       imageFormData.append("image", file);
     });
-
     uploadImagesAPI(imageFormData).then((data) =>
       setImagePaths((prev) => [...prev, ...data])
     );

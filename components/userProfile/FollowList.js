@@ -9,6 +9,8 @@ import RelationNameCard from "../homeProfileSection/RelationNameCard";
 import { css } from "@emotion/react";
 import Spacer from "../CustomizedUI/Spacer";
 import { userState } from "../../recoil";
+import produce from "../../util/produce";
+import { useFillFollowInfo } from "../../hooks/userAction";
 
 const listCss = css`
   height: 100vh;
@@ -18,7 +20,7 @@ const listCss = css`
   }
 `;
 
-function FollowList({ as, header, data }) {
+function FollowList({ type, header, refetchMyInfo }) {
   const isMobile = useContainer({ default: false, md: true });
   const { me } = useRecoilValue(userState);
 
@@ -28,19 +30,32 @@ function FollowList({ as, header, data }) {
         <Center>
           <Heading size={isMobile ? "sm" : "md"}>{header}</Heading>
         </Center>
-        {as === "following" ? (
+        {type === "following" ? (
           <Text margin="0">{`${me?.nickname}님이 팔로잉 하고 있는 사용자들 입니다.`}</Text>
         ) : (
           <Text margin="0">{`${me?.nickname}님을 팔로우 하고 있는 사용자들 입니다.`}</Text>
         )}
         <Divider />
         <div className="listContent" css={listCss}>
-          {data.map((follow) => (
-            <div key={follow.id}>
-              <RelationNameCard user={follow} />
-              <Spacer />
-            </div>
-          ))}
+          {type === "following"
+            ? me?.Followings?.map((following) => (
+                <div key={following.id}>
+                  <RelationNameCard
+                    user={following}
+                    refetchMyInfo={refetchMyInfo}
+                  />
+                  <Spacer />
+                </div>
+              ))
+            : me?.Followers?.map((follower) => (
+                <div key={follower.id}>
+                  <RelationNameCard
+                    user={follower}
+                    refetchMyInfo={refetchMyInfo}
+                  />
+                  <Spacer />
+                </div>
+              ))}
         </div>
       </VStack>
     </Box>
@@ -48,9 +63,8 @@ function FollowList({ as, header, data }) {
 }
 
 FollowList.propTypes = {
-  as: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   header: PropTypes.string.isRequired,
-  data: PropTypes.array.isRequired,
 };
 
 export default FollowList;

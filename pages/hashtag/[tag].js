@@ -1,32 +1,29 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { Heading, Center } from "@chakra-ui/react";
 import { useInView } from "react-intersection-observer";
 
 import PostCard from "../../components/post/PostCard";
-import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/layout/AppLayout";
 import Spacer from "../../components/CustomizedUI/Spacer";
-import { loadMyInfo } from "../../reducers/user";
-import { loadHashtagPosts } from "../../reducers/post";
+import { useHashtagPosts } from "../../hooks/postAction";
+import { useLoadMyInfo } from "../../hooks/userAction";
 
 export default function TagPage() {
+  const [{ me }] = useLoadMyInfo();
   const router = useRouter();
   const { tag } = router.query;
-  const dispatch = useDispatch();
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post
-  );
+
+  const [{ mainPosts }, loadNextPosts, hasMorePosts, loadHashtagPostsLoading] =
+    useHashtagPosts(tag);
+
   const [ref, inView] = useInView();
 
   useEffect(() => {
-    if (inView && hasMorePosts && !loadPostsLoading) {
-      const lastId = mainPosts[mainPosts.length - 1]?.id;
-      dispatch(loadHashtagPosts({ data: tag, lastId: lastId }));
+    if (inView && hasMorePosts && !loadHashtagPostsLoading) {
+      loadNextPosts();
     }
-  }, [mainPosts, hasMorePosts, loadPostsLoading, tag]);
+  }, [mainPosts, hasMorePosts, loadHashtagPostsLoading, inView]);
 
   if (mainPosts.length === 0) {
     return (
@@ -47,24 +44,9 @@ export default function TagPage() {
         </div>
       ))}
       <div
-        ref={hasMorePosts && !loadPostsLoading ? ref : undefined}
+        ref={hasMorePosts && !loadHashtagPostsLoading ? ref : undefined}
         style={{ height: 2 }}
       />
     </AppLayout>
   );
 }
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req, params }) => {
-      const { tag } = params;
-      const cookie = req ? req.headers.cookie : "";
-      axios.defaults.headers.Cookie = "";
-      req && cookie && (axios.defaults.headers.Cookie = cookie);
-
-      await store.dispatch(loadMyInfo());
-      await store.dispatch(loadHashtagPosts({ data: tag }));
-
-      return { props: {} };
-    }
-);

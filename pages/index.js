@@ -9,17 +9,16 @@ import UserProfile from "../components/homeProfileSection/UserProfile";
 import useContainer from "../hooks/useContainer";
 import Spacer from "../components/CustomizedUI/Spacer";
 import { useLoadPosts } from "../hooks/postAction";
-import { useLoadMyInfo } from "../hooks/userAction";
+import { useLoadMyInfo, useLoadFullMyInfo } from "../hooks/userAction";
 
 function Home() {
   const isMobile = useContainer({ default: false, md: true });
-  const [userStateBlock, loadMyInfoLoading] = useLoadMyInfo();
-  const [postStateBlock, loadNextPosts, hasMorePosts, loadPostsLoading] =
+  // const [userStateBlock, loadMyInfoLoading] = useLoadMyInfo();
+  const [{ me }, , , loadMyFullInfoLoading] = useLoadFullMyInfo();
+
+  const [{ mainPosts }, loadNextPosts, hasMorePosts, loadPostsLoading] =
     useLoadPosts();
   const [ref, inView] = useInView();
-
-  const { mainPosts } = postStateBlock;
-  const { me } = userStateBlock;
 
   useEffect(() => {
     if (inView && hasMorePosts && !loadPostsLoading) {
@@ -27,7 +26,7 @@ function Home() {
     }
   }, [inView, hasMorePosts, loadPostsLoading]);
 
-  if (loadMyInfoLoading) return null;
+  if (loadMyFullInfoLoading) return null;
   return (
     <AppLayout>
       <Grid templateColumns="repeat(6, 1fr)" gap={5}>
@@ -61,34 +60,5 @@ function Home() {
     </AppLayout>
   );
 }
-
-// export const getServerSideProps = async (context) => {
-//   const cookie = context.req ? context.req.headers.cookie : "";
-//   axios.defaults.headers.Cookie = "";
-//   if (context.req && cookie) {
-//     axios.defaults.headers.Cookie = cookie;
-//   }
-
-//   return {
-//     props: {},
-//   };
-// };
-
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) =>
-//     async ({ req }) => {
-//       const cookie = req ? req.headers.cookie : "";
-//       axios.defaults.headers.Cookie = "";
-//       if (req && cookie) {
-//         axios.defaults.headers.Cookie = cookie;
-//       }
-//       await Promise.all([
-//         store.dispatch(loadPosts()),
-//         store.dispatch(loadFollowers()),
-//         store.dispatch(loadFollowings()),
-//       ]);
-//       console.log(store.getState());
-//     }
-// );
 
 export default Home;

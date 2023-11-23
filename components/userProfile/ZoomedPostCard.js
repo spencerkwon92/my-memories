@@ -1,31 +1,36 @@
-import React, {useCallback} from 'react';
-import {Box, Grid, Avatar, GridItem, Divider, Text, HStack} from '@chakra-ui/react'
-import { css } from '@emotion/react';
+import React, { useCallback } from "react";
+import {
+  Box,
+  Grid,
+  Avatar,
+  GridItem,
+  Divider,
+  Text,
+  HStack,
+} from "@chakra-ui/react";
+import { css } from "@emotion/react";
 
-import useContainer from '../../hooks/useContainer';
-import PostImages from '../post/PostImages';
-import CommentList from '../post/CommentList';
-import CommentForm from '../post/CommentForm';
-import Spacer from '../CustomizedUI/Spacer';
-import PostCardContent from '../post/PostCardContent';
+import useContainer from "../../hooks/useContainer";
+import PostImages from "../post/PostImages";
+import CommentList from "../post/CommentList";
+import CommentForm from "../post/CommentForm";
+import Spacer from "../CustomizedUI/Spacer";
+import PostCardContent from "../post/PostCardContent";
 
 const boxCss = css`
   width: 100%;
-  padding:0px
-  
-`
+  padding: 0px;
+`;
 
-function ProfilePostCard ({post={}}){
+function ProfilePostCard({ post = {} }) {
   const isMobile = useContainer({ default: false, md: true });
 
-const updatedImages = post.Images.map((image) => {
-  return {
-    ...image,
-    src: image.src.replace(/\/resizedPostImages\//, "/postImages/"),
-  };
-});
-
-console.log(post);
+  const updatedImages = post.Images.map((image) => {
+    return {
+      ...image,
+      src: image.src.replace(/\/resizedPostImages\//, "/postImages/"),
+    };
+  });
 
   return (
     <Box css={boxCss}>

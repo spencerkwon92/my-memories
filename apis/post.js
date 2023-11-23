@@ -40,15 +40,15 @@ export function loadUserPostsAPI(userId, lastId) {
     .then((res) => res.data);
 }
 
-export function loadHashtagPostsAPI(data) {
+export function loadHashtagPostsAPI(data, lastId) {
   return axios
     .get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`)
     .then((res) => res.data);
 }
 
-export function updatePostContentAPI(content, postId) {
+export function updatePostContentAPI(data) {
   return axios
-    .patch(`/post/${postId}/content`, { content: content })
+    .patch(`/post/${data.postId}/content`, { content: data.content })
     .then((res) => res.data);
 }
 

@@ -1,28 +1,32 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import axios from "axios";
 import Router, { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 import { Heading, Center, SimpleGrid } from "@chakra-ui/react";
 import { useInView } from "react-intersection-observer";
 
 import UserHeader from "./components/UserHeader";
-import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/layout/AppLayout";
 import Spacer from "../../components/CustomizedUI/Spacer";
 import ProfilePostCard from "../../components/userProfile/ProfilePostCard";
-import { loadUserPosts } from "../../reducers/post";
-import { loadMyInfo, loadUser } from "../../reducers/user";
+
+import { useLoadUserPosts } from "../../hooks/postAction";
+import { useLoadMyInfo, useLoadUser } from "../../hooks/userAction";
 
 export default function UserPage() {
-  const { me, userInfo } = useSelector((state) => state.user);
-  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector(
-    (state) => state.post
-  );
-  const dispatch = useDispatch();
+  const [{ me }] = useLoadMyInfo();
   const router = useRouter();
-  const [ref, inView] = useInView();
   const { id } = router.query;
+  const isSameUser = me?.id === id;
+  const { userInfo } = useLoadUser(id, isSameUser);
+
+  const [
+    postStateBlock,
+    loadNextPosts,
+    hasMorePosts,
+    loadUserPostsLoading,
+    loadUserPostsError,
+  ] = useLoadUserPosts(id);
+  const { mainPosts } = postStateBlock;
+  const [ref, inView] = useInView();
 
   useEffect(() => {
     if (typeof me === "undefined") {
@@ -32,15 +36,10 @@ export default function UserPage() {
   }, [me]);
 
   useEffect(() => {
-    if (inView && hasMorePosts && !loadPostsLoading) {
-      const lastId = mainPosts[mainPosts.length - 1]?.id;
-      dispatch(loadUserPosts({ userId: id, lastId: lastId }));
+    if (inView && hasMorePosts && !loadUserPostsLoading) {
+      loadNextPosts();
     }
-  }, [inView, mainPosts, hasMorePosts, loadPostsLoading, id]);
-
-  useEffect(() => {
-    if (me?.id !== id) dispatch(loadUser(id));
-  }, [id]);
+  }, [inView, mainPosts, hasMorePosts, loadUserPostsLoading, id]);
 
   return (
     <AppLayout>
@@ -60,30 +59,12 @@ export default function UserPage() {
         </SimpleGrid>
       )}
       <div
-        ref={hasMorePosts && !loadPostsLoading ? ref : undefined}
+        ref={hasMorePosts && !loadUserPostsLoading ? ref : undefined}
         style={{ height: 2 }}
       />
     </AppLayout>
   );
 }
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req, params }) => {
-      const cookie = req ? req.headers.cookie : "";
-      axios.defaults.headers.Cookie = "";
-      req && cookie && (axios.defaults.headers.Cookie = cookie);
-
-      await Promise.all([
-        store.dispatch(loadMyInfo()),
-        store.dispatch(loadUserPosts({ userId: params.id })),
-      ]);
-
-      return {
-        props: {},
-      };
-    }
-);
-
 export function reportWebVitals(metric) {
   console.log(metric);
 }

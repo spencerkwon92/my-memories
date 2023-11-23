@@ -1,13 +1,15 @@
 import React, { useCallback } from "react";
 import { Avatar, Button } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
 import { css } from "@emotion/react";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import { userState } from "../../recoil";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
+import { useMutation, useQuery } from "react-query";
 
-import { follow, unfollow } from "../../reducers/user";
+import { followAPI, unfollowAPI } from "../../apis/user";
+import produce from "../../util/produce";
+import { useFillFollowInfo } from "../../hooks/userAction";
 
 const mainCss = css`
   display: flex;
@@ -24,22 +26,55 @@ const mainCss = css`
   }
 `;
 
-function RelationNameCard({ user }) {
-  // const dispatch = useDispatch();
-  // const { me } = useSelector((state) => state.user);
-  const { me } = useRecoilValue(userState);
+function RelationNameCard({ user, refetchMyInfo }) {
+  const [{ me }, setUserState] = useRecoilState(userState);
   const id = user?.id;
-  const isFollowing = me?.Followings.find((following) => following.id === id);
+  const isFollowing = me?.Followings?.find((following) => following.id === id);
+
+  const followMutation = useMutation("users", followAPI, {
+    onMutate() {
+      console.log("Following Start!");
+    },
+    onSuccess(data) {
+      setUserState((prev) =>
+        produce(prev, (draft) => {
+          draft.me.Followings.push({ id: data.UserId });
+        })
+      );
+      refetchMyInfo();
+      console.log("Following Success!");
+    },
+    onSettled() {
+      console.log("Following End!");
+    },
+  });
+
+  const unFollowMutation = useMutation("users", unfollowAPI, {
+    onMutate() {
+      console.log("unFollowing Start!");
+    },
+    onSuccess(data) {
+      setUserState((prev) =>
+        produce(prev, (draft) => {
+          draft.me.Followings = draft.me.Followings.filter(
+            (following) => following.id !== data.UserId
+          );
+        })
+      );
+      console.log("unFollowing Success!");
+    },
+    onSettled() {
+      console.log("unFollowing End!");
+    },
+  });
 
   const onFollowingHandle = useCallback(() => {
-    // if (isFollowing) {
-    //   dispatch(unfollow(id));
-    // } else {
-    //   dispatch(follow(id));
-    // }
-
-    console.log("test!!");
-  }, [isFollowing]);
+    if (isFollowing) {
+      unFollowMutation.mutate(id);
+    } else {
+      followMutation.mutate(id);
+    }
+  }, [isFollowing, unFollowMutation, followMutation]);
 
   return (
     <div css={mainCss}>

@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import {
   MenuList,
@@ -29,12 +28,11 @@ import { ArrowUpIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
 
 import useInput from "../../hooks/useInput";
-import { removePost } from "../../reducers/post";
-import { updatePostContent } from "../../reducers/post";
-import { removePostAPI } from "../../apis/post";
+import { removePostAPI, updatePostContentAPI } from "../../apis/post";
 import { useMutation, useQueryClient } from "react-query";
 import { postState } from "../../recoil";
 import { useSetRecoilState, useRecoilValue } from "recoil";
+import produce from "../../util/produce";
 
 function PostMenuButton({ post }) {
   const {
@@ -79,7 +77,6 @@ function PostMenuButton({ post }) {
 function AlertModal({ isOpen, onClose, post }) {
   const cancelRef = useRef();
   const setPostState = useSetRecoilState(postState);
-  const { mainPosts } = useRecoilValue(postState);
 
   const removePostMutation = useMutation("posts", removePostAPI, {
     onMutate() {
@@ -126,11 +123,34 @@ function AlertModal({ isOpen, onClose, post }) {
 }
 
 function UpdateModal({ isOpen, onClose, post }) {
-  // const dispatch = useDispatch();
   const [text, onChangeText] = useInput(post?.content || "");
+  const setPostState = useSetRecoilState(postState);
+
+  const updatePostsContentMutation = useMutation(
+    "updatePostContent",
+    updatePostContentAPI,
+    {
+      onMutate() {
+        console.log("updatePostContent Start!");
+      },
+      onSuccess(data) {
+        setPostState((prev) =>
+          produce(prev, (draft) => {
+            const post = draft.mainPosts.find(
+              (post) => post.id === data.PostId
+            );
+            post.content = data.content;
+          })
+        );
+      },
+      onSettled() {
+        console.log("updatePostContent End!");
+      },
+    }
+  );
 
   const onUpdateContentClickHandler = useCallback(() => {
-    // dispatch(updatePostContent({ content: text, postId: post.id }));
+    updatePostsContentMutation.mutate({ content: text, postId: post.id });
 
     alert("메모리 내용이 수정되었습니다.");
     onClose();

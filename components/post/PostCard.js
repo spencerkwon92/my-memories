@@ -15,7 +15,6 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
-import { useSelector, useDispatch } from "react-redux";
 import { BiLike, BiChat, BiShare, BiSolidLike } from "react-icons/bi";
 import PropTypes from "prop-types";
 import Link from "next/link";
@@ -30,7 +29,6 @@ import CommentList from "./CommentList";
 import useContainer from "../../hooks/useContainer";
 import Spacer from "../CustomizedUI/Spacer";
 import PostMenuButton from "../post/PostMenuButton";
-import { likePost, unLikePost } from "../../reducers/post";
 import { likePostAPI, unLikePostAPI } from "../../apis/post";
 
 import { userState, postState } from "../../recoil";
@@ -73,7 +71,11 @@ function PostCard({ post }) {
       console.log("likePost End!");
     },
   });
+
   const unLikePostMutation = useMutation("posts", unLikePostAPI, {
+    onMutate() {
+      console.log("unLikePost Start!");
+    },
     onSuccess(data) {
       postStateSetter((prev) =>
         produce(prev, (draft) => {
@@ -81,6 +83,9 @@ function PostCard({ post }) {
           post.Likers = post.Likers.filter((liker) => liker.id !== data.UserId);
         })
       );
+    },
+    onSettled() {
+      console.log("unLikePost End!");
     },
   });
 
@@ -156,7 +161,7 @@ function PostCard({ post }) {
                 </Center>
               </Flex>
               <ChakraSpacer />
-              {post.User.id === me.id && <PostMenuButton post={post} />}
+              {post.User.id === me?.id && <PostMenuButton post={post} />}
               {me && <FollowButton post={post} />}
             </Flex>
           </Flex>

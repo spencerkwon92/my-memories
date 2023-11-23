@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { css } from "@emotion/react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   Avatar,
   Text,
@@ -17,13 +16,14 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import Link from "next/link";
+import { useMutation } from "react-query";
 
-import { logoutRequestAction } from "../../reducers/user";
 import RelationNameCard from "./RelationNameCard";
 import { default as CustomSpacer } from "../CustomizedUI/Spacer";
-import { logOut } from "../../reducers/user";
 import { userState } from "../../recoil";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
+import { logOutAPI } from "../../apis/user";
+import produce from "../../util/produce";
 
 const flexCss = css`
   display: flex;
@@ -44,14 +44,26 @@ const lineMesCss = css`
 `;
 
 function UserProfile() {
-  // const { me } = useSelector((state) => state.user);
-  // const dispatch = useDispatch();
-  const onLogOut = useCallback(() => {
-    // dispatch(logOut());
-    console.log("test!!");
-  }, []);
+  const [{ me }, setUserState] = useRecoilState(userState);
+  const logoutMutation = useMutation("user", logOutAPI, {
+    onMutate() {
+      console.log("logoutStart");
+    },
+    onSuccess() {
+      setUserState((prev) =>
+        produce(prev, (draft) => {
+          draft.me = null;
+        })
+      );
+    },
+    onSettled() {
+      console.log("logoutEnd");
+    },
+  });
 
-  const { me } = useRecoilValue(userState);
+  const onLogOut = useCallback(() => {
+    logoutMutation.mutate();
+  }, [logoutMutation]);
 
   return (
     <>

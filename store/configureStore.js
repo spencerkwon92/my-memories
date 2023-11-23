@@ -23,18 +23,6 @@ const makeStore = () =>
     preloadedState: serverState,
   });
 
-// export const configureStore = () => {
-//   const sagaMiddleware = createSagaMiddleware();
-//   const middlewares = [sagaMiddleware, loggerMiddleware];
-//   const enhancer =
-//     process.env.NODE_ENV === "production"
-//       ? compose(applyMiddleware(...middlewares))
-//       : composeWithDevTools(applyMiddleware(...middlewares));
-//   const store = createStore(rootReducer, enhancer);
-//   store.sagaTask = sagaMiddleware.run(rootSags);
-//   return store;
-// };
-
 const wrapper = createWrapper(makeStore, {
   debug: process.env.NODE_ENV !== "production",
 });

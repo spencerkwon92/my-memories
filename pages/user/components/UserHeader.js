@@ -1,4 +1,4 @@
-import React,{useCallback} from "react";
+import React, { useCallback } from "react";
 import {
   Avatar,
   Center,
@@ -9,24 +9,25 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
-import PropTypes from 'prop-types'
-import {useRouter} from 'next/router'
+import PropTypes from "prop-types";
+import { useRouter } from "next/router";
+import { useRecoilValue } from "recoil";
 
 import useContainer from "../../../hooks/useContainer";
-import Spacer from '../../../components/CustomizedUI/Spacer'
+import Spacer from "../../../components/CustomizedUI/Spacer";
+import { userState } from "../../../recoil";
 
 function UserHeader({ user }) {
   const isMobile = useContainer({ default: false, md: true });
-  const {me} = useSelector((state)=>state.user)
-  const router = useRouter()
+  const { me } = useRecoilValue(userState);
+  const router = useRouter();
 
-  const onClickHandler = useCallback(() =>{
-    router.push('/profile')
-  },[])
-
+  const onClickHandler = useCallback(() => {
+    router.push("/profile");
+  }, []);
 
   const FollowDashboard = (
-    <HStack gap={isMobile?'30px': '15px'}>
+    <HStack gap={isMobile ? "30px" : "15px"}>
       <Text fontSize="xl" fontWeight="bold" margin="0">
         게시물 {user?.Posts.length}
       </Text>
@@ -83,6 +84,6 @@ function UserHeader({ user }) {
 
 UserHeader.propTypes = {
   user: PropTypes.object,
-}
+};
 
 export default UserHeader;

@@ -1,5 +1,4 @@
-import React, { useCallback, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useCallback, useRef, useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -29,12 +28,13 @@ import { useMutation } from "react-query";
 import useInput from "../../hooks/useInput";
 import Spacer from "../CustomizedUI/Spacer";
 import styled from "@emotion/styled";
-import userSlice, {
-  changeNickname,
-  uploadProfileImage,
-  editProfileImage,
-} from "../../reducers/user";
 import { userState } from "../../recoil";
+import {
+  changeNicknameAPI,
+  uploadProfileImageAPI,
+  editProfileImageAPI,
+} from "../../apis/user";
+import produce from "../../util/produce";
 
 const ButtonImage = styled(Image)`
   opacity: 0.5;
@@ -46,15 +46,29 @@ const ButtonImage = styled(Image)`
 `;
 
 function ProfileEditForm() {
-  const { me, profileImagePath } = useSelector((state) => state.user);
+  const [userStateBlock, setUserState] = useRecoilState(userState);
+  const { me } = userStateBlock;
   const [nickname, onChangeNickname] = useInput(me?.nickname || "");
-  const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const changeNicknameMutation = useMutation(
+    "changeNickname",
+    changeNicknameAPI,
+    {
+      onSuccess(data) {
+        setUserState((prev) =>
+          produce(prev, (draft) => {
+            draft.me.nickname = data.nickname;
+          })
+        );
+      },
+    }
+  );
+
   const onNicknameEditButton = useCallback(() => {
-    dispatch(changeNickname(nickname));
+    changeNicknameMutation.mutate(nickname);
     alert("닉네임이 변경되었습니다.");
-  }, [nickname]);
+  }, [changeNicknameMutation, nickname]);
 
   return (
     <>
@@ -62,6 +76,7 @@ function ProfileEditForm() {
         <Center>
           <Heading>프로필 편집</Heading>
         </Center>
+        <Spacer />
         <HStack gap="20px">
           <Image
             borderRadius="full"
@@ -88,27 +103,47 @@ function ProfileEditForm() {
         </HStack>
       </Container>
       <Spacer size={20} />
-      <ProfileImageEditModal
-        isOpen={isOpen}
-        onClose={onClose}
-        imagePath={profileImagePath}
-      />
+      <ProfileImageEditModal isOpen={isOpen} onClose={onClose} />
     </>
   );
 }
 
-function ProfileImageEditModal({ isOpen, onClose, imagePath }) {
-  const dispatch = useDispatch();
+function ProfileImageEditModal({ isOpen, onClose }) {
+  const [userStateBlock, setUserState] = useRecoilState(userState);
+  const { me } = userStateBlock;
+  const [imagePath, setImagePath] = useState(me.ProfileImage?.src || "");
   const profileImageInput = useRef();
-  const { me, profileImagePath, uploadProfileImageLoading } = useSelector(
-    (state) => state.user
+
+  const editProfileImageMutation = useMutation(
+    "editProfileImage",
+    editProfileImageAPI,
+    {
+      onMutate() {
+        console.log("editProfileStart");
+      },
+      onSuccess(data) {
+        setUserState((prev) =>
+          produce(prev, (draft) => {
+            draft.me.ProfileImage = data;
+          })
+        );
+      },
+      onError(error) {
+        console.log(error);
+      },
+      onSettled() {
+        console.log("editProfileEnd");
+      },
+    }
   );
 
   const onChangeProfileImage = useCallback((e) => {
     const profileImageFormData = new FormData();
     profileImageFormData.append("profileImage", e.target.files[0]);
 
-    dispatch(uploadProfileImage(profileImageFormData));
+    uploadProfileImageAPI(profileImageFormData).then((data) =>
+      setImagePath(data)
+    );
   }, []);
 
   const onProfileImageUpload = useCallback(() => {
@@ -118,18 +153,17 @@ function ProfileImageEditModal({ isOpen, onClose, imagePath }) {
   const onClick = useCallback(() => {
     const formData = new FormData();
     formData.append("profileImage", imagePath);
-
-    dispatch(editProfileImage(formData));
+    editProfileImageMutation.mutate(formData);
 
     onClose();
   }, [imagePath]);
 
   const onCloseModalHandler = useCallback(() => {
-    if (profileImagePath) {
-      dispatch(userSlice.actions.removeLoadedImage());
+    if (imagePath) {
+      setImagePath(null);
     }
     onClose();
-  }, [profileImagePath]);
+  }, [imagePath]);
 
   let ConditionalImageButton;
   if (me.ProfileImage === null && !imagePath) {
@@ -180,14 +214,14 @@ function ProfileImageEditModal({ isOpen, onClose, imagePath }) {
         <ModalHeader>프로필 이미지 편집</ModalHeader>
         <ModalCloseButton onClick={onCloseModalHandler} />
         <ModalBody>
-          {uploadProfileImageLoading && (
+          {/* {uploadProfileImageLoading && (
             <Center>
               <Text fontWeight="bold">
                 이미지를 바꾸고 있어요.
                 <Spinner />
               </Text>
             </Center>
-          )}
+          )} */}
           <Center height={"20vh"}>
             <input
               type="file"

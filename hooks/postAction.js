@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useInfiniteQuery, useMutation } from "react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { postState } from "../recoil";
-import { loadPostsAPI } from "../apis/post";
+import {
+  loadPostsAPI,
+  loadUserPostsAPI,
+  loadHashtagPostsAPI,
+} from "../apis/post";
+import produce from "../util/produce";
 
 export function useLoadPosts() {
   const [post, setPost] = useRecoilState(postState);
@@ -18,14 +23,87 @@ export function useLoadPosts() {
     );
   useEffect(() => {
     if (data) {
-      setPost((prev) => ({ ...prev, mainPosts: data?.pages.flat() }));
+      setPost((prev) =>
+        produce(prev, (draft) => {
+          draft.mainPosts = data.pages.flat();
+        })
+      );
     }
   }, [data]);
 
   return [post, fetchNextPage, hasNextPage, isLoading, error];
 }
 
-// export function useAddPost(){
-//   const [loading, setLoading] = useState(false);
-//   const []
-// }
+export function useLoadUserPosts(userId) {
+  const [postStateBlock, setPostState] = useRecoilState(postState);
+  const {
+    data,
+    fetchNextPage: loadNextPosts,
+    hasNextPage: hasMorePosts,
+    isLoading: loadUserPostsLoading,
+    error: loadUserPostsError,
+  } = useInfiniteQuery(
+    ["posts", userId],
+    ({ pageParam = "" }) => loadUserPostsAPI(userId, pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage[lastPage.length - 1]?.id;
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (data) {
+      setPostState((prev) =>
+        produce(prev, (draft) => {
+          draft.mainPosts = data.pages.flat();
+        })
+      );
+    }
+  }, [data]);
+
+  return [
+    postStateBlock,
+    loadNextPosts,
+    hasMorePosts,
+    loadUserPostsLoading,
+    loadUserPostsError,
+  ];
+}
+
+export function useHashtagPosts(tag) {
+  const [postStateBlock, setPostState] = useRecoilState(postState);
+  const {
+    data,
+    fetchNextPage: loadNextPosts,
+    hasNextPage: hasMorePosts,
+    isLoading: loadHashtagPostsLoading,
+    error: loadHashtagPostsError,
+  } = useInfiniteQuery(
+    ["posts", tag],
+    ({ pageParam = "" }) => loadHashtagPostsAPI(tag, pageParam),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage[lastPage.length - 1]?.id;
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (data) {
+      setPostState((prev) =>
+        produce(prev, (draft) => {
+          draft.mainPosts = data.pages.flat();
+        })
+      );
+    }
+  }, [data]);
+
+  return [
+    postStateBlock,
+    loadNextPosts,
+    hasMorePosts,
+    loadHashtagPostsLoading,
+    loadHashtagPostsError,
+  ];
+}

@@ -17,7 +17,7 @@ import { signUpAPI } from "../apis/user";
 import AppLayout from "../components/layout/AppLayout";
 import useInput from "../hooks/useInput";
 import Spacer from "../components/CustomizedUI/Spacer";
-import useLoadMyInfo from "../hooks/useLoadMyInfo";
+import { useLoadMyInfo } from "../hooks/userAction";
 
 const wrapperCss = css`
   display: flex;
@@ -36,7 +36,7 @@ function Signup() {
   const [nickname, onChangeNick] = useInput("");
   const [password, onChangePassword] = useInput("");
   const hasNullText = !email || !nickname || !password || !passwordCheck;
-  const { me } = useLoadMyInfo();
+  const [{ me }] = useLoadMyInfo();
 
   const signUpMutation = useMutation("signUp", signUpAPI, {
     onMutate: () => {
