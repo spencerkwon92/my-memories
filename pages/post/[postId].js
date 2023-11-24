@@ -4,12 +4,11 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { Button, Flex, Heading, Center } from "@chakra-ui/react";
 import Head from "next/head";
-import { useQuery } from "react-query";
+import { useQuery, QueryClient, dehydrate } from "react-query";
 import { useRecoilState } from "recoil";
 
 import { pageUrl } from "../../config/config";
 import AppLayout from "../../components/layout/AppLayout";
-import wrapper from "../../store/configureStore";
 import PostCard from "../../components/post/PostCard";
 import Spacer from "../../components/CustomizedUI/Spacer";
 import { postState } from "../../recoil";
@@ -21,7 +20,7 @@ function UserPost() {
   const router = useRouter();
   const { postId } = router.query;
   const { data: singlePostData } = useQuery(
-    ["singlePost", postId],
+    ["post", postId],
     () => loadPostAPI(postId),
     {
       enabled: Boolean(postId),
@@ -90,4 +89,32 @@ function UserPost() {
     </AppLayout>
   );
 }
+
+export const getStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
+
+export const getStaticProps = async (context) => {
+  const queryClient = new QueryClient();
+  const id = context.params?.postId;
+  if (!id) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: true,
+      },
+    };
+  }
+  await queryClient.prefetchQuery(["post", id], () => loadPostAPI(Number(id)));
+
+  return {
+    props: {
+      dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))),
+    },
+  };
+};
+
 export default UserPost;

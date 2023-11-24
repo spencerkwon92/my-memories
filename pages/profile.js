@@ -1,31 +1,34 @@
-import React from "react";
-import Router from "next/router";
+import React, { useEffect } from "react";
 import Head from "next/head";
-import axios from "axios";
 import {
-  SimpleGrid,
   Divider,
   Tabs,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
-  Button,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 import ProfileEditForm from "../components/userProfile/ProfileEditForm";
 import AppLayout from "../components/layout/AppLayout";
 import FollowList from "../components/userProfile/FollowList";
 import Spacer from "../components/CustomizedUI/Spacer";
-
 import { useLoadFullMyInfo } from "../hooks/userAction";
+import { PageLoadingIndicator } from "../components/layout/PageLoadingIndicator";
 
 function Profile() {
-  const [{ me }, refetchFollowings] = useLoadFullMyInfo();
+  const router = useRouter();
+  const [{ me }, , , loading] = useLoadFullMyInfo();
 
-  if (!me) {
-    return null;
-  }
+  useEffect(() => {
+    if (!me && !loading) {
+      router.push("/");
+      alert("로그인이 필요합니다.");
+    }
+  }, [me, loading]);
+
+  if (loading) return <PageLoadingIndicator />;
 
   return (
     <AppLayout>
@@ -42,18 +45,10 @@ function Profile() {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <FollowList
-              type="following"
-              header="팔로잉 목록"
-              refetchMyInfo={refetchFollowings}
-            />
+            <FollowList type="following" header="팔로잉 목록" />
           </TabPanel>
           <TabPanel>
-            <FollowList
-              type="follower"
-              header="팔로워 목록"
-              refetchMyInfo={refetchFollowings}
-            />
+            <FollowList type="follower" header="팔로워 목록" />
           </TabPanel>
         </TabPanels>
       </Tabs>

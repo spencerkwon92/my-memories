@@ -5,7 +5,6 @@ export const userState = atom({
   default: {
     me: null,
     userInfo: null,
-    profileImagePath: null,
   },
 });
 

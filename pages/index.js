@@ -7,9 +7,8 @@ import PostCard from "../components/post/PostCard";
 import AppLayout from "../components/layout/AppLayout";
 import UserProfile from "../components/homeProfileSection/UserProfile";
 import useContainer from "../hooks/useContainer";
-import Spacer from "../components/CustomizedUI/Spacer";
 import { useLoadPosts } from "../hooks/postAction";
-import { useLoadMyInfo, useLoadFullMyInfo } from "../hooks/userAction";
+import { useLoadFullMyInfo } from "../hooks/userAction";
 import {
   UserInfoLoadingIndicator,
   PostLoadingIndicator,
@@ -18,9 +17,9 @@ import {
 function Home() {
   const isMobile = useContainer({ default: false, md: true });
   const [{ me }, , , loadMyFullInfoLoading] = useLoadFullMyInfo();
-
   const [{ mainPosts }, loadNextPosts, hasMorePosts, loadPostsLoading] =
     useLoadPosts();
+
   const [ref, inView] = useInView();
 
   useEffect(() => {
@@ -50,16 +49,16 @@ function Home() {
         </GridItem>
         {!isMobile && (
           <GridItem colSpan={2}>
-            {loadMyFullInfoLoading ? (
+            {loadMyFullInfoLoading && me === null ? (
               <UserInfoLoadingIndicator />
-            ) : me ? (
-              <UserProfile />
-            ) : (
+            ) : !me && !loadMyFullInfoLoading ? (
               <Card>
                 <Center h="10vh">
                   <Link href="/login">로그인 하려면 클릭하세요!</Link>
                 </Center>
               </Card>
+            ) : (
+              <UserProfile />
             )}
           </GridItem>
         )}

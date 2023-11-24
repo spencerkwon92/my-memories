@@ -12,15 +12,14 @@ import produce from "../util/produce";
 export function useLoadPosts() {
   const [post, setPost] = useRecoilState(postState);
   const { data, fetchNextPage, hasNextPage, isLoading, error } =
-    useInfiniteQuery(
-      "mainPosts",
-      ({ pageParam = "" }) => loadPostsAPI(pageParam),
-      {
-        getNextPageParam: (lastPage) => {
-          return lastPage[lastPage.length - 1]?.id;
-        },
-      }
-    );
+    useInfiniteQuery("posts", ({ pageParam = "" }) => loadPostsAPI(pageParam), {
+      getNextPageParam: (lastPage) => {
+        return lastPage.length === 10
+          ? lastPage[lastPage.length - 1].id
+          : undefined;
+      },
+    });
+
   useEffect(() => {
     if (data) {
       setPost((prev) =>
@@ -47,7 +46,9 @@ export function useLoadUserPosts(userId) {
     ({ pageParam = "" }) => loadUserPostsAPI(userId, pageParam),
     {
       getNextPageParam: (lastPage) => {
-        return lastPage[lastPage.length - 1]?.id;
+        return lastPage.length === 10
+          ? lastPage[lastPage.length - 1].id
+          : undefined;
       },
     }
   );
@@ -80,11 +81,13 @@ export function useHashtagPosts(tag) {
     isLoading: loadHashtagPostsLoading,
     error: loadHashtagPostsError,
   } = useInfiniteQuery(
-    ["posts", tag],
+    ["hashtag", tag],
     ({ pageParam = "" }) => loadHashtagPostsAPI(tag, pageParam),
     {
       getNextPageParam: (lastPage) => {
-        return lastPage[lastPage.length - 1]?.id;
+        return lastPage.length === 10
+          ? lastPage[lastPage.length - 1].id
+          : undefined;
       },
     }
   );

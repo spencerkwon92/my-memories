@@ -33,6 +33,9 @@ const buttonCss = css`
 const linkCss = css`
   font-size: 25px;
   font-weight: bold;
+  :hover {
+    cursor: pointer;
+  }
 `;
 const wrapperCss = css`
   display: flex;

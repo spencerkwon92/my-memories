@@ -5,11 +5,15 @@ import PropTypes from "prop-types";
 import Link from "next/link";
 import { userState } from "../../recoil";
 import { useRecoilState } from "recoil";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
-import { followAPI, unfollowAPI } from "../../apis/user";
+import {
+  followAPI,
+  unfollowAPI,
+  loadFollowersAPI,
+  loadFollowingsAPI,
+} from "../../apis/user";
 import produce from "../../util/produce";
-import { useFillFollowInfo } from "../../hooks/userAction";
 
 const mainCss = css`
   display: flex;
@@ -26,10 +30,11 @@ const mainCss = css`
   }
 `;
 
-function RelationNameCard({ user, refetchMyInfo }) {
+function RelationNameCard({ user }) {
   const [{ me }, setUserState] = useRecoilState(userState);
   const id = user?.id;
   const isFollowing = me?.Followings?.find((following) => following.id === id);
+  const queryClient = useQueryClient();
 
   const followMutation = useMutation("users", followAPI, {
     onMutate() {
@@ -41,7 +46,7 @@ function RelationNameCard({ user, refetchMyInfo }) {
           draft.me.Followings.push({ id: data.UserId });
         })
       );
-      refetchMyInfo();
+      queryClient.invalidateQueries("loadFollowings");
       console.log("Following Success!");
     },
     onSettled() {
@@ -61,6 +66,7 @@ function RelationNameCard({ user, refetchMyInfo }) {
           );
         })
       );
+      queryClient.invalidateQueries("loadFollowings");
       console.log("unFollowing Success!");
     },
     onSettled() {

@@ -54,7 +54,7 @@ export function useLoadUser(userId, isSameUser) {
 
   return [userStateBlock, loadUserInfoLoading, error];
 }
-//TODO: 이거 다시 만들기..
+
 export function useLoadFullMyInfo() {
   const [userStateBlock, setUserState] = useRecoilState(userState);
 
@@ -86,9 +86,7 @@ export function useLoadFullMyInfo() {
         })
       );
     }
-  }, [myInfo]);
 
-  useEffect(() => {
     if (followersData && followingsData) {
       setUserState((prev) =>
         produce(prev, (draft) => {
@@ -97,7 +95,7 @@ export function useLoadFullMyInfo() {
         })
       );
     }
-  }, [followersData, followingsData]);
+  }, [followersData, followingsData, myInfo]);
 
   const allLoading =
     loadMyInfoLoading || loadFollowersLoading || loadFollowingsLoading;

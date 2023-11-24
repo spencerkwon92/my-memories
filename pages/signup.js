@@ -18,7 +18,6 @@ import AppLayout from "../components/layout/AppLayout";
 import useInput from "../hooks/useInput";
 import Spacer from "../components/CustomizedUI/Spacer";
 import { useLoadMyInfo } from "../hooks/userAction";
-import { a } from "react-spring";
 
 const wrapperCss = css`
   display: flex;

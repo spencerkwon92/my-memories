@@ -3,13 +3,15 @@ import { Button } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil";
+import { useQueryClient } from "react-query";
 
 import { followAPI, unfollowAPI } from "../../apis/user";
-import produce from "immer";
+import produce from "../../util/produce";
 
 function FollowButton({ post }) {
   const [userStateBlock, setUserStateBlock] = useRecoilState(userState);
   const { me } = userStateBlock;
+  const queryClient = useQueryClient();
 
   const isFollowing = me?.Followings.find((v) => v.id === post.User.id);
 
@@ -24,6 +26,7 @@ function FollowButton({ post }) {
           })
         )
       );
+      queryClient.invalidateQueries("loadFollowings");
     } else {
       followAPI(post.User.id).then((data) =>
         setUserStateBlock((prev) =>
@@ -32,6 +35,7 @@ function FollowButton({ post }) {
           })
         )
       );
+      queryClient.invalidateQueries("loadFollowings");
     }
   }, [isFollowing]);
 

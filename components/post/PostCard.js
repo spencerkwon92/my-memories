@@ -34,10 +34,14 @@ import { likePostAPI, unLikePostAPI } from "../../apis/post";
 import { userState, postState } from "../../recoil";
 import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
 import produce from "../../util/produce";
+import { baseUrl } from "../../config/config";
 
 const ankerCss = css`
   font-weight: bold;
   font-size: 15px;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const imageCss = css`
@@ -117,7 +121,7 @@ function PostCard({ post }) {
   });
 
   const onShareClick = useCallback(() => {
-    const url = window.location.href + `post/${post.id}`;
+    const url = baseUrl + `/post/${post.id}`;
     navigator.clipboard
       .writeText(url)
       .then(() => {

@@ -9,8 +9,6 @@ import RelationNameCard from "../homeProfileSection/RelationNameCard";
 import { css } from "@emotion/react";
 import Spacer from "../CustomizedUI/Spacer";
 import { userState } from "../../recoil";
-import produce from "../../util/produce";
-import { useFillFollowInfo } from "../../hooks/userAction";
 
 const listCss = css`
   height: 100vh;
@@ -20,7 +18,7 @@ const listCss = css`
   }
 `;
 
-function FollowList({ type, header, refetchMyInfo }) {
+function FollowList({ type, header }) {
   const isMobile = useContainer({ default: false, md: true });
   const { me } = useRecoilValue(userState);
 
@@ -40,19 +38,13 @@ function FollowList({ type, header, refetchMyInfo }) {
           {type === "following"
             ? me?.Followings?.map((following) => (
                 <div key={following.id}>
-                  <RelationNameCard
-                    user={following}
-                    refetchMyInfo={refetchMyInfo}
-                  />
+                  <RelationNameCard user={following} />
                   <Spacer />
                 </div>
               ))
             : me?.Followers?.map((follower) => (
                 <div key={follower.id}>
-                  <RelationNameCard
-                    user={follower}
-                    refetchMyInfo={refetchMyInfo}
-                  />
+                  <RelationNameCard user={follower} />
                   <Spacer />
                 </div>
               ))}

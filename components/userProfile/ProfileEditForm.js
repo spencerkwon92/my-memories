@@ -10,7 +10,6 @@ import {
   Heading,
   Container,
   Center,
-  Avatar,
   Button,
   HStack,
   Text,
@@ -18,12 +17,11 @@ import {
   Input,
   IconButton,
   Image,
-  Spinner,
 } from "@chakra-ui/react";
 import { PlusSquareIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
 import { useRecoilState } from "recoil";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 import useInput from "../../hooks/useInput";
 import Spacer from "../CustomizedUI/Spacer";
@@ -46,10 +44,12 @@ const ButtonImage = styled(Image)`
 `;
 
 function ProfileEditForm() {
-  const [userStateBlock, setUserState] = useRecoilState(userState);
-  const { me } = userStateBlock;
+  const [{ me }, setUserState] = useRecoilState(userState);
   const [nickname, onChangeNickname] = useInput(me?.nickname || "");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const queryClient = useQueryClient();
+
+  console.log(me.ProfileImage.src);
 
   const changeNicknameMutation = useMutation(
     "changeNickname",
@@ -67,8 +67,11 @@ function ProfileEditForm() {
 
   const onNicknameEditButton = useCallback(() => {
     changeNicknameMutation.mutate(nickname);
+
     alert("닉네임이 변경되었습니다.");
   }, [changeNicknameMutation, nickname]);
+
+  if (!me) return null;
 
   return (
     <>
@@ -109,10 +112,10 @@ function ProfileEditForm() {
 }
 
 function ProfileImageEditModal({ isOpen, onClose }) {
-  const [userStateBlock, setUserState] = useRecoilState(userState);
-  const { me } = userStateBlock;
+  const [{ me }, setUserState] = useRecoilState(userState);
   const [imagePath, setImagePath] = useState(me.ProfileImage?.src || "");
   const profileImageInput = useRef();
+  const queryClient = useQueryClient();
 
   const editProfileImageMutation = useMutation(
     "editProfileImage",
@@ -127,6 +130,7 @@ function ProfileImageEditModal({ isOpen, onClose }) {
             draft.me.ProfileImage = data;
           })
         );
+        queryClient.invalidateQueries("user");
       },
       onError(error) {
         console.log(error);
@@ -214,14 +218,6 @@ function ProfileImageEditModal({ isOpen, onClose }) {
         <ModalHeader>프로필 이미지 편집</ModalHeader>
         <ModalCloseButton onClick={onCloseModalHandler} />
         <ModalBody>
-          {/* {uploadProfileImageLoading && (
-            <Center>
-              <Text fontWeight="bold">
-                이미지를 바꾸고 있어요.
-                <Spinner />
-              </Text>
-            </Center>
-          )} */}
           <Center height={"20vh"}>
             <input
               type="file"

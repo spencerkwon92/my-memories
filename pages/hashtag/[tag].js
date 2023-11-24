@@ -8,6 +8,7 @@ import AppLayout from "../../components/layout/AppLayout";
 import Spacer from "../../components/CustomizedUI/Spacer";
 import { useHashtagPosts } from "../../hooks/postAction";
 import { useLoadMyInfo } from "../../hooks/userAction";
+import { PageLoadingIndicator } from "../../components/layout/PageLoadingIndicator";
 
 export default function TagPage() {
   const [{ me }] = useLoadMyInfo();
@@ -23,9 +24,9 @@ export default function TagPage() {
     if (inView && hasMorePosts && !loadHashtagPostsLoading) {
       loadNextPosts();
     }
-  }, [mainPosts, hasMorePosts, loadHashtagPostsLoading, inView]);
+  }, [hasMorePosts, loadHashtagPostsLoading, inView]);
 
-  if (mainPosts.length === 0) {
+  if (mainPosts.length === 0 && !loadHashtagPostsLoading) {
     return (
       <AppLayout>
         <Center h="80vh">
@@ -34,6 +35,8 @@ export default function TagPage() {
       </AppLayout>
     );
   }
+
+  if (loadHashtagPostsLoading) return <PageLoadingIndicator />;
 
   return (
     <AppLayout>
