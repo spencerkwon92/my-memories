@@ -46,7 +46,7 @@ function RelationNameCard({ user }) {
           draft.me.Followings.push({ id: data.UserId });
         })
       );
-      queryClient.invalidateQueries("loadFollowings");
+      queryClient.invalidateQueries("followings");
       console.log("Following Success!");
     },
     onSettled() {
@@ -66,7 +66,7 @@ function RelationNameCard({ user }) {
           );
         })
       );
-      queryClient.invalidateQueries("loadFollowings");
+      queryClient.invalidateQueries("followings");
       console.log("unFollowing Success!");
     },
     onSettled() {

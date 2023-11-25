@@ -67,14 +67,14 @@ export function useLoadFullMyInfo() {
     data: followersData,
     refetch: refetchFollowers,
     isLoading: loadFollowersLoading,
-  } = useQuery("loadFollowers", loadFollowersAPI, {
+  } = useQuery("followers", loadFollowersAPI, {
     enabled: Boolean(myInfo),
   });
   const {
     data: followingsData,
     refetch: refetchFollowings,
     isLoading: loadFollowingsLoading,
-  } = useQuery("loadFollowings", loadFollowingsAPI, {
+  } = useQuery("followings", loadFollowingsAPI, {
     enabled: Boolean(myInfo),
   });
 

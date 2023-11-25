@@ -26,7 +26,7 @@ function FollowButton({ post }) {
           })
         )
       );
-      queryClient.invalidateQueries("loadFollowings");
+      queryClient.invalidateQueries("followings");
     } else {
       followAPI(post.User.id).then((data) =>
         setUserStateBlock((prev) =>
@@ -35,7 +35,7 @@ function FollowButton({ post }) {
           })
         )
       );
-      queryClient.invalidateQueries("loadFollowings");
+      queryClient.invalidateQueries("followings");
     }
   }, [isFollowing]);
 
