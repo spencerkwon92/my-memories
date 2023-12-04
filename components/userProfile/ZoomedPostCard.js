@@ -22,9 +22,7 @@ const boxCss = css`
   padding: 0px;
 `;
 
-function ProfilePostCard({ post = {} }) {
-  const isMobile = useContainer({ default: false, md: true });
-
+function ZoomedPostCard({ post = {} }) {
   const updatedImages = post.Images.map((image) => {
     return {
       ...image,
@@ -34,11 +32,11 @@ function ProfilePostCard({ post = {} }) {
 
   return (
     <Box css={boxCss}>
-      <Grid templateColumns="repeat(6, 1fr)">
-        <GridItem colSpan={4}>
+      <Grid templateColumns="repeat(8, 1fr)">
+        <GridItem colSpan={5}>
           <PostImages images={updatedImages} label="userPostImages" />
         </GridItem>
-        <GridItem colSpan={2} margin="40px 5px 0px 5px">
+        <GridItem colSpan={3} margin="40px 5px 0px 5px">
           <Box position="relative" h="75vh">
             <Box position="absolute" w="100%">
               <HStack>
@@ -70,4 +68,4 @@ function ProfilePostCard({ post = {} }) {
   );
 }
 
-export default ProfilePostCard;
+export default ZoomedPostCard;

@@ -23,11 +23,18 @@ const StyledBox = styled(Box)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
+  overflow: hidden;
 
   &[aria-label="userPostImages"] {
     height: 90vh;
-    width: auto;
+    width: 100%;
+    .imageGroup {
+      height: 100%;
+      > img {
+        width: 100%;
+        height: auto;
+      }
+    }
   }
 `;
 const imageGroupCss = css`
@@ -134,6 +141,7 @@ export default function ImageCarousel({ images, label }) {
   return (
     <StyledBox aria-label={label}>
       <animated.div
+        className="imageGroup"
         css={imageGroupCss}
         style={{ x }}
         {...bind()}
