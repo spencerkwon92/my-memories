@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import Router from "next/router";
 import { useMutation } from "react-query";
+import {Link} from "next/link";
 
 import useInput from "../hooks/useInput";
 import AppLayout from "../components/layout/AppLayout";
@@ -102,7 +103,9 @@ function LoginPage() {
         </Container>
         <Center marginTop="10px">
           <Text fontSize="lg">
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
             Don't have an account?{" "}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a className="signUpAnker" href="/signup">
               Sign Up
             </a>

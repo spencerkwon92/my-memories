@@ -87,6 +87,7 @@ function ProfilePostCard ({post}){
         <StyledCardBody backgroundColor="black">
           <Image
             src={post.Images[0].src}
+            alt={post.Images[0].src}
             fallbackSrc={post.Images[0].src.replace(
               /\/resizedPostImages\//,
               "/postImages/"

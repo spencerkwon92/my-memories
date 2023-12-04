@@ -13,13 +13,14 @@ import {
 } from "../../components/layout/PageLoadingIndicator";
 
 import { useLoadUserPosts } from "../../hooks/postAction";
-import { useLoadMyInfo, useLoadUser } from "../../hooks/userAction";
+import {useLoadUser, useLoadFullMyInfo } from "../../hooks/userAction";
 
 export default function UserPage() {
-  const [{ me }, loadMyInfoLoading] = useLoadMyInfo();
+  const [{me}, , , loadMyInfoLoading] = useLoadFullMyInfo();
   const router = useRouter();
   const { id } = router.query;
-  const isSameUser = me?.id === id;
+  const isSameUser = me?.id === parseInt(id,10);
+  const isLoggedIn = me !== null;
   const [{ userInfo }, loadUserInfoLoading] = useLoadUser(id, isSameUser);
 
   const [
@@ -50,7 +51,7 @@ export default function UserPage() {
       {loadMyInfoLoading || loadUserInfoLoading ? (
         <UserHeaderIndicator />
       ) : (
-        <UserHeader user={me?.id === parseInt(id, 10) ? me : userInfo} />
+        <UserHeader user={isSameUser ? me : userInfo} isSameUser = {isSameUser} isLoggedIn={isLoggedIn}/>
       )}
       <Spacer size={20} />
       {loadUserPostsLoading ? (

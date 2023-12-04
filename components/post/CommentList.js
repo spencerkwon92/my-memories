@@ -19,11 +19,11 @@ import { removePostCommentAPI } from "../../apis/post";
 import produce from "../../util/produce";
 
 const StyledList = styled(List)`
-  max-height: 500px;
+  max-height: 300px;
   overflow-y: hidden;
 
   :hover {
-    overflow-y: auto;
+    overflow-y: scroll;
   }
 
   & > * {

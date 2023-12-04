@@ -38,7 +38,7 @@ function Home() {
 
   return (
     <AppLayout>
-      <Grid templateColumns="repeat(6, 1fr)" gap={5}>
+      <Grid templateColumns="repeat(6, 1fr)" gap={7}>
         <GridItem colSpan={isMobile ? 6 : 4}>
           {me && <PostForm />}
           {loadPostsLoading ? (

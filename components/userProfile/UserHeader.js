@@ -8,7 +8,6 @@ import {
   Divider,
   Button,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
@@ -16,10 +15,10 @@ import { useRecoilValue } from "recoil";
 import useContainer from "../../hooks/useContainer";
 import Spacer from "../CustomizedUI/Spacer";
 import { userState } from "../../recoil";
+import FollowNumberButton from "./FollowNumerButton";
 
-function UserHeader({ user }) {
+function UserHeader({ user, isSameUser, isLoggedIn }) {
   const isMobile = useContainer({ default: false, md: true });
-  const { me } = useRecoilValue(userState);
   const router = useRouter();
 
   const onClickHandler = useCallback(() => {
@@ -31,12 +30,8 @@ function UserHeader({ user }) {
       <Text fontSize="xl" fontWeight="bold" margin="0">
         게시물 {user?.Posts.length}
       </Text>
-      <Text fontSize="xl" fontWeight="bold" margin="0">
-        팔로워 {user?.Followers.length}
-      </Text>
-      <Text fontSize="xl" fontWeight="bold" margin="0">
-        팔로우 {user?.Followings.length}
-      </Text>
+      <FollowNumberButton type='followers' followInfo={user?.Followers} isLoggedIn={isLoggedIn}/>
+      <FollowNumberButton type='followings' followInfo={user?.Followings} isLoggedIn={isLoggedIn}/>
     </HStack>
   );
 
@@ -58,7 +53,7 @@ function UserHeader({ user }) {
             >
               {user?.nickname}
             </Text>
-            {me?.id === user?.id && (
+            {isSameUser && (
               <Button size="sm" onClick={onClickHandler}>
                 프로필 수정
               </Button>

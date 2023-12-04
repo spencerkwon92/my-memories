@@ -1,15 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {Image, Box} from '@chakra-ui/react'
-import styled from '@emotion/styled'
+import React from "react";
+import PropTypes from "prop-types";
+import { Image, Box } from "@chakra-ui/react";
+import styled from "@emotion/styled";
 
-import ImageCarousel from '../CustomizedUI/ImageCarousel';
+import ImageCarousel from "../CustomizedUI/ImageCarousel";
 
 const StyledBox = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: black;
+  width: 100%;
+  aspect-ratio: 1/1;
   &[aria-label="userPostImages"] {
     width: 100%;
     height: 90vh;
@@ -18,11 +20,14 @@ const StyledBox = styled(Box)`
       width: auto;
     }
   }
+
+  > img {
+    width: 100%;
+    height: auto;
+  }
 `;
 
-
-function PostImages({ images, label, ...props }){
-
+function PostImages({ images, label, ...props }) {
   if (images.length === 1) {
     return (
       <StyledBox aria-label={label}>
@@ -38,18 +43,16 @@ function PostImages({ images, label, ...props }){
     );
   }
 
-  return (
-    <StyledBox aria-label={label}>
-      <ImageCarousel images={images} label={label} />
-    </StyledBox>
-  );
-};
+  return <ImageCarousel images={images} label={label} />;
+}
 
 PostImages.propTypes = {
-  images: PropTypes.arrayOf(PropTypes.shape({
-    src: PropTypes.string,
-    label: PropTypes.string,
-  })).isRequired,
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      src: PropTypes.string,
+      label: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default PostImages;
