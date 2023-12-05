@@ -10,12 +10,10 @@ import {
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-import { useRecoilValue } from "recoil";
 
 import useContainer from "../../hooks/useContainer";
 import Spacer from "../CustomizedUI/Spacer";
-import { userState } from "../../recoil";
-import FollowNumberButton from "./FollowNumerButton";
+import FollowNumberButton from "./FollowNumberButton";
 
 function UserHeader({ user, isSameUser, isLoggedIn }) {
   const isMobile = useContainer({ default: false, md: true });
@@ -30,8 +28,16 @@ function UserHeader({ user, isSameUser, isLoggedIn }) {
       <Text fontSize="xl" fontWeight="bold" margin="0">
         게시물 {user?.Posts.length}
       </Text>
-      <FollowNumberButton type='followers' followInfo={user?.Followers} isLoggedIn={isLoggedIn}/>
-      <FollowNumberButton type='followings' followInfo={user?.Followings} isLoggedIn={isLoggedIn}/>
+      <FollowNumberButton
+        type="followers"
+        followInfo={user?.Followers}
+        isLoggedIn={isLoggedIn}
+      />
+      <FollowNumberButton
+        type="followings"
+        followInfo={user?.Followings}
+        isLoggedIn={isLoggedIn}
+      />
     </HStack>
   );
 
