@@ -1,5 +1,4 @@
 ## 소중한 추억을 공유하는 페이지: My Memories
-['My Memories Product Page'](https://mymemories.kr)
 
 ['프로젝트 회고록 바로가기'](https://marked-seashore-387.notion.site/My-Memories-61b25b2ef37140f1863936efbcb7e376?pvs=4)
 
